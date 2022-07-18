@@ -1,4 +1,4 @@
-# Serverless Toolkit CLI
+# PoC - Serverless Toolkit CLI
 
 - [Setup](#setup)
 - [Concepts](#concepts)
@@ -121,4 +121,3 @@ export default function counter() {
 ### Page objects
 
 - Svelte and Markdown based Server Side Rendering 
-- 
