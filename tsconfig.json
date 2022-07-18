@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"module": "Node16",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "ESNext",
+		"moduleResolution": "node",
+		"sourceMap": false,
+		"outDir": ".build",
+		"resolveJsonModule": true
+	},
+	"include": ["stacks", "saga", "page", "worker", "cli"]
+}

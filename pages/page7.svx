@@ -1,0 +1,22 @@
+---
+title: Get cookies
+---
+
+<script context="module">
+	export let data = {}
+	
+	export async function load(request, response) {		
+		data = request.cookies;
+	}
+</script>
+
+<svelte:head>
+	<title>{title}</title>
+</svelte:head>
+
+# {title}
+
+<code>{JSON.stringify(data, null, 4)}</code>
+
+<style>
+</style>

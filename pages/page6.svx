@@ -1,0 +1,19 @@
+---
+title: Redirect
+---
+
+<script context="module">
+	export async function load(request, response) {		
+		response.statusCode = 302;
+		response.headers['location'] = '/index';		
+	}
+</script>
+
+<svelte:head>
+	<title>{title}</title>
+</svelte:head>
+
+# {title}
+
+<style>
+</style>
