@@ -1,4 +1,4 @@
-# PoC - Programmable Saga using AWS Lambda and DynamoDB
+# Serverless Toolkit CLI
 
 - [Setup](#setup)
 - [Concepts](#concepts)
