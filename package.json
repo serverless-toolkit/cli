@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/cli",
-	"version": "2.1.27",
+	"version": "2.1.28",
 	"engines": {
 		"node": ">=16.0.0"
 	},
