@@ -31,6 +31,12 @@ yarn:update-decrement
 yarn deploy
 ```
 
+## Todos
+
+- [ ] upgrade to AWS-CDK v2.x
+- [ ] docs hosted zone / optional domain name
+- [ ] add cdk app script to app root (stk init)
+
 ## Concepts
 
 ### Instance Management
