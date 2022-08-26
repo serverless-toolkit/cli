@@ -6,10 +6,6 @@ yarn-error.log
 .env
 cdk.context.json
 cdk.outputs.json
-sagas
-pages
-workers
-tests
 local-tests
 .prettierignore                  
 .prettierrc 

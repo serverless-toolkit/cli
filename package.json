@@ -61,14 +61,12 @@
 	"devDependencies": {
 		"@playwright/test": "1.25.1",
 		"@types/node": "18.7.13",
-		"@types/randomstring": "1.1.8",
 		"@types/uuid": "8.3.4",
 		"aws-lambda": "1.0.7",
 		"lambda-local": "2.0.2",
 		"lambda-multipart-parser": "1.0.1",
 		"mime-types": "2.1.35",
 		"prettier": "2.7.1",
-		"randomstring": "1.2.2",
 		"typescript": "4.8.2",
 		"uuid": "8.3.2",
 		"vm2": "3.9.10"
@@ -88,14 +86,10 @@
 		"esbuild-svelte": "0.7.1",
 		"mdsvex": "0.10.6",
 		"npm-programmatic": "0.0.12",
-		"odottaa": "1.1.7",
 		"playwright": "1.25.1",
 		"svelte": "3.49.0",
 		"svelte-preprocess": "4.10.7",
 		"ws-reconnect": "1.0.7",
 		"yargs": "17.5.1"
-	},
-	"stk": {
-		"domainName": "serverless-toolkit.com"
 	}
 }
