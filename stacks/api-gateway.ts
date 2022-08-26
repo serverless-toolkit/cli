@@ -1,13 +1,17 @@
-import { CfnOutput, Duration, Stack, StackProps } from '@aws-cdk/core';
+import { join } from 'path';
+import { realpathSync } from 'fs';
 import { Construct } from 'constructs';
 import {
-	HostedZone,
-	ARecord,
-	RecordTarget,
-	AliasRecordTargetConfig,
-	IAliasRecordTarget,
-	IRecordSet
-} from '@aws-cdk/aws-route53';
+	CfnOutput,
+	Duration,
+	Stack,
+	StackProps,
+	aws_route53,
+	aws_lambda_nodejs,
+	aws_lambda,
+	aws_certificatemanager,
+	aws_dynamodb
+} from 'aws-cdk-lib';
 import {
 	CorsHttpMethod,
 	HttpApi,
@@ -16,23 +20,18 @@ import {
 	DomainName,
 	IDomainName,
 	WebSocketStage
-} from '@aws-cdk/aws-apigatewayv2';
+} from '@aws-cdk/aws-apigatewayv2-alpha';
 import {
 	HttpLambdaIntegration,
 	WebSocketLambdaIntegration
-} from '@aws-cdk/aws-apigatewayv2-integrations';
-import { Runtime } from '@aws-cdk/aws-lambda';
-import { Certificate, CertificateValidation } from '@aws-cdk/aws-certificatemanager';
-import { Table } from '@aws-cdk/aws-dynamodb';
-import { join } from 'path';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { realpathSync } from 'fs';
+} from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import { IAliasRecordTarget } from 'aws-cdk-lib/aws-route53';
 
 interface ApiGatewayStackProps extends StackProps {
-	workerHandler: NodejsFunction;
-	sagaHandler: NodejsFunction;
-	pageHandler: NodejsFunction;
-	table: Table;
+	workerHandler: aws_lambda_nodejs.NodejsFunction;
+	sagaHandler: aws_lambda_nodejs.NodejsFunction;
+	pageHandler: aws_lambda_nodejs.NodejsFunction;
+	table: aws_dynamodb.Table;
 	domainName: string;
 	httpRecordName: string;
 	wsRecordName: string;
@@ -41,7 +40,7 @@ interface ApiGatewayStackProps extends StackProps {
 export class ApiGatewayStack extends Stack {
 	httpApi: HttpApi;
 	websocketApi: WebSocketApi;
-	realtimeHandler: NodejsFunction;
+	realtimeHandler: aws_lambda_nodejs.NodejsFunction;
 	httpApiUrl: string;
 	wsApiUrl: string;
 
@@ -51,13 +50,13 @@ export class ApiGatewayStack extends Stack {
 		this.httpApiUrl = `${props.httpRecordName}.${props.domainName}`;
 		this.wsApiUrl = `${props.wsRecordName}.${props.domainName}`;
 
-		const zone = HostedZone.fromLookup(this, 'http-api-hosted-zone', {
+		const zone = aws_route53.HostedZone.fromLookup(this, 'http-api-hosted-zone', {
 			domainName: props.domainName
 		});
 
-		const httpCertificate = new Certificate(this, 'http-api-certificate', {
+		const httpCertificate = new aws_certificatemanager.Certificate(this, 'http-api-certificate', {
 			domainName: this.httpApiUrl,
-			validation: CertificateValidation.fromDns(zone)
+			validation: aws_certificatemanager.CertificateValidation.fromDns(zone)
 		});
 		const httpCustomDomain = new DomainName(this, 'http-api-domain', {
 			certificate: httpCertificate,
@@ -113,18 +112,18 @@ export class ApiGatewayStack extends Stack {
 
 		new CfnOutput(this, 'http-api-wndpoint-utl', { value: this.httpApi.apiEndpoint });
 
-		new ARecord(this, 'http-api-alias-record', {
-			target: RecordTarget.fromAlias(new ApiGatewayDomain(httpCustomDomain)),
+		new aws_route53.ARecord(this, 'http-api-alias-record', {
+			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(httpCustomDomain)),
 			zone,
 			recordName: props.httpRecordName
 		});
 
-		this.realtimeHandler = new NodejsFunction(this, 'realtime-function-handler', {
+		this.realtimeHandler = new aws_lambda_nodejs.NodejsFunction(this, 'realtime-function-handler', {
 			entry: join(realpathSync(__filename), '..', '..', '..', 'realtime', 'index.ts'),
 			depsLockFilePath: join(realpathSync(__filename), '..', '..', '..', 'yarn.lock'),
 			projectRoot: join(realpathSync(__filename), '..', '..', '..'),
 			awsSdkConnectionReuse: true,
-			runtime: Runtime.NODEJS_16_X,
+			runtime: aws_lambda.Runtime.NODEJS_16_X,
 			memorySize: 128,
 			timeout: Duration.minutes(1),
 			environment: {
@@ -145,10 +144,14 @@ export class ApiGatewayStack extends Stack {
 
 		new CfnOutput(this, 'webSocket-api-endpoint-url', { value: this.websocketApi.apiEndpoint });
 
-		const wsCertificate = new Certificate(this, 'webSocket-api-certificate', {
-			domainName: this.wsApiUrl,
-			validation: CertificateValidation.fromDns(zone)
-		});
+		const wsCertificate = new aws_certificatemanager.Certificate(
+			this,
+			'webSocket-api-certificate',
+			{
+				domainName: this.wsApiUrl,
+				validation: aws_certificatemanager.CertificateValidation.fromDns(zone)
+			}
+		);
 		const wsCustomDomain = new DomainName(this, 'webSocket-api-domain', {
 			certificate: wsCertificate,
 			domainName: this.wsApiUrl
@@ -161,9 +164,9 @@ export class ApiGatewayStack extends Stack {
 			domainMapping: { domainName: wsCustomDomain }
 		});
 
-		new ARecord(this, 'webSocket-api-alias-record', {
+		new aws_route53.ARecord(this, 'webSocket-api-alias-record', {
 			zone,
-			target: RecordTarget.fromAlias(new ApiGatewayDomain(wsCustomDomain)),
+			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(wsCustomDomain)),
 			recordName: props.wsRecordName
 		});
 
@@ -179,7 +182,7 @@ export class ApiGatewayStack extends Stack {
 class ApiGatewayDomain implements IAliasRecordTarget {
 	constructor(private readonly domainName: IDomainName) {}
 
-	public bind(_record: IRecordSet): AliasRecordTargetConfig {
+	public bind(_record: aws_route53.IRecordSet): aws_route53.AliasRecordTargetConfig {
 		return {
 			dnsName: this.domainName.regionalDomainName,
 			hostedZoneId: this.domainName.regionalHostedZoneId

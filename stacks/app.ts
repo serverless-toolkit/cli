@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { App, Tags } from '@aws-cdk/core';
+import { App, Tags } from 'aws-cdk-lib';
 import { DynamoStack } from './dynamodb';
 import { ApiGatewayStack } from './api-gateway';
 import { SagaLambdaStack } from './saga-lambda';
@@ -16,7 +16,7 @@ const env = {
 (async () => {
 	const pkg = await import(join(process.cwd(), 'package.json'));
 	const pkgName = pkg.name.replace('@', '').replace('/', '-');
-	
+
 	const app = new App({});
 	Tags.of(app).add('stk-name', pkgName);
 	Tags.of(app).add('stk-version', pkg.version);

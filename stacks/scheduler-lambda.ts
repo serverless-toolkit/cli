@@ -1,32 +1,36 @@
-import { join } from 'path';
-import { Table } from '@aws-cdk/aws-dynamodb';
-import { Duration, Stack, StackProps } from '@aws-cdk/core';
-import { Construct } from 'constructs';
-import { Runtime } from '@aws-cdk/aws-lambda';
-import { Rule, Schedule, RuleTargetInput } from '@aws-cdk/aws-events';
-import { addLambdaPermission, LambdaFunction } from '@aws-cdk/aws-events-targets';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { realpathSync } from 'fs';
+import { join } from 'path';
+import { Construct } from 'constructs';
+import {
+	Duration,
+	Stack,
+	StackProps,
+	aws_dynamodb,
+	aws_lambda_nodejs,
+	aws_s3,
+	aws_lambda,
+	aws_events,
+	aws_events_targets
+} from 'aws-cdk-lib';
 
 interface SchedulerLambdaStackProps extends StackProps {
-	table: Table;
-	sagaHandler: NodejsFunction;
-	codeBucket: Bucket;
+	table: aws_dynamodb.Table;
+	sagaHandler: aws_lambda_nodejs.NodejsFunction;
+	codeBucket: aws_s3.Bucket;
 }
 
 export class SchedulerLambdaStack extends Stack {
-	schedulerHandler: NodejsFunction;
-	eventRule: Rule;
+	schedulerHandler: aws_lambda_nodejs.NodejsFunction;
+	eventRule: aws_events.Rule;
 
 	constructor(scope: Construct, id: string, props: SchedulerLambdaStackProps) {
 		super(scope, id, props);
-		this.schedulerHandler = new NodejsFunction(this, 'SchedulerFunctionHandler', {
+		this.schedulerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'SchedulerFunctionHandler', {
 			entry: join(realpathSync(__filename), '..', '..', '..', 'scheduler', 'index.ts'),
 			depsLockFilePath: join(realpathSync(__filename), '..', '..', '..', 'yarn.lock'),
 			projectRoot: join(realpathSync(__filename), '..', '..', '..'),
 			awsSdkConnectionReuse: true,
-			runtime: Runtime.NODEJS_16_X,
+			runtime: aws_lambda.Runtime.NODEJS_16_X,
 			memorySize: 128,
 			timeout: Duration.minutes(1),
 			environment: {
@@ -40,15 +44,15 @@ export class SchedulerLambdaStack extends Stack {
 		props.codeBucket.grantRead(this.schedulerHandler);
 		props.sagaHandler.grantInvoke(this.schedulerHandler);
 
-		this.eventRule = new Rule(this, 'EventBridgeOneMinuteRule', {
-			schedule: Schedule.cron({ minute: '0/1' })
+		this.eventRule = new aws_events.Rule(this, 'EventBridgeOneMinuteRule', {
+			schedule: aws_events.Schedule.cron({ minute: '0/1' })
 		});
 
 		this.eventRule.addTarget(
-			new LambdaFunction(this.schedulerHandler, {
-				event: RuleTargetInput.fromObject({ message: '' })
+			new aws_events_targets.LambdaFunction(this.schedulerHandler, {
+				event: aws_events.RuleTargetInput.fromObject({ message: '' })
 			})
 		);
-		addLambdaPermission(this.eventRule, this.schedulerHandler);
+		aws_events_targets.addLambdaPermission(this.eventRule, this.schedulerHandler);
 	}
 }

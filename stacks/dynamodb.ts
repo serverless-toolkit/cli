@@ -1,29 +1,24 @@
-import { RemovalPolicy, Stack, StackProps } from '@aws-cdk/core';
-import {
-	Table,
-	BillingMode,
-	AttributeType,
-	StreamViewType} from '@aws-cdk/aws-dynamodb';
+import { RemovalPolicy, Stack, StackProps, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export class DynamoStack extends Stack {
-	table: Table;
+	table: aws_dynamodb.Table;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);
 
-		this.table = new Table(this, 'dynamodb-table', {			
+		this.table = new aws_dynamodb.Table(this, 'dynamodb-table', {
 			removalPolicy: RemovalPolicy.DESTROY,
-			billingMode: BillingMode.PAY_PER_REQUEST,
+			billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
 			partitionKey: {
 				name: 'id',
-				type: AttributeType.STRING
+				type: aws_dynamodb.AttributeType.STRING
 			},
 			sortKey: {
 				name: 'type',
-				type: AttributeType.STRING
+				type: aws_dynamodb.AttributeType.STRING
 			},
-			stream: StreamViewType.NEW_AND_OLD_IMAGES,
+			stream: aws_dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 			timeToLiveAttribute: 'expiresAt'
 		});
 	}
