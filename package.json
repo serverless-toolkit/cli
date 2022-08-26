@@ -83,7 +83,7 @@
 		"chokidar": "3.5.3",
 		"constructs": "10.1.87",
 		"enquirer": "2.3.6",
-		"esbuild": "0.15.5",
+		"esbuild": "0.14.54",
 		"esbuild-node-externals": "1.4.1",
 		"esbuild-svelte": "0.7.1",
 		"mdsvex": "0.10.6",
