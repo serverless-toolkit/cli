@@ -8,7 +8,6 @@ export async function update(argv) {
 
 	try {
 		await updateCode(s3);
-		process.exit(0);
 	} catch (err) {
 		console.error(err);
 		process.exit(1);
