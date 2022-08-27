@@ -1,14 +1,29 @@
 # Serverless Toolkit (STK) CLI
 
-## Setup a new project
-
 ### Install the STK CLI
 
 ```
 npm install -g @serverless-toolkit/cli
 ```
 
-### Prepare a new project
+```
+Usage: stk COMMAND
+
+Kommandos:
+  stk dev        Start development.
+  stk test       Start local test execution.
+  stk logs       Watch logs.
+  stk update     Update code files.
+  stk init       Prepare a local development environment.
+  stk bootstrap  Bootstrap the runtime environment in AWS.
+  stk destroy    Destroy the runtime environment in AWS.
+
+Optionen:
+  -v, --version  Version anzeigen                                      [boolean]
+  -h, --help     Hilfe anzeigen                                        [boolean]
+```
+
+## Setup a new project
 
 ```
 ➜  stk init
@@ -52,4 +67,10 @@ to prepare the development in AWS.
 
 ```
 ➜ stk test
+```
+
+### Destroy the serverless runtime
+
+```
+➜ stk destroy
 ```
