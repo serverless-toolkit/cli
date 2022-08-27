@@ -15,6 +15,7 @@ import {
 interface WorkerLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
+	environment?: { [key: string]: string };
 }
 export class WorkerLambdaStack extends NestedStack {
 	workerHandler: aws_lambda_nodejs.NodejsFunction;
@@ -33,7 +34,8 @@ export class WorkerLambdaStack extends NestedStack {
 			timeout: Duration.minutes(15),
 			environment: {
 				DBTABLE: props.table.tableName,
-				CODEBUCKET: props.codeBucket.bucketName
+				CODEBUCKET: props.codeBucket.bucketName,
+				...props.environment
 			},
 			bundling: {
 				nodeModules: ['vm2']

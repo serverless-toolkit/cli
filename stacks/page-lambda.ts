@@ -15,6 +15,7 @@ import {
 interface PageLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
+	environment?: { [key: string]: string };
 }
 export class PageLambdaStack extends NestedStack {
 	pageHandler: aws_lambda_nodejs.NodejsFunction;
@@ -32,7 +33,8 @@ export class PageLambdaStack extends NestedStack {
 			timeout: Duration.minutes(15),
 			environment: {
 				DBTABLE: props.table.tableName,
-				CODEBUCKET: props.codeBucket.bucketName
+				CODEBUCKET: props.codeBucket.bucketName,
+				...props.environment
 			},
 			bundling: {
 				nodeModules: ['svelte', 'mdsvex', 'mime-types', 'lambda-multipart-parser', 'vm2']

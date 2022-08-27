@@ -15,6 +15,7 @@ import { realpathSync } from 'fs';
 interface SagaLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
+	environment?: { [key: string]: string };
 }
 export class SagaLambdaStack extends NestedStack {
 	sagaHandler: aws_lambda_nodejs.NodejsFunction;
@@ -32,7 +33,8 @@ export class SagaLambdaStack extends NestedStack {
 			reservedConcurrentExecutions: 1,
 			environment: {
 				DBTABLE: props.table.tableName,
-				CODEBUCKET: props.codeBucket.bucketName
+				CODEBUCKET: props.codeBucket.bucketName,
+				...props.environment
 			},
 			bundling: {
 				nodeModules: ['vm2']

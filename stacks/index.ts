@@ -9,18 +9,19 @@ import { S3BucketStack } from './s3-bucket';
 import { Construct } from 'constructs';
 
 interface ServerlessToolkitStackProps extends StackProps {
-	stackName: string;
+	projectName: string;
 	pkg: {
 		stk: {
 			domainName?: string;
 		};
 	};
+	environment?: { [key: string]: string };
 }
 
 export class ServerlessToolkitStack extends Stack {
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { pkg, stackName } = props;
+		const { pkg, projectName, environment } = props;
 
 		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
@@ -28,25 +29,28 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
-			codeBucket
+			codeBucket,
+			environment
 		});
 		new SchedulerLambdaStack(this, `scheduler-stack`, {
 			table,
 			codeBucket,
-			sagaHandler
+			sagaHandler			
 		});
 		const { pageHandler } = new PageLambdaStack(this, `page-stack`, {
 			table,
-			codeBucket
+			codeBucket,
+			environment
 		});
 		const { workerHandler } = new WorkerLambdaStack(this, `worker-stack`, {
 			table,
-			codeBucket
+			codeBucket,
+			environment
 		});
-		new ApiGatewayStack(this, `${stackName}-apigateway-stack`, {
+		new ApiGatewayStack(this, `apigateway-stack`, {
 			domainName: pkg.stk?.domainName,
-			httpRecordName: stackName,
-			wsRecordName: `${stackName}-logs`,
+			httpRecordName: projectName,
+			wsRecordName: `${projectName}-logs`,
 			table,
 			sagaHandler,
 			workerHandler,
