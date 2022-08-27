@@ -3,8 +3,8 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	Stack,
-	StackProps,
+	NestedStack,
+	NestedStackProps,
 	aws_dynamodb,
 	aws_lambda_nodejs,
 	aws_s3,
@@ -13,13 +13,13 @@ import {
 	aws_events_targets
 } from 'aws-cdk-lib';
 
-interface SchedulerLambdaStackProps extends StackProps {
+interface SchedulerLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	sagaHandler: aws_lambda_nodejs.NodejsFunction;
 	codeBucket: aws_s3.Bucket;
 }
 
-export class SchedulerLambdaStack extends Stack {
+export class SchedulerLambdaStack extends NestedStack {
 	schedulerHandler: aws_lambda_nodejs.NodejsFunction;
 	eventRule: aws_events.Rule;
 

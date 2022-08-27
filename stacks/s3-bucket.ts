@@ -1,14 +1,11 @@
-import { RemovalPolicy, Stack, StackProps, aws_dynamodb, aws_s3 } from 'aws-cdk-lib';
+import { RemovalPolicy, NestedStack, NestedStackProps, aws_dynamodb, aws_s3 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-interface S3BucketStackProps extends StackProps {
+interface S3BucketStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
-	pkg: {
-		name: string;
-	};
 }
 
-export class S3BucketStack extends Stack {
+export class S3BucketStack extends NestedStack {
 	codeBucket: aws_s3.Bucket;
 
 	constructor(scope: Construct, id: string, props: S3BucketStackProps) {
@@ -16,8 +13,7 @@ export class S3BucketStack extends Stack {
 
 		this.codeBucket = new aws_s3.Bucket(this, 'stk-objects-bucket', {
 			removalPolicy: RemovalPolicy.DESTROY,
-			autoDeleteObjects: true,
-			bucketName: `${props.pkg?.name.replace('@', '').replace('/', '-')}-stk-objects`
+			autoDeleteObjects: true
 		});
 	}
 }

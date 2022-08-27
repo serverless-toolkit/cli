@@ -4,8 +4,8 @@ import { Construct } from 'constructs';
 import {
 	CfnOutput,
 	Duration,
-	Stack,
-	StackProps,
+	NestedStack,
+	NestedStackProps,
 	aws_route53,
 	aws_lambda_nodejs,
 	aws_lambda,
@@ -27,7 +27,7 @@ import {
 } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { IAliasRecordTarget } from 'aws-cdk-lib/aws-route53';
 
-interface ApiGatewayStackProps extends StackProps {
+interface ApiGatewayStackProps extends NestedStackProps {
 	workerHandler: aws_lambda_nodejs.NodejsFunction;
 	sagaHandler: aws_lambda_nodejs.NodejsFunction;
 	pageHandler: aws_lambda_nodejs.NodejsFunction;
@@ -37,7 +37,7 @@ interface ApiGatewayStackProps extends StackProps {
 	wsRecordName: string;
 }
 
-export class ApiGatewayStack extends Stack {
+export class ApiGatewayStack extends NestedStack {
 	httpApi: HttpApi;
 	websocketApi: WebSocketApi;
 	realtimeHandler: aws_lambda_nodejs.NodejsFunction;

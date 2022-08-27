@@ -1,7 +1,7 @@
-import { RemovalPolicy, Stack, StackProps, aws_dynamodb } from 'aws-cdk-lib';
+import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-export class DynamoStack extends Stack {
+export class DynamoStack extends NestedStack {
 	table: aws_dynamodb.Table;
 
 	constructor(scope: Construct, id: string, props: StackProps) {

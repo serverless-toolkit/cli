@@ -1,5 +1,5 @@
 import { AwsCdkExec } from 'aws-cdk-exec';
-import { realpathSync } from 'fs';
+import { existsSync, realpathSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 
@@ -14,14 +14,22 @@ export async function bootstrap(argv) {
 	});
 	spinner.start();
 
-	const cdkApp = new AwsCdkExec({
-		appCommand: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/app.js')
-	});
+	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
+	const appCommand = existsSync(customDeployFile)
+		? customDeployFile
+		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
+
+	const cdkApp = new AwsCdkExec({ appCommand });
 	cdkApp.cdkLocation =
 		join(realpathSync(__filename), '..', '..', '..', 'node_modules', '.bin') + '/';
 
 	const deploy = await cdkApp.deploy('"*"');
 
-	if (deploy.stderr) console.error(deploy.stderr);
+	if (deploy.stderr) {
+		console.error(deploy.stderr);
+		process.exit(1);
+	}
+
 	console.log(deploy.stdout);
+	process.exit(0);
 }

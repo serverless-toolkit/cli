@@ -3,8 +3,8 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	Stack,
-	StackProps,
+	NestedStack,
+	NestedStackProps,
 	aws_dynamodb,
 	aws_lambda,
 	aws_lambda_nodejs,
@@ -12,11 +12,11 @@ import {
 	aws_iam
 } from 'aws-cdk-lib';
 
-interface PageLambdaStackProps extends StackProps {
+interface PageLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
 }
-export class PageLambdaStack extends Stack {
+export class PageLambdaStack extends NestedStack {
 	pageHandler: aws_lambda_nodejs.NodejsFunction;
 
 	constructor(scope: Construct, id: string, props: PageLambdaStackProps) {

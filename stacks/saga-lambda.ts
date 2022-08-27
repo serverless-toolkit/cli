@@ -2,8 +2,8 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	Stack,
-	StackProps,
+	NestedStack,
+	NestedStackProps,
 	aws_dynamodb,
 	aws_s3,
 	aws_lambda,
@@ -12,11 +12,11 @@ import {
 } from 'aws-cdk-lib';
 import { realpathSync } from 'fs';
 
-interface SagaLambdaStackProps extends StackProps {
+interface SagaLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
 }
-export class SagaLambdaStack extends Stack {
+export class SagaLambdaStack extends NestedStack {
 	sagaHandler: aws_lambda_nodejs.NodejsFunction;
 
 	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {

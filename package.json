@@ -25,6 +25,8 @@
 	"bin": {
 		"stk": ".build/cli/index.js"
 	},
+	"main": ".build/stacks/index.js",
+	"types": ".build/stacks/index.d.ts",
 	"scripts": {
 		"test": "playwright test",
 		"build": "tsc",

@@ -3,8 +3,8 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	Stack,
-	StackProps,
+	NestedStack,
+	NestedStackProps,
 	aws_dynamodb,
 	aws_lambda,
 	aws_lambda_nodejs,
@@ -12,11 +12,11 @@ import {
 	aws_iam
 } from 'aws-cdk-lib';
 
-interface WorkerLambdaStackProps extends StackProps {
+interface WorkerLambdaStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
 	codeBucket: aws_s3.Bucket;
 }
-export class WorkerLambdaStack extends Stack {
+export class WorkerLambdaStack extends NestedStack {
 	workerHandler: aws_lambda_nodejs.NodejsFunction;
 	workerHandlerUrl: aws_lambda.FunctionUrl;
 

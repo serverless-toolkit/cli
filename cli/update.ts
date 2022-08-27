@@ -6,5 +6,11 @@ export async function update(argv) {
 
 	console.log('Updating files ...');
 
-	await updateCode(s3);
+	try {
+		await updateCode(s3);
+		process.exit(0);
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	}
 }

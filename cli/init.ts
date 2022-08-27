@@ -2,6 +2,7 @@ const npm = require('npm-programmatic');
 const { Input, Confirm } = require('enquirer');
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { Spinner } from 'cli-spinner';
 
 export async function init(argv) {
 	const projectName = await new Input({
@@ -18,15 +19,111 @@ export async function init(argv) {
 		isRoute53Domain &&
 		(await new Input({
 			message: `Enter your Route53 domain name:`,
-			name: 'projectName'
+			name: 'domainName'
 		}).run());
 
 	const isGitHubActions = await new Confirm({
 		message: `Do you wanna use GitHub actions for deployments?`,
 		name: 'isGitHubActions'
 	}).run();
+	const gitBranchName =
+		isGitHubActions &&
+		(await new Input({
+			message: `Enter your Git branch name:`,
+			name: 'gitBranchName'
+		}).run());
+	const awsAccount =
+		isGitHubActions &&
+		(await new Input({
+			message: `Enter your AWS account number:`,
+			name: 'awsAccount'
+		}).run());
+	const awsRegion =
+		isGitHubActions &&
+		(await new Input({
+			message: `Enter your AWS region:`,
+			name: 'awsRegion',
+			default: 'eu-central-1'
+		}).run());
 
 	if (!projectName) return;
+
+	const spinner = new Spinner({
+		text: `%s initializing your project ${projectName}`,
+		stream: process.stdout,
+		onTick: function (msg: any) {
+			this.clearLine(this.stream);
+			this.stream.write(msg);
+		}
+	});
+	spinner.start();
+
+	if (isGitHubActions) {
+		mkdirSync(join(process.cwd(), projectName, '.github/workflows'), { recursive: true });
+		writeFileSync(
+			join(process.cwd(), projectName, '.github/workflows/deploy.yml'),
+			`
+name: STK-Examples-Deployment
+
+on:
+	push:
+	branches: [${gitBranchName}]
+
+env:
+	AWS_REGION: "${awsRegion}"
+	AWS_ACCOUNT: "${awsAccount}"
+
+permissions:
+	id-token: write
+	contents: read
+jobs:
+	deployment:
+	runs-on: ubuntu-latest
+
+	steps:
+		- name: Git clone the repository
+		uses: actions/checkout@v3
+		- uses: actions/setup-node@v3
+		with:
+			node-version: 18
+			cache: "npm"
+		- name: Get current STK package version
+		id: get-stk-pkg-version
+		run: |
+			echo "::set-output name=version::$(npm view @serverless-toolkit/cli version)"
+		shell: bash          
+		- name: Cache STK already bootstrapped
+		uses: actions/cache@v3
+		id: cache
+		with:        
+			path: .
+			key: \${{ steps.get-stk-pkg-version.outputs.version }}            
+		- name: Install yarn dependencies
+		if: steps.cache.outputs.cache-hit != 'true'
+		run: |
+			yarn install
+		- name: Install STK
+		run: |
+			npm install -g @serverless-toolkit/cli          
+		- name: AWS configure credentials
+		uses: aws-actions/configure-aws-credentials@v1
+		with:
+			role-to-assume: arn:aws:iam::\${{ env.AWS_ACCOUNT }}:role/GitHubActionRole
+			role-session-name: stk-examples-deployment
+			aws-region: \${{ env.AWS_REGION }}     
+		- name: STK bootstrap
+		if: steps.cache.outputs.cache-hit != 'true'
+		run: |
+			stk bootstrap
+		- name: STK deploy
+		run: |
+			stk update
+		- name: STK test
+		run: |
+			stk test          		
+		`
+		);
+	}
 
 	mkdirSync(join(process.cwd(), projectName, 'pages'), { recursive: true });
 	mkdirSync(join(process.cwd(), projectName, 'sagas'), { recursive: true });
@@ -98,15 +195,19 @@ test.describe('Workers tests', () => {
 	writeFileSync(
 		join(process.cwd(), projectName, '.gitignore'),
 		`.DS_Store
-		node_modules
-		cdk.out
-		cdk.context.json
-		cdk.outputs.json		
-		`
+node_modules
+cdk.out
+cdk.context.json
+cdk.outputs.json		
+`
 	);
-	await npm.install(['@playwright/test@1.23.4'], {
+	await npm.install(['@playwright/test', 'playwright', 'odottaa'], {
 		cwd: join(process.cwd(), projectName),
-		save: false
+		saveDev: true
+	});
+	await npm.install(['aws-sdk'], {
+		cwd: join(process.cwd(), projectName),
+		save: true
 	});
 
 	console.log(`
@@ -115,4 +216,6 @@ Project ${projectName} initiated. Change to folder ${projectName} and enter
 stk bootstrap
 
 to prepare the development in AWS.`);
+
+	process.exit(0);
 }

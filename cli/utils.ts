@@ -10,20 +10,26 @@ import * as AWS from 'aws-sdk';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import WsClient from 'ws-reconnect';
 
-export function runTests() {
-	let content = '';
-	const pw = childProcess.spawn(
-		join(realpathSync(__filename), '..', '..', '..', 'node_modules', 'playwright', 'cli.js'),
-		['test', '--reporter', 'json']
-	);
+export async function runTests() {
+	return new Promise((resolve, reject) => {
+		let content = '';
+		const pw = childProcess.spawn(
+			join(realpathSync(__filename), '..', '..', '..', 'node_modules', 'playwright', 'cli.js'),
+			['test', '--reporter', 'json']
+		);
 
-	pw.stdout.on('data', (data) => {
-		content += data.toString();
-	});
-	pw.on('exit', () => {
-		try {
-			testReport(JSON.parse(content));
-		} catch {}
+		pw.stdout.on('data', (data) => {
+			content += data.toString();
+		});
+		pw.on('exit', () => {
+			try {
+				const testResult = JSON.parse(content);
+				testReport(testResult);
+				resolve(testResult);
+			} catch (err) {
+				reject(err);
+			}
+		});
 	});
 }
 
@@ -31,7 +37,7 @@ export async function compile(path: string, s3: AWS.S3) {
 	const pkg = await import(join(process.cwd(), 'package.json'));
 	const pkgName = pkg.name.replace('@', '').replace('/', '-');
 	const outDir = join(process.cwd(), '.build');
-	
+
 	console.log(`Compile   : ${path}`);
 	const buildResult = await esbuild.build({
 		entryPoints: [path],
