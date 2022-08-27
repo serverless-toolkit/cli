@@ -15,10 +15,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { HttpApi, WebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 
-const env = {
-	...process.env,
-	...config({ path: join(process.cwd(), '.env') }).parsed
-};
+const env = config({ path: join(process.cwd(), '.env') }).parsed;
 
 interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;

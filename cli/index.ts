@@ -12,10 +12,7 @@ import { init } from './init';
 import { update } from './update';
 import { logs } from './logs';
 
-const env = {
-	...process.env,
-	...config({ path: join(process.cwd(), '.env') }).parsed
-};
+const env = config({ path: join(process.cwd(), '.env') }).parsed;
 
 (async () => {
 	const argv = await yargs(hideBin(process.argv))

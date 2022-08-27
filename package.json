@@ -69,6 +69,7 @@
 		"svelte": "3.49.0",
 		"svelte-preprocess": "4.10.7",
 		"ws-reconnect": "1.0.7",
-		"yargs": "17.5.1"
+		"yargs": "17.5.1",
+		"update-dotenv": "1.1.1"
 	}
 }

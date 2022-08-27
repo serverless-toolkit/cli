@@ -1,8 +1,9 @@
 import { AwsCdkExec } from 'aws-cdk-exec';
-import { existsSync, realpathSync } from 'fs';
+import { existsSync, readFileSync, realpathSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
+import updateDotenv from 'update-dotenv';
 
 export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const spinner = new Spinner({
@@ -32,6 +33,26 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		console.error(deploy.stderr);
 		process.exit(1);
 	}
+
+	try {
+		const rawData = readFileSync(join(__dirname, 'cdk.out', 'cdk-env-vars.json')).toString();
+		const data = JSON.parse(rawData);
+		const out = Object.keys(data).reduce(
+			(p, n) => ({
+				...p,
+				...Object.keys(data[n])
+					.filter((x: string) => !x.includes('ExportsOutput'))
+					.reduce((p: any, x: string) => {
+						p[x.toUpperCase()] = data[n][x];
+						return p;
+					}, {})
+			}),
+			{}
+		);
+
+		updateDotenv({ ...env, ...out });
+		unlinkSync(join(__dirname, 'cdk.out', 'cdk-env-vars.json'));
+	} catch {}
 
 	console.log(deploy.stdout);
 	process.exit(0);
