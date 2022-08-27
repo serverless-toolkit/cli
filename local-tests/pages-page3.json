@@ -1,8 +1,0 @@
-{
-	"rawPath": "/page3",
-	"rawQueryString": "a=1&b=2",
-	"queryStringParameters": {
-		"a": "1",
-		"b": "2"
-	}
-}

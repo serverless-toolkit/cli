@@ -1,7 +1,0 @@
-{
-	"event": {
-		"id": "9033d080-faa7-11ec-b35e-57b7521c2504",
-		"object": "Counter",
-		"command": "schedule"		
-	}
-}
