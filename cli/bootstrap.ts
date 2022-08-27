@@ -16,7 +16,7 @@ export async function bootstrap(argv) {
 
 	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
 	const appCommand = existsSync(customDeployFile)
-		? customDeployFile
+		? `node ${customDeployFile}`
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
 	const cdkApp = new AwsCdkExec({ appCommand });
