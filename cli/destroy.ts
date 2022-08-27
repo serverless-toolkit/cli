@@ -3,8 +3,9 @@ import { AwsCdkExec } from 'aws-cdk-exec';
 import { existsSync, realpathSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
+import { ArgumentsCamelCase } from 'yargs';
 
-export async function destroy(argv) {
+export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const isDestroy = await new Confirm({
 		message: `Do you really want to destroy your deployment?`,
 		name: 'isDestroy'

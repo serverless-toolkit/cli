@@ -2,8 +2,9 @@ import { AwsCdkExec } from 'aws-cdk-exec';
 import { existsSync, realpathSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
+import { ArgumentsCamelCase } from 'yargs';
 
-export async function bootstrap(argv) {
+export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const spinner = new Spinner({
 		text: '%s bootstrapping AWS serverless runtime',
 		stream: process.stdout,

@@ -2,12 +2,13 @@ import * as chokidar from 'chokidar';
 import * as AWS from 'aws-sdk';
 import { runTests, compile, watchLogs, updateCode } from './utils';
 import { join } from 'path';
+import { ArgumentsCamelCase } from 'yargs';
 
-export async function dev(argv) {
+export async function dev(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const s3 = new AWS.S3();
 	const pkg = await import(join(process.cwd(), 'package.json'));
 	const pkgName = pkg.name.replace('@', '').replace('/', '-');
-	
+
 	console.log('Watching ...');
 
 	await watchLogs();

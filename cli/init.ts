@@ -3,8 +3,9 @@ const { Input, Confirm } = require('enquirer');
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
+import { ArgumentsCamelCase } from 'yargs';
 
-export async function init(argv) {
+export async function init(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const projectName = await new Input({
 		message: `Enter your project name:`,
 		name: 'projectName'
@@ -130,6 +131,13 @@ jobs:
 	mkdirSync(join(process.cwd(), projectName, 'sagas'), { recursive: true });
 	mkdirSync(join(process.cwd(), projectName, 'workers'), { recursive: true });
 	mkdirSync(join(process.cwd(), projectName, 'tests'), { recursive: true });
+	writeFileSync(
+		join(process.cwd(), projectName, '.env'),
+		`FQDN=${projectName}.${domainName}
+PROJECTNAME=${projectName}
+DOMAINNAME=${domainName}
+`
+	);
 	writeFileSync(
 		join(process.cwd(), projectName, 'package.json'),
 		JSON.stringify(

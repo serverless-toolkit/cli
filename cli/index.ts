@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs';
+import { join } from 'path';
+import { config } from 'dotenv';
 import pkg from '../package.json';
 import { test } from './test';
 import { bootstrap } from './bootstrap';
@@ -9,6 +11,11 @@ import { destroy } from './destroy';
 import { init } from './init';
 import { update } from './update';
 import { logs } from './logs';
+
+const env = {
+	...process.env,
+	...config({ path: join(process.cwd(), '.env') }).parsed
+};
 
 (async () => {
 	const argv = await yargs(hideBin(process.argv))
@@ -26,7 +33,7 @@ import { logs } from './logs';
 			'Start development.',
 			(yargs) => yargs.option('name', { type: 'string', default: false, alias: 'n', desc: '...' }),
 			async (argv) => {
-				await dev(argv);
+				await dev(argv, env);
 			}
 		)
 		.command(
@@ -34,7 +41,7 @@ import { logs } from './logs';
 			'Start local test execution.',
 			() => {},
 			async (argv) => {
-				await test(argv);
+				await test(argv, env);
 			}
 		)
 		.command(
@@ -42,7 +49,7 @@ import { logs } from './logs';
 			'Watch logs.',
 			() => {},
 			async (argv) => {
-				await logs(argv);
+				await logs(argv, env);
 			}
 		)
 		.command(
@@ -50,7 +57,7 @@ import { logs } from './logs';
 			'Update code files.',
 			() => {},
 			async (argv) => {
-				await update(argv);
+				await update(argv, env);
 			}
 		)
 		.command(
@@ -58,7 +65,7 @@ import { logs } from './logs';
 			'Prepare a local development environment.',
 			() => {},
 			async (argv) => {
-				await init(argv);
+				await init(argv, env);
 			}
 		)
 		.command(
@@ -66,7 +73,7 @@ import { logs } from './logs';
 			'Bootstrap the runtime environment in AWS.',
 			(yargs) => yargs.option('now', { type: 'boolean', default: false, alias: 'd', desc: '...' }),
 			async (argv) => {
-				await bootstrap(argv);
+				await bootstrap(argv, env);
 			}
 		)
 		.command(
@@ -74,7 +81,7 @@ import { logs } from './logs';
 			'Destroy the runtime environment in AWS.',
 			() => {},
 			async (argv) => {
-				await destroy(argv);
+				await destroy(argv, env);
 			}
 		)
 		.parseAsync();

@@ -7,10 +7,6 @@ import { ServerlessToolkitStack } from './index';
 	const environment = config({ path: join(process.cwd(), '.env') }).parsed;
 	const pkg = await import(join(process.cwd(), 'package.json'));
 	const projectName = pkg.name.replace('@', '').replace('/', '-');
-	const env = {
-		account: process.env.CDK_DEFAULT_ACCOUNT,
-		region: process.env.CDK_DEFAULT_REGION
-	};
 
 	const app = new App();
 	Tags.of(app).add('stk-name', projectName);
@@ -22,7 +18,10 @@ import { ServerlessToolkitStack } from './index';
 	new ServerlessToolkitStack(app, `${projectName}-serverless-toolkit-stack`, {
 		pkg,
 		projectName,
-		env,
+		env: {
+			account: process.env.CDK_DEFAULT_ACCOUNT,
+			region: process.env.CDK_DEFAULT_REGION
+		},
 		environment
 	});
 })();

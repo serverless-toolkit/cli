@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+import { join } from 'path';
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { DynamoStack } from './dynamodb';
 import { ApiGatewayStack } from './api-gateway';
@@ -12,6 +14,11 @@ import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { HttpApi, WebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
+
+const env = {
+	...process.env,
+	...config({ path: join(process.cwd(), '.env') }).parsed
+};
 
 interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
@@ -47,7 +54,7 @@ export class ServerlessToolkitStack extends Stack {
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
 			codeBucket,
-			environment
+			environment: { ...env, ...environment }
 		});
 		this.sagaHandler = sagaHandler;
 		new SchedulerLambdaStack(this, `scheduler-stack`, {
@@ -58,13 +65,13 @@ export class ServerlessToolkitStack extends Stack {
 		const { pageHandler } = new PageLambdaStack(this, `page-stack`, {
 			table,
 			codeBucket,
-			environment
+			environment: { ...env, ...environment }
 		});
 		this.pageHandler = pageHandler;
 		const { workerHandler } = new WorkerLambdaStack(this, `worker-stack`, {
 			table,
 			codeBucket,
-			environment
+			environment: { ...env, ...environment }
 		});
 		this.workerHandler = workerHandler;
 		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
