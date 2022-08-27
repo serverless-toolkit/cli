@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/cli",
-	"version": "2.5.4",
+	"version": "2.5.5",
 	"description": "Serverless application development runtime that deploys to your AWS account using the AWS-CDK.",
 	"repository": {
 		"type": "git",
@@ -17,7 +17,8 @@
 		"worker",
 		"saga",
 		"markdown",
-		"svelte"
+		"svelte",
+		"serverless"
 	],
 	"engines": {
 		"node": ">=16.0.0"
