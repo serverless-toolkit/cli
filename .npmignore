@@ -6,10 +6,8 @@ yarn-error.log
 .env
 cdk.context.json
 cdk.outputs.json
-local-tests
 .prettierignore                  
 .prettierrc 
 README.md
-docs/*
 !yarn.lock
 cli/*
