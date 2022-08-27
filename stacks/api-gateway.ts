@@ -177,6 +177,13 @@ export class ApiGatewayStack extends NestedStack {
 		props.sagaHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
 		props.pageHandler.addEnvironment('HTTP_API_URL', this.httpApiUrl);
 		props.pageHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
+
+		new CfnOutput(this, 'HTTPAPIURL', {
+			value: this.httpApiUrl
+		});
+		new CfnOutput(this, 'WSAPIURL', {
+			value: this.wsApiUrl
+		});
 	}
 }
 

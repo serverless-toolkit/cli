@@ -1,4 +1,11 @@
-import { RemovalPolicy, NestedStack, NestedStackProps, aws_dynamodb, aws_s3 } from 'aws-cdk-lib';
+import {
+	RemovalPolicy,
+	NestedStack,
+	NestedStackProps,
+	aws_dynamodb,
+	aws_s3,
+	CfnOutput
+} from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 interface S3BucketStackProps extends NestedStackProps {
@@ -16,6 +23,10 @@ export class S3BucketStack extends NestedStack {
 			removalPolicy: RemovalPolicy.DESTROY,
 			autoDeleteObjects: true,
 			bucketName: `stk-objects-${props.projectName}`
+		});
+
+		new CfnOutput(this, 'TABLENAME', {
+			value: this.codeBucket.bucketName
 		});
 	}
 }

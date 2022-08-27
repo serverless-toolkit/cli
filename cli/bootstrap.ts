@@ -1,9 +1,10 @@
-import { AwsCdkExec } from 'aws-cdk-exec';
-import { existsSync, readFileSync, realpathSync, unlinkSync } from 'fs';
+import { existsSync, realpathSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
-import updateDotenv from 'update-dotenv';
+import * as child_process from 'child_process';
+import { promisify } from 'util';
+const exec = promisify(child_process.exec);
 
 export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const spinner = new Spinner({
@@ -17,43 +18,28 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	spinner.start();
 
 	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
-	const appCommand = existsSync(customDeployFile)
-		? `"node ${customDeployFile}"`
+	const appFilePath = existsSync(customDeployFile)
+		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
-	const cdkApp = new AwsCdkExec({ appCommand });
-	cdkApp.cdkLocation =
-		join(realpathSync(__filename), '..', '..', '..', 'node_modules', '.bin') + '/';
-
-	const deploy = await cdkApp.deploy(
-		`"*" --outputsFile ${join(__dirname, 'cdk.out', 'cdk-env-vars.json')}`
+	const deploy = await exec(
+		`${join(
+			realpathSync(__filename),
+			'..',
+			'..',
+			'..',
+			'node_modules',
+			'.bin'
+		)}/cdk --no-color deploy --require-approval never --outputsFile ${join(
+			process.cwd(),
+			'cdk.out',
+			'cdk-env-vars.json'
+		)} --app ${appFilePath} "*"`
 	);
 
 	if (deploy.stderr) {
 		console.error(deploy.stderr);
-		process.exit(1);
 	}
 
-	try {
-		const rawData = readFileSync(join(__dirname, 'cdk.out', 'cdk-env-vars.json')).toString();
-		const data = JSON.parse(rawData);
-		const out = Object.keys(data).reduce(
-			(p, n) => ({
-				...p,
-				...Object.keys(data[n])
-					.filter((x: string) => !x.includes('ExportsOutput'))
-					.reduce((p: any, x: string) => {
-						p[x.toUpperCase()] = data[n][x];
-						return p;
-					}, {})
-			}),
-			{}
-		);
-
-		updateDotenv({ ...env, ...out });
-		unlinkSync(join(__dirname, 'cdk.out', 'cdk-env-vars.json'));
-	} catch {}
-
-	console.log(deploy.stdout);
-	process.exit(0);
+	return deploy;
 }

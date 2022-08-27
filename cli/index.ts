@@ -11,9 +11,10 @@ import { destroy } from './destroy';
 import { init } from './init';
 import { update } from './update';
 import { logs } from './logs';
+import updateDotenv from 'update-dotenv';
+import { readFileSync, unlinkSync } from 'fs';
 
 const env = config({ path: join(process.cwd(), '.env') }).parsed;
-
 (async () => {
 	const argv = await yargs(hideBin(process.argv))
 		.env('STK')
@@ -70,7 +71,33 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed;
 			'Bootstrap the runtime environment in AWS.',
 			(yargs) => yargs.option('now', { type: 'boolean', default: false, alias: 'd', desc: '...' }),
 			async (argv) => {
-				await bootstrap(argv, env);
+				try {
+					await bootstrap(argv, env);
+
+					const rawData = readFileSync(
+						join(process.cwd(), 'cdk.out', 'cdk-env-vars.json')
+					).toString();
+					const data = JSON.parse(rawData);
+					const out = Object.keys(data).reduce(
+						(p, n) => ({
+							...p,
+							...Object.keys(data[n])
+								.filter((x: string) => !x.includes('ExportsOutput'))
+								.reduce((p: any, x: string) => {
+									p[x.toUpperCase()] = data[n][x];
+									return p;
+								}, {})
+						}),
+						{}
+					);
+
+					await updateDotenv({ ...env, ...out });
+					unlinkSync(join(process.cwd(), 'cdk.out', 'cdk-env-vars.json'));
+					process.exit(0);
+				} catch (err) {
+					console.error(err);
+					process.exit(1);
+				}
 			}
 		)
 		.command(
@@ -79,6 +106,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed;
 			() => {},
 			async (argv) => {
 				await destroy(argv, env);
+				process.exit(0);
 			}
 		)
 		.parseAsync();

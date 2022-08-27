@@ -209,7 +209,8 @@ test.describe('Workers tests', () => {
 node_modules
 cdk.out
 cdk.context.json
-cdk.outputs.json		
+cdk.outputs.json
+.env
 `
 	);
 

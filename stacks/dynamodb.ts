@@ -1,4 +1,4 @@
-import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb } from 'aws-cdk-lib';
+import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export class DynamoStack extends NestedStack {
@@ -20,6 +20,10 @@ export class DynamoStack extends NestedStack {
 			},
 			stream: aws_dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 			timeToLiveAttribute: 'expiresAt'
+		});
+
+		new CfnOutput(this, 'TABLENAME', {
+			value: this.table.tableName
 		});
 	}
 }

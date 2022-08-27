@@ -1,9 +1,11 @@
 const { Confirm } = require('enquirer');
-import { AwsCdkExec } from 'aws-cdk-exec';
 import { existsSync, realpathSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
+import * as child_process from 'child_process';
+import { promisify } from 'util';
+const exec = promisify(child_process.exec);
 
 export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const isDestroy = await new Confirm({
@@ -24,21 +26,24 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 	spinner.start();
 
 	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
-	const appCommand = existsSync(customDeployFile)
+	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
-	const cdkApp = new AwsCdkExec({ appCommand });
-	cdkApp.cdkLocation =
-		join(realpathSync(__filename), '..', '..', '..', 'node_modules', '.bin') + '/';
-
-	const destroy = await cdkApp.destroy('"*"');
+	const destroy = await exec(
+		`${join(
+			realpathSync(__filename),
+			'..',
+			'..',
+			'..',
+			'node_modules',
+			'.bin'
+		)}/cdk destroy -f --app ${appFilePath} "*"`
+	);
 
 	if (destroy.stderr) {
 		console.error(destroy.stderr);
-		process.exit(1);
 	}
 
-	console.log(destroy.stdout);
-	process.exit(0);
+	return destroy;
 }

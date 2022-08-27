@@ -52,7 +52,6 @@
 		"@aws-cdk/aws-apigatewayv2-alpha": "2.39.0-alpha.0",
 		"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.39.0-alpha.0",
 		"aws-cdk": "2.39.0",
-		"aws-cdk-exec": "0.0.5",
 		"aws-cdk-lib": "2.39.0",
 		"aws-sdk": "2.1204.0",
 		"chokidar": "3.5.3",

@@ -11,7 +11,6 @@ import { ServerlessToolkitStack } from './index';
 	const app = new App();
 	Tags.of(app).add('stk-name', projectName);
 	Tags.of(app).add('stk-version', pkg.version);
-	Tags.of(app).add('stk-version', pkg.version);
 	Tags.of(app).add('stk-domainName', pkg.stk?.domainName);
 	Tags.of(app).add('stk-activityAt', new Date().toISOString());
 
