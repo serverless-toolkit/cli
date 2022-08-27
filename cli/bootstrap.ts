@@ -24,7 +24,9 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	cdkApp.cdkLocation =
 		join(realpathSync(__filename), '..', '..', '..', 'node_modules', '.bin') + '/';
 
-	const deploy = await cdkApp.deploy('"*"');
+	const deploy = await cdkApp.deploy(
+		`"*" --outputsFile ${join(__dirname, 'cdk.out', 'cdk-env-vars.json')}`
+	);
 
 	if (deploy.stderr) {
 		console.error(deploy.stderr);
