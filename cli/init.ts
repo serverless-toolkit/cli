@@ -201,12 +201,15 @@ cdk.context.json
 cdk.outputs.json		
 `
 	);
-	await npm.install(['@playwright/test', 'playwright', 'odottaa'], {
-		cwd: join(process.cwd(), projectName),
-		saveDev: true
-	});
+
 	await npm.install(['aws-sdk'], {
 		cwd: join(process.cwd(), projectName),
+		save: true
+	});
+
+	await npm.install(['@playwright/test', 'playwright', 'odottaa'], {
+		cwd: join(process.cwd(), projectName),
+		saveDev: true,
 		save: true
 	});
 
