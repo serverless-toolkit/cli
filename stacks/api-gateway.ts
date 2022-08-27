@@ -43,6 +43,7 @@ export class ApiGatewayStack extends NestedStack {
 	realtimeHandler: aws_lambda_nodejs.NodejsFunction;
 	httpApiUrl: string;
 	wsApiUrl: string;
+	zone: aws_route53.IHostedZone;
 
 	constructor(scope: Construct, id: string, props: ApiGatewayStackProps) {
 		super(scope, id, props);
@@ -50,13 +51,13 @@ export class ApiGatewayStack extends NestedStack {
 		this.httpApiUrl = `${props.httpRecordName}.${props.domainName}`;
 		this.wsApiUrl = `${props.wsRecordName}.${props.domainName}`;
 
-		const zone = aws_route53.HostedZone.fromLookup(this, 'http-api-hosted-zone', {
+		this.zone = aws_route53.HostedZone.fromLookup(this, 'http-api-hosted-zone', {
 			domainName: props.domainName
 		});
 
 		const httpCertificate = new aws_certificatemanager.Certificate(this, 'http-api-certificate', {
 			domainName: this.httpApiUrl,
-			validation: aws_certificatemanager.CertificateValidation.fromDns(zone)
+			validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone)
 		});
 		const httpCustomDomain = new DomainName(this, 'http-api-domain', {
 			certificate: httpCertificate,
@@ -114,7 +115,7 @@ export class ApiGatewayStack extends NestedStack {
 
 		new aws_route53.ARecord(this, 'http-api-alias-record', {
 			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(httpCustomDomain)),
-			zone,
+			zone: this.zone,
 			recordName: props.httpRecordName
 		});
 
@@ -149,7 +150,7 @@ export class ApiGatewayStack extends NestedStack {
 			'webSocket-api-certificate',
 			{
 				domainName: this.wsApiUrl,
-				validation: aws_certificatemanager.CertificateValidation.fromDns(zone)
+				validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone)
 			}
 		);
 		const wsCustomDomain = new DomainName(this, 'webSocket-api-domain', {
@@ -165,7 +166,7 @@ export class ApiGatewayStack extends NestedStack {
 		});
 
 		new aws_route53.ARecord(this, 'webSocket-api-alias-record', {
-			zone,
+			zone: this.zone,
 			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(wsCustomDomain)),
 			recordName: props.wsRecordName
 		});

@@ -7,6 +7,11 @@ import { SchedulerLambdaStack } from './scheduler-lambda';
 import { PageLambdaStack } from './page-lambda';
 import { S3BucketStack } from './s3-bucket';
 import { Construct } from 'constructs';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { HttpApi, WebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 
 interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
@@ -19,36 +24,50 @@ interface ServerlessToolkitStackProps extends StackProps {
 }
 
 export class ServerlessToolkitStack extends Stack {
+	public table: Table;
+	public codeBucket: Bucket;
+	public sagaHandler: NodejsFunction;
+	public pageHandler: NodejsFunction;
+	public workerHandler: NodejsFunction;
+	public httpApi: HttpApi;
+	public websocketApi: WebSocketApi;
+	public zone: IHostedZone;
+
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
 		const { pkg, projectName, environment } = props;
 
 		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
+		this.table = table;
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
 			projectName
 		});
+		this.codeBucket = codeBucket;
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
 			codeBucket,
 			environment
 		});
+		this.sagaHandler = sagaHandler;
 		new SchedulerLambdaStack(this, `scheduler-stack`, {
 			table,
 			codeBucket,
-			sagaHandler			
+			sagaHandler
 		});
 		const { pageHandler } = new PageLambdaStack(this, `page-stack`, {
 			table,
 			codeBucket,
 			environment
 		});
+		this.pageHandler = pageHandler;
 		const { workerHandler } = new WorkerLambdaStack(this, `worker-stack`, {
 			table,
 			codeBucket,
 			environment
 		});
-		new ApiGatewayStack(this, `apigateway-stack`, {
+		this.workerHandler = workerHandler;
+		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
 			domainName: pkg.stk?.domainName,
 			httpRecordName: projectName,
 			wsRecordName: `${projectName}-logs`,
@@ -57,5 +76,8 @@ export class ServerlessToolkitStack extends Stack {
 			workerHandler,
 			pageHandler
 		});
+		this.httpApi = httpApi;
+		this.websocketApi = websocketApi;
+		this.zone = zone;
 	}
 }
