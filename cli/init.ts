@@ -48,6 +48,7 @@ export async function init(argv) {
 
 	if (!projectName) return;
 
+	console.log('\r\n');
 	const spinner = new Spinner({
 		text: `%s initializing your project ${projectName}`,
 		stream: process.stdout,
@@ -136,7 +137,9 @@ jobs:
 				private: true,
 				name: projectName,
 				version: '1.0.0',
+				scripts: {},
 				dependencies: {},
+				devDependencies: {},
 				stk: {
 					domainName
 				}

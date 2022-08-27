@@ -7,6 +7,7 @@ export async function dev(argv) {
 	const s3 = new AWS.S3();
 	const pkg = await import(join(process.cwd(), 'package.json'));
 	const pkgName = pkg.name.replace('@', '').replace('/', '-');
+	
 	console.log('Watching ...');
 
 	await watchLogs();
@@ -27,7 +28,7 @@ export async function dev(argv) {
 					if (!path.includes('.spec.ts')) {
 						await compile(path, s3);
 					}
-					runTests();
+					await runTests();
 					break;
 				case 'unlink':
 					console.log(`Delete    : ${path}`);
