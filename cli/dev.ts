@@ -33,7 +33,7 @@ export async function dev(argv) {
 					console.log(`Delete    : ${path}`);
 					await s3
 						.deleteObject({
-							Bucket: `${pkgName}-stk-objects`,
+							Bucket: `stk-objects-${pkgName}`,
 							Key: path
 						})
 						.promise();

@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 
 interface S3BucketStackProps extends NestedStackProps {
 	table: aws_dynamodb.Table;
+	projectName: string;
 }
 
 export class S3BucketStack extends NestedStack {
@@ -13,7 +14,8 @@ export class S3BucketStack extends NestedStack {
 
 		this.codeBucket = new aws_s3.Bucket(this, 'stk-objects-bucket', {
 			removalPolicy: RemovalPolicy.DESTROY,
-			autoDeleteObjects: true
+			autoDeleteObjects: true,
+			bucketName: `stk-objects-${props.projectName}`
 		});
 	}
 }

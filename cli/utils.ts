@@ -89,7 +89,7 @@ export async function compile(path: string, s3: AWS.S3) {
 		console.log(`Upload    : ${file.path}`);
 		await s3
 			.putObject({
-				Bucket: `${pkgName}-stk-objects`,
+				Bucket: `stk-objects-${pkgName}`,
 				Key: file.path,
 				Body: file.contents
 			})

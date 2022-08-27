@@ -25,7 +25,8 @@ export class ServerlessToolkitStack extends Stack {
 
 		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
-			table
+			table,
+			projectName
 		});
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
