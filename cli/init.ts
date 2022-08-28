@@ -228,6 +228,4 @@ Project ${projectName} initiated. Change to folder ${projectName} and enter
 stk bootstrap
 
 to prepare the development in AWS.`);
-
-	process.exit(0);
 }

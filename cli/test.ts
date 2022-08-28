@@ -6,9 +6,7 @@ export async function test(argv: ArgumentsCamelCase, env: { [key: string]: strin
 
 	try {
 		await runTests();
-		process.exit(0);
 	} catch (err) {
 		console.error(err);
-		process.exit(1);
 	}
 }

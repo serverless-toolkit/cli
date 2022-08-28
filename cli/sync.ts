@@ -15,6 +15,5 @@ export async function sync(
 		await syncCode(projectName, s3);
 	} catch (err) {
 		console.error(err);
-		process.exit(1);
 	}
 }

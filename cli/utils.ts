@@ -1,6 +1,5 @@
 import * as chokidar from 'chokidar';
 import { join } from 'path';
-import { realpathSync } from 'fs';
 import * as esbuild from 'esbuild';
 import sveltePlugin from 'esbuild-svelte';
 import sveltePreprocess from 'svelte-preprocess';

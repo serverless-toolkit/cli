@@ -98,10 +98,9 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 
 					await updateDotenv({ ...env, ...out });
 					unlinkSync(join(process.cwd(), 'cdk.out', 'cdk-env-vars.json'));
-					process.exit(0);
 				} catch (err) {
 					console.error(err);
-					process.exit(1);
+					
 				}
 			}
 		)
@@ -111,7 +110,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 			() => {},
 			async (argv) => {
 				await destroy(argv, env);
-				process.exit(0);
+				
 			}
 		)
 		.parseAsync();

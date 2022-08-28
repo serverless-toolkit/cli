@@ -17,11 +17,11 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	});
 	spinner.start();
 
-	const customDeployFile = join(realpathSync(process.cwd()), 'stacks', 'deploy.js');
+	const customDeployFile = join(process.cwd(), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
-		
+
 	const globalPath = join(
 		realpathSync(__filename),
 		'..',
@@ -31,9 +31,6 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		'.bin',
 		'cdk'
 	);
-	const appCommand = existsSync(globalPath)
-		? globalPath
-		: join(realpathSync(__filename), '..', '..', '..', '..', '..', 'aws-cdk', 'bin', 'cdk');
 
 	const deploy = await exec(
 		`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
@@ -47,5 +44,6 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		console.error(deploy.stderr);
 	}
 
+	console.log(deploy.stdout);
 	return deploy;
 }

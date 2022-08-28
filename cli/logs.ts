@@ -11,9 +11,7 @@ export async function logs(
 
 	try {
 		await watchLogs(projectName, domainName);
-		process.exit(0);
 	} catch (err) {
 		console.error(err);
-		process.exit(1);
 	}
 }

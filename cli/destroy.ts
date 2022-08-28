@@ -25,18 +25,17 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 	});
 	spinner.start();
 
-	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
+	const customDeployFile = join(process.cwd(), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
-	const destroy = await exec(
-		`npx cdk destroy -f --app ${appFilePath} "*"`
-	);
+	const destroy = await exec(`npx cdk destroy -f --app ${appFilePath} "*"`);
 
 	if (destroy.stderr) {
 		console.error(destroy.stderr);
 	}
-
+	
+	console.log(destroy.stdout);
 	return destroy;
 }
