@@ -100,15 +100,11 @@ jobs:
 		uses: actions/cache@v3
 		id: cache
 		with:        
-			path: .
+			path: /tmp/stk
 			key: \${{ steps.get-stk-pkg-version.outputs.version }}            
 		- name: Install yarn dependencies
-		if: steps.cache.outputs.cache-hit != 'true'
 		run: |
-			yarn install
-		- name: Install STK
-		run: |
-			npm install -g @serverless-toolkit/cli          
+			yarn install      
 		- name: AWS configure credentials
 		uses: aws-actions/configure-aws-credentials@v1
 		with:
@@ -151,7 +147,9 @@ DOMAINNAME=${domainName}
 					sync: 'stk sync',
 					bootstrap: 'stk bootstrap',
 					destroy: 'stk destroy',
-					test: 'stk test'
+					test: 'stk test',
+					dev: 'stk dev',
+					logs: 'stk logs'
 				},
 				dependencies: { 'aws-sdk': 'latest' },
 				devDependencies: {
