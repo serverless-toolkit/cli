@@ -76,6 +76,8 @@ on:
 env:
 	AWS_REGION: "${awsRegion}"
 	AWS_ACCOUNT: "${awsAccount}"
+	PROJECTNAME: "${projectName}"
+	DOMAINNAME: "${domainName}"
 
 permissions:
 	id-token: write
