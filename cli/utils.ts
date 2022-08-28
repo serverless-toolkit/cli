@@ -12,14 +12,19 @@ import { promisify } from 'util';
 const exec = promisify(child_process.exec);
 
 export async function runTests(env: { [key: string]: any }): Promise<void> {
-	const { stdout } = await exec(`npx playwright test --reporter json`, {
-		env: {
-			...process.env,
-			...env
-		},
-		maxBuffer: 1024 * 1024 * 150
-	});
-	testReport(JSON.parse(stdout));
+	try {
+		const { stdout, stderr } = await exec(`npx playwright test --reporter json`, {
+			env: {
+				...process.env,
+				...env
+			},
+
+			maxBuffer: 1024 * 1024 * 150
+		});
+		testReport(JSON.parse(stdout));
+	} catch (err) {
+		testReport(JSON.parse(err.stdout));
+	}
 }
 
 export async function compile(path: string, projectName: string, s3: AWS.S3) {

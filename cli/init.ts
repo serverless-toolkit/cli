@@ -169,11 +169,14 @@ DOMAINNAME=${domainName}
 title: Example Page
 ---
 
+<svelte:head>
+	<title>{title}</title>
+</svelte:head>
+
 <h1>{title}</h1>
 
 - [Worker 1](workers/worker1)
 - [Saga 1](sagas/Example)
-
 `
 	);
 	writeFileSync(
