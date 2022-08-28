@@ -154,7 +154,9 @@ DOMAINNAME=${domainName}
 				devDependencies: {
 					'@serverless-toolkit/cli': 'latest',
 					'@playwright/test': 'latest',
-					odottaa: 'latest'
+					odottaa: 'latest',
+					playwright: 'latest',
+					'aws-cdk': 'latest'
 				}
 			},
 			null,
