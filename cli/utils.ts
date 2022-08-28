@@ -11,8 +11,9 @@ import * as child_process from 'child_process';
 import { promisify } from 'util';
 const exec = promisify(child_process.exec);
 
-export async function runTests(): Promise<void> {
+export async function runTests(env: { [key: string]: any }): Promise<void> {
 	const { stdout } = await exec(`npx playwright test --reporter json`, {
+		env,
 		maxBuffer: 1024 * 1024 * 150
 	});
 	testReport(JSON.parse(stdout));

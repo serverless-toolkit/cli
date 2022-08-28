@@ -5,7 +5,7 @@ export async function test(argv: ArgumentsCamelCase, env: { [key: string]: strin
 	console.log('Testing ...');
 
 	try {
-		await runTests();
+		await runTests(env);
 	} catch (err) {
 		console.error(err);
 	}

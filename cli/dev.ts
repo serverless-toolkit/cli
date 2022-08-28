@@ -31,7 +31,7 @@ export async function dev(
 					if (!path.includes('.spec.ts')) {
 						await compile(path, projectName, s3);
 					}
-					await runTests();
+					await runTests(env);
 					break;
 				case 'unlink':
 					console.log(`Delete    : ${path}`);

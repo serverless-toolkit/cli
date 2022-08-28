@@ -199,14 +199,32 @@ title: Example Page
 `
 	);
 	writeFileSync(
-		join(process.cwd(), projectName, 'tests/workers.spec.ts'),
+		join(process.cwd(), projectName, 'tests/pages.spec.ts'),
 		`import { test, expect } from '@playwright/test';
 
-test.describe('Workers tests', () => {
-	test('task1 should return JSON containing "Hello World!"', async ({ request }) => {
-		const response = await request.get('https://${projectName}.${domainName}/workers/worker1');
+test.describe("Page tests", () => {
+  test('page index.svx should have title "Example Page"', async ({
+    page,
+  }) => {
+    await page.goto("https://examples.serverless-toolkit.com");
 
-		expect(await response.json()).toEqual({ message: 'Hello World!' });
+    await expect(page).toHaveTitle("Example Page");
+  });
+});
+`
+	);	
+	writeFileSync(
+		join(process.cwd(), projectName, 'tests/workers.spec.ts'),
+		`import { test, expect } from '@playwright/test';
+import playwrightApiMatchers from 'odottaa';
+expect.extend(playwrightApiMatchers);
+
+test.describe('Workers tests', () => {
+	test('task1 should match JSON "{ message: 'Hello World!' }"', async ({ request }) => {
+		const response = await request.get('https://\${process.env.PROJECTNAME}.\${process.env.DOMAINNAME}/workers/worker1');
+
+		await expect(response).toHaveStatusCode(200);
+		await expect(response).toMatchJSON({ message: 'Hello World!' });		
 	});
 });
 `
