@@ -1,0 +1,7 @@
+{
+	"event": {
+		"id": "alarm1",
+		"object": "AlarmCounter",
+		"command": "schedule"
+	}
+}

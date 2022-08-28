@@ -6,7 +6,6 @@ import { NodeVM } from 'vm2';
 export async function handler(request: any): Promise<any> {
 	const s3 = new AWS.S3();
 	let body: any = {};
-	let saga = {};
 
 	try {
 		body = request.body && JSON.parse(Buffer.from(request.body, 'base64').toString());
@@ -21,6 +20,10 @@ export async function handler(request: any): Promise<any> {
 		...request.queryStringParameters
 	};
 
+	//Restore state from DDB
+	const state = await store.get(event?.id);
+	let saga = { state };
+
 	//Init domain object
 	const vm = new NodeVM({
 		console: 'redirect',
@@ -28,17 +31,17 @@ export async function handler(request: any): Promise<any> {
 		sandbox: {
 			process,
 			event,
-			state: await store.get(event?.id),
+			state,
 			context: {
 				store,
 				alarm: {
 					async set(minute: number) {
-						saga['alarm'] = new Date(new Date().getTime() + minute * 60000).getTime();
-						await store.set(saga);
+						saga.state.alarm = new Date(new Date().getTime() + minute * 60000).getTime();
+						await store.set(saga.state);
 					},
 					async clear() {
-						saga['alarm'] = undefined;
-						await store.set(saga);
+						saga.state.alarm = undefined;
+						await store.set(saga.state);
 					}
 				}
 			}
