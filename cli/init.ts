@@ -1,9 +1,11 @@
-const npm = require('npm-programmatic');
 const { Input, Confirm } = require('enquirer');
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
+import child_process from 'child_process';
+import { promisify } from 'util';
+const exec = promisify(child_process.exec);
 
 export async function init(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const projectName = await new Input({
@@ -215,17 +217,15 @@ cdk.outputs.json
 .env
 `
 	);
-
-	await npm.install(['aws-sdk'], {
-		cwd: join(process.cwd(), projectName),
-		save: true
+	await exec('npm i aws-sdk --save-dev --no-package-lock', {
+		cwd: join(process.cwd(), projectName)
 	});
-
-	await npm.install(['@playwright/test', 'playwright', 'odottaa', '@serverless-toolkit/cli', 'esbuild'], {
-		cwd: join(process.cwd(), projectName),
-		saveDev: true,
-		save: true
-	});
+	await exec(
+		'npm i @playwright/test playwright odottaa @serverless-toolkit/cli esbuild --save --no-package-lock',
+		{
+			cwd: join(process.cwd(), projectName)
+		}
+	);
 
 	console.log(`
 Project ${projectName} initiated. Change to folder ${projectName} and enter
