@@ -4,15 +4,18 @@ import { runTests, compile, watchLogs, updateCode } from './utils';
 import { join } from 'path';
 import { ArgumentsCamelCase } from 'yargs';
 
-export async function dev(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
+export async function dev(
+	argv: ArgumentsCamelCase,
+	env: { [key: string]: string },
+	projectName: string,
+	domainName: string
+) {
 	const s3 = new AWS.S3();
-	const pkg = await import(join(process.cwd(), 'package.json'));
-	const pkgName = pkg.name.replace('@', '').replace('/', '-');
 
 	console.log('Watching ...');
 
-	await watchLogs();
-	await updateCode(s3);
+	await watchLogs(projectName, domainName);
+	await updateCode(projectName, s3);
 
 	chokidar
 		.watch(['workers', 'pages', 'sagas', 'tests'], {
@@ -27,7 +30,7 @@ export async function dev(argv: ArgumentsCamelCase, env: { [key: string]: string
 				case 'add':
 				case 'change':
 					if (!path.includes('.spec.ts')) {
-						await compile(path, s3);
+						await compile(path, projectName, s3);
 					}
 					await runTests();
 					break;
@@ -35,7 +38,7 @@ export async function dev(argv: ArgumentsCamelCase, env: { [key: string]: string
 					console.log(`Delete    : ${path}`);
 					await s3
 						.deleteObject({
-							Bucket: `stk-objects-${pkgName}`,
+							Bucket: `stk-objects-${projectName}`,
 							Key: path
 						})
 						.promise();

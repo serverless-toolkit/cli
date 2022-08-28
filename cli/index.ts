@@ -3,7 +3,7 @@ import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs';
 import { join } from 'path';
 import { config } from 'dotenv';
-import pkg from '../package.json';
+import stkPkg from '../package.json';
 import { test } from './test';
 import { bootstrap } from './bootstrap';
 import { dev } from './dev';
@@ -14,11 +14,16 @@ import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
 import { readFileSync, unlinkSync } from 'fs';
 
-const env = config({ path: join(process.cwd(), '.env') }).parsed;
+const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
+
 (async () => {
+	const pkg = await import(join(process.cwd(), 'package.json')).catch(() => ({}));
+	const projectName = env?.PROJECTNAME || pkg?.name?.replace('@', '').replace('/', '-');
+	const domainName = env?.DOMAINNAME || pkg?.stk?.domainName;
+
 	const argv = await yargs(hideBin(process.argv))
 		.env('STK')
-		.version(`v${pkg.version}`)
+		.version(`v${stkPkg.version}`)
 		.alias('v', 'version')
 		.demandCommand(1, '')
 		.recommendCommands()
@@ -31,7 +36,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed;
 			'Start development.',
 			(yargs) => yargs.option('name', { type: 'string', default: false, alias: 'n', desc: '...' }),
 			async (argv) => {
-				await dev(argv, env);
+				await dev(argv, env, projectName, domainName);
 			}
 		)
 		.command(
@@ -47,7 +52,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed;
 			'Watch logs.',
 			() => {},
 			async (argv) => {
-				await logs(argv, env);
+				await logs(argv, projectName, domainName, env);
 			}
 		)
 		.command(
@@ -55,7 +60,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed;
 			'Update code files.',
 			() => {},
 			async (argv) => {
-				await update(argv, env);
+				await update(argv, projectName, env);
 			}
 		)
 		.command(

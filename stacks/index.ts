@@ -15,15 +15,11 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { HttpApi, WebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 
-const env = config({ path: join(process.cwd(), '.env') }).parsed;
+export const env = config({ path: join(process.cwd(), '.env') }).parsed;
 
 interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
-	pkg: {
-		stk: {
-			domainName?: string;
-		};
-	};
+	domainName: string;
 	environment?: { [key: string]: string };
 }
 
@@ -39,7 +35,7 @@ export class ServerlessToolkitStack extends Stack {
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { pkg, projectName, environment } = props;
+		const { environment, projectName, domainName } = props;
 
 		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
 		this.table = table;
@@ -72,7 +68,7 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		this.workerHandler = workerHandler;
 		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
-			domainName: pkg.stk?.domainName,
+			domainName: `${projectName}.${domainName}`,
 			httpRecordName: projectName,
 			wsRecordName: `${projectName}-logs`,
 			table,

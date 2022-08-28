@@ -133,7 +133,7 @@ jobs:
 	mkdirSync(join(process.cwd(), projectName, 'tests'), { recursive: true });
 	writeFileSync(
 		join(process.cwd(), projectName, '.env'),
-		`FQDN=${projectName}.${domainName}
+		`
 PROJECTNAME=${projectName}
 DOMAINNAME=${domainName}
 `
@@ -145,12 +145,14 @@ DOMAINNAME=${domainName}
 				private: true,
 				name: projectName,
 				version: '1.0.0',
-				scripts: {},
+				scripts: {
+					sync: 'stk sync',
+					bootstrap: 'stk bootstrap',
+					destroy: 'stk destroy',
+					test: 'stk test'
+				},
 				dependencies: {},
-				devDependencies: {},
-				stk: {
-					domainName
-				}
+				devDependencies: {}
 			},
 			null,
 			4
@@ -219,7 +221,7 @@ cdk.outputs.json
 		save: true
 	});
 
-	await npm.install(['@playwright/test', 'playwright', 'odottaa'], {
+	await npm.install(['@playwright/test', 'playwright', 'odottaa', '@serverless-toolkit/cli'], {
 		cwd: join(process.cwd(), projectName),
 		saveDev: true,
 		save: true

@@ -33,9 +33,7 @@ export async function runTests() {
 	});
 }
 
-export async function compile(path: string, s3: AWS.S3) {
-	const pkg = await import(join(process.cwd(), 'package.json'));
-	const pkgName = pkg.name.replace('@', '').replace('/', '-');
+export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
 
 	console.log(`Compile   : ${path}`);
@@ -89,7 +87,7 @@ export async function compile(path: string, s3: AWS.S3) {
 		console.log(`Upload    : ${file.path}`);
 		await s3
 			.putObject({
-				Bucket: `stk-objects-${pkgName}`,
+				Bucket: `stk-objects-${projectName}`,
 				Key: file.path,
 				Body: file.contents
 			})
@@ -97,11 +95,8 @@ export async function compile(path: string, s3: AWS.S3) {
 	}
 }
 
-export async function watchLogs() {
-	const pkg = await import(join(process.cwd(), 'package.json'));
-	const pkgName = pkg.name.replace('@', '').replace('/', '-');
-
-	const wsclient = new WsClient(`wss://${pkgName}-logs.${pkg.stk?.domainName}`);
+export async function watchLogs(projectName: string, domainName: string) {
+	const wsclient = new WsClient(`wss://${projectName}-logs.${domainName}`);
 	wsclient.start();
 	wsclient.on('message', function (data) {
 		try {
@@ -111,7 +106,7 @@ export async function watchLogs() {
 	});
 }
 
-export async function updateCode(s3: AWS.S3) {
+export async function updateCode(projectName: string, s3: AWS.S3) {
 	chokidar
 		.watch(['workers', 'pages', 'sagas'], {
 			ignoreInitial: false,
@@ -120,7 +115,7 @@ export async function updateCode(s3: AWS.S3) {
 		})
 		.on('all', async (event, path) => {
 			if (event !== 'add') return;
-			await compile(path, s3);
+			await compile(path, projectName, s3);
 		});
 }
 

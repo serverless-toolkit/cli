@@ -23,14 +23,7 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
 	const deploy = await exec(
-		`${join(
-			realpathSync(__filename),
-			'..',
-			'..',
-			'..',
-			'node_modules',
-			'.bin'
-		)}/cdk --no-color deploy --require-approval never --outputsFile ${join(
+		`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
 			process.cwd(),
 			'cdk.out',
 			'cdk-env-vars.json'
