@@ -37,7 +37,8 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 			process.cwd(),
 			'cdk.out',
 			'cdk-env-vars.json'
-		)} --app ${appFilePath} "*"`
+		)} --app ${appFilePath} "*"`,
+		{ maxBuffer: 1024 * 1024 * 150 }
 	);
 
 	if (deploy.stderr) {

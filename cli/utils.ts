@@ -12,7 +12,9 @@ import { promisify } from 'util';
 const exec = promisify(child_process.exec);
 
 export async function runTests(): Promise<void> {
-	const { stdout } = await exec(`npx playwright test --reporter json`);
+	const { stdout } = await exec(`npx playwright test --reporter json`, {
+		maxBuffer: 1024 * 1024 * 150
+	});
 	testReport(JSON.parse(stdout));
 }
 
