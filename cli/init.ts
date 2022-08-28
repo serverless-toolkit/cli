@@ -217,11 +217,11 @@ cdk.outputs.json
 .env
 `
 	);
-	await exec('npm i aws-sdk --save-dev --no-package-lock', {
+	await exec('npm i --save-dev --no-package-lock aws-sdk ', {
 		cwd: join(process.cwd(), projectName)
 	});
 	await exec(
-		'npm i @playwright/test playwright odottaa @serverless-toolkit/cli esbuild --save --no-package-lock',
+		'npm i --save --no-package-lock @playwright/test playwright odottaa @serverless-toolkit/cli esbuild',
 		{
 			cwd: join(process.cwd(), projectName)
 		}
