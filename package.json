@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/cli",
-	"version": "2.6.1",
+	"version": "2.6.3",
 	"description": "Serverless application development runtime that deploys to your AWS account using the AWS-CDK.",
 	"repository": {
 		"type": "git",
@@ -63,7 +63,7 @@
 		"constructs": "10.1.89",
 		"dotenv": "16.0.1",
 		"enquirer": "2.3.6",
-		"esbuild": "0.14.54",
+		"esbuild": "0.15.5",
 		"esbuild-node-externals": "1.4.1",
 		"esbuild-svelte": "0.7.1",
 		"mdsvex": "0.10.6",
