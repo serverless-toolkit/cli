@@ -1,7 +1,6 @@
 import * as chokidar from 'chokidar';
 import * as AWS from 'aws-sdk';
-import { runTests, compile, watchLogs, updateCode } from './utils';
-import { join } from 'path';
+import { runTests, compile, watchLogs, syncCode } from './utils';
 import { ArgumentsCamelCase } from 'yargs';
 
 export async function dev(
@@ -15,7 +14,7 @@ export async function dev(
 	console.log('Watching ...');
 
 	await watchLogs(projectName, domainName);
-	await updateCode(projectName, s3);
+	await syncCode(projectName, s3);
 
 	chokidar
 		.watch(['workers', 'pages', 'sagas', 'tests'], {

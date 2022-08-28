@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import { ArgumentsCamelCase } from 'yargs';
-import { updateCode } from './utils';
+import { syncCode } from './utils';
 
-export async function update(
+export async function sync(
 	argv: ArgumentsCamelCase,
 	projectName: string,
 	env: { [key: string]: string }
@@ -12,7 +12,7 @@ export async function update(
 	console.log('Updating files ...');
 
 	try {
-		await updateCode(projectName, s3);
+		await syncCode(projectName, s3);
 	} catch (err) {
 		console.error(err);
 		process.exit(1);

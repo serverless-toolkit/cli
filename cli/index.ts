@@ -9,7 +9,7 @@ import { bootstrap } from './bootstrap';
 import { dev } from './dev';
 import { destroy } from './destroy';
 import { init } from './init';
-import { update } from './update';
+import { sync } from './sync';
 import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
 import { readFileSync, unlinkSync } from 'fs';
@@ -56,11 +56,11 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 			}
 		)
 		.command(
-			['update'],
-			'Update code files.',
+			['sync'],
+			'sync code files.',
 			() => {},
 			async (argv) => {
-				await update(argv, projectName, env);
+				await sync(argv, projectName, env);
 			}
 		)
 		.command(

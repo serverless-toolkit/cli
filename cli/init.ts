@@ -121,7 +121,7 @@ jobs:
 			stk bootstrap
 		- name: STK deploy
 		run: |
-			stk update
+			stk sync
 		- name: STK test
 		run: |
 			stk test          		
@@ -153,8 +153,12 @@ DOMAINNAME=${domainName}
 					destroy: 'stk destroy',
 					test: 'stk test'
 				},
-				dependencies: {},
-				devDependencies: {}
+				dependencies: { 'aws-sdk': 'latest' },
+				devDependencies: {
+					'@serverless-toolkit/cli': 'latest',
+					'@playwright/test': 'latest',
+					odottaa: 'latest'
+				}
 			},
 			null,
 			4
@@ -217,15 +221,8 @@ cdk.outputs.json
 .env
 `
 	);
-	await exec('npm i --save-dev --no-package-lock aws-sdk ', {
-		cwd: join(process.cwd(), projectName)
-	});
-	await exec(
-		'npm i --save --no-package-lock @playwright/test playwright odottaa @serverless-toolkit/cli esbuild',
-		{
-			cwd: join(process.cwd(), projectName)
-		}
-	);
+
+	await exec('yarn', { cwd: join(process.cwd(), projectName) });
 
 	console.log(`
 Project ${projectName} initiated. Change to folder ${projectName} and enter

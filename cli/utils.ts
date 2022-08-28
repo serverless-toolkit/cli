@@ -1,5 +1,4 @@
 import * as chokidar from 'chokidar';
-import childProcess from 'child_process';
 import { join } from 'path';
 import { realpathSync } from 'fs';
 import * as esbuild from 'esbuild';
@@ -9,28 +8,13 @@ import { mdsvex } from 'mdsvex';
 import * as AWS from 'aws-sdk';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import WsClient from 'ws-reconnect';
+import * as child_process from 'child_process';
+import { promisify } from 'util';
+const exec = promisify(child_process.exec);
 
-export async function runTests() {
-	return new Promise((resolve, reject) => {
-		let content = '';
-		const pw = childProcess.spawn(
-			join(realpathSync(__filename), '..', '..', '..', 'node_modules', 'playwright', 'cli.js'),
-			['test', '--reporter', 'json']
-		);
-
-		pw.stdout.on('data', (data) => {
-			content += data.toString();
-		});
-		pw.on('exit', () => {
-			try {
-				const testResult = JSON.parse(content);
-				testReport(testResult);
-				resolve(testResult);
-			} catch (err) {
-				reject(err);
-			}
-		});
-	});
+export async function runTests(): Promise<void> {
+	const { stdout } = await exec(`npx playwright test --reporter json`);
+	testReport(JSON.parse(stdout));
 }
 
 export async function compile(path: string, projectName: string, s3: AWS.S3) {
@@ -106,7 +90,7 @@ export async function watchLogs(projectName: string, domainName: string) {
 	});
 }
 
-export async function updateCode(projectName: string, s3: AWS.S3) {
+export async function syncCode(projectName: string, s3: AWS.S3) {
 	chokidar
 		.watch(['workers', 'pages', 'sagas'], {
 			ignoreInitial: false,

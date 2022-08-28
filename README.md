@@ -9,7 +9,7 @@ Kommandos:
   stk dev        Start development.
   stk test       Start local test execution.
   stk logs       Watch logs.
-  stk update     Update code files.
+  stk sync       Sync code files.
   stk init       Prepare a local development environment.
   stk bootstrap  Bootstrap the runtime environment in AWS.
   stk destroy    Destroy the runtime environment in AWS.
@@ -56,7 +56,7 @@ to prepare the development in AWS.
 ### Manually deploy your file changes
 
 ```
-➜ stk update
+➜ stk sync
 ```
 
 ### Manually run tests
