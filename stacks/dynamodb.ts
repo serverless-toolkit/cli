@@ -22,7 +22,7 @@ export class DynamoStack extends NestedStack {
 			timeToLiveAttribute: 'expiresAt'
 		});
 
-		new CfnOutput(this, 'TABLENAME', {
+		new CfnOutput(this, 'DBTABLE', {
 			value: this.table.tableName
 		});
 	}
