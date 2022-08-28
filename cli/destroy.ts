@@ -34,6 +34,8 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 		maxBuffer: 1024 * 1024 * 150
 	});
 
+	spinner.stop();
+	
 	if (destroy.stderr) {
 		console.error(destroy.stderr);
 	}

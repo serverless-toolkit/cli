@@ -224,10 +224,11 @@ cdk.outputs.json
 
 	await exec('yarn', { cwd: join(process.cwd(), projectName) });
 
-	console.log(`
-Project ${projectName} initiated. Change to folder ${projectName} and enter
+	console.log(`Project ${projectName} initiated. Change to folder "${projectName}" and enter
 
-stk bootstrap
+> stk bootstrap
 
 to prepare the development in AWS.`);
+
+	spinner.stop();
 }

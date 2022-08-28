@@ -41,6 +41,8 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		{ maxBuffer: 1024 * 1024 * 150 }
 	);
 
+	spinner.stop();
+
 	if (deploy.stderr) {
 		console.error(deploy.stderr);
 	}
