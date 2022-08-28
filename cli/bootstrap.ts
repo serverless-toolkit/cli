@@ -17,7 +17,7 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	});
 	spinner.start();
 
-	const customDeployFile = join(realpathSync(process.cwd()), 'deploy.js');
+	const customDeployFile = join(realpathSync(process.cwd()), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
