@@ -114,13 +114,13 @@ jobs:
 		- name: STK bootstrap
 		if: steps.cache.outputs.cache-hit != 'true'
 		run: |
-			stk bootstrap
+			yarn bootstrap
 		- name: STK deploy
 		run: |
-			stk sync
+			yarn sync
 		- name: STK test
 		run: |
-			stk test          		
+			yarn test          		
 		`
 		);
 	}
