@@ -31,14 +31,7 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
 	const destroy = await exec(
-		`${join(
-			realpathSync(__filename),
-			'..',
-			'..',
-			'..',
-			'node_modules',
-			'.bin'
-		)}/cdk destroy -f --app ${appFilePath} "*"`
+		`npx cdk destroy -f --app ${appFilePath} "*"`
 	);
 
 	if (destroy.stderr) {

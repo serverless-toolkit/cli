@@ -29,7 +29,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 		.recommendCommands()
 		.help()
 		.alias('h', 'help')
-		.epilogue(['This is ...'].join('\n\n'))
+		.epilogue(['Serverless application development runtime that deploys to your AWS account using the AWS-CDK.'].join('\n\n'))
 		.usage('Usage: stk COMMAND')
 		.command(
 			['dev'],

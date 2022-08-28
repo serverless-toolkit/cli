@@ -1,10 +1,6 @@
 # Serverless Toolkit (STK) CLI
 
-### Install the STK CLI
-
-```
-npm install -g @serverless-toolkit/cli
-```
+### STK CLI
 
 ```
 Usage: stk COMMAND
@@ -26,7 +22,7 @@ Optionen:
 ## Setup a new project
 
 ```
-➜  stk init
+➜ npm create @serverless-toolkit/cli
 ```
 
 ```

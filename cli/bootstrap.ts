@@ -21,6 +21,19 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
+		
+	const globalPath = join(
+		realpathSync(__filename),
+		'..',
+		'..',
+		'..',
+		'node_modules',
+		'.bin',
+		'cdk'
+	);
+	const appCommand = existsSync(globalPath)
+		? globalPath
+		: join(realpathSync(__filename), '..', '..', '..', '..', '..', 'aws-cdk', 'bin', 'cdk');
 
 	const deploy = await exec(
 		`npx cdk --no-color deploy --require-approval never --outputsFile ${join(

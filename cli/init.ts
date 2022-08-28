@@ -221,7 +221,7 @@ cdk.outputs.json
 		save: true
 	});
 
-	await npm.install(['@playwright/test', 'playwright', 'odottaa', '@serverless-toolkit/cli'], {
+	await npm.install(['@playwright/test', 'playwright', 'odottaa', '@serverless-toolkit/cli', 'esbuild'], {
 		cwd: join(process.cwd(), projectName),
 		saveDev: true,
 		save: true

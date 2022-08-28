@@ -68,7 +68,7 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		this.workerHandler = workerHandler;
 		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
-			domainName: `${projectName}.${domainName}`,
+			domainName,
 			httpRecordName: projectName,
 			wsRecordName: `${projectName}-logs`,
 			table,
