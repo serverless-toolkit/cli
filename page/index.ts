@@ -4,6 +4,7 @@ import querystring from 'querystring';
 import mimetype from 'mime-types';
 import multipartFormParser from 'lambda-multipart-parser';
 import { NodeVM } from 'vm2';
+import * as store from '../lib/kv-store';
 
 interface HandlerRequest {
 	domainName: string;
@@ -98,7 +99,10 @@ module.exports.handler = async function (request): Promise<any> {
 	const vm = new NodeVM({
 		console: 'redirect',
 		sandbox: {
-			process
+			process,
+			context: {
+				store
+			}
 		},
 		require: {
 			external: true,
@@ -119,7 +123,16 @@ module.exports.handler = async function (request): Promise<any> {
 	const response = { statusCode: 200, cookies: [], headers: {} };
 	const data =
 		svelteComponent.load &&
-		(await svelteComponent.load({ ...request, ...svelteComponent.metadata }, response));
+		(await svelteComponent.load(
+			{
+				...request,
+				...svelteComponent.metadata,
+				context: {
+					store
+				}
+			},
+			response
+		));
 	const { html, css, head } = svelteComponent.default.render({});
 
 	return {
