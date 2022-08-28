@@ -39,8 +39,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			sveltePlugin({
 				compilerOptions: {
 					generate: 'ssr',
-					format: 'cjs',
-					sveltePath: join(realpathSync(__filename), '..', '..', '..', 'node_modules', 'svelte')
+					format: 'cjs'
 				},
 				include: /\.svx|.svelte$/,
 				preprocess: [sveltePreprocess(), mdsvex()]
