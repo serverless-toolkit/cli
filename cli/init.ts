@@ -66,64 +66,61 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 		mkdirSync(join(process.cwd(), projectName, '.github/workflows'), { recursive: true });
 		writeFileSync(
 			join(process.cwd(), projectName, '.github/workflows/deploy.yml'),
-			`
-name: STK-Examples-Deployment
+			`name: STK-${projectName}-Deployment
 
 on:
-	push:
-	branches: [${gitBranchName}]
-
+  push:
+    branches: [${gitBranchName}]
+		
 env:
-	AWS_REGION: "${awsRegion}"
-	AWS_ACCOUNT: "${awsAccount}"
-	PROJECTNAME: "${projectName}"
-	DOMAINNAME: "${domainName}"
-
+  AWS_REGION: "${awsRegion}"
+  AWS_ACCOUNT: "${awsAccount}"
+		
 permissions:
-	id-token: write
-	contents: read
+  id-token: write
+  contents: read
 jobs:
-	deployment:
-	runs-on: ubuntu-latest
-
-	steps:
-		- name: Git clone the repository
-		uses: actions/checkout@v3
-		- uses: actions/setup-node@v3
-		with:
-			node-version: 18
-			cache: "npm"
-		- name: Get current STK package version
-		id: get-stk-pkg-version
-		run: |
-			echo "::set-output name=version::$(npm view @serverless-toolkit/cli version)"
-		shell: bash          
-		- name: Cache STK already bootstrapped
-		uses: actions/cache@v3
-		id: cache
-		with:        
-			path: /tmp/stk
-			key: \${{ steps.get-stk-pkg-version.outputs.version }}            
-		- name: Install yarn dependencies
-		run: |
-			yarn install      
-		- name: AWS configure credentials
-		uses: aws-actions/configure-aws-credentials@v1
-		with:
-			role-to-assume: arn:aws:iam::\${{ env.AWS_ACCOUNT }}:role/GitHubActionRole
-			role-session-name: stk-examples-deployment
-			aws-region: \${{ env.AWS_REGION }}     
-		- name: STK bootstrap
-		if: steps.cache.outputs.cache-hit != 'true'
-		run: |
-			yarn bootstrap
-		- name: STK deploy
-		run: |
-			yarn sync
-		- name: STK test
-		run: |
-			yarn test          		
-		`
+  deployment:
+    runs-on: ubuntu-latest
+		
+    steps:
+    - name: Git clone the repository
+      uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: "npm"
+    - name: Get current STK package version
+      id: get-stk-pkg-version
+      run: |
+        echo "::set-output name=version::$(npm view @serverless-toolkit/cli version)"
+      shell: bash
+    - name: Cache STK already bootstrapped
+      uses: actions/cache@v3
+      id: cache
+      with:
+        path: /tmp/stk
+        key: \${{ steps.get-stk-pkg-version.outputs.version }}
+    - name: Install yarn dependencies
+      run: |
+        yarn install
+    - name: AWS configure credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::\${{ env.AWS_ACCOUNT }}:role/GitHubActionRole
+        role-session-name: stk-${projectName}-deployment
+        aws-region: \${{ env.AWS_REGION }}
+    - name: STK bootstrap
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        yarn bootstrap
+    - name: STK deploy
+      run: |
+        yarn sync
+    - name: STK test
+      run: |
+        yarn test		
+`
 		);
 	}
 
@@ -202,17 +199,17 @@ title: Example Page
 		join(process.cwd(), projectName, 'tests/pages.spec.ts'),
 		`import { test, expect } from '@playwright/test';
 
-test.describe("Page tests", () => {
+test.describe('Page tests', () => {
   test('page index.svx should have title "Example Page"', async ({
     page,
   }) => {
-    await page.goto("https://examples.serverless-toolkit.com");
+    await page.goto(\`https://\${process.env.PROJECTNAME}.\${process.env.DOMAINNAME}\`);
 
-    await expect(page).toHaveTitle("Example Page");
+    await expect(page).toHaveTitle('Example Page');
   });
 });
 `
-	);	
+	);
 	writeFileSync(
 		join(process.cwd(), projectName, 'tests/workers.spec.ts'),
 		`import { test, expect } from '@playwright/test';
@@ -220,8 +217,8 @@ import playwrightApiMatchers from 'odottaa';
 expect.extend(playwrightApiMatchers);
 
 test.describe('Workers tests', () => {
-	test('task1 should match JSON "{ message: 'Hello World!' }"', async ({ request }) => {
-		const response = await request.get('https://\${process.env.PROJECTNAME}.\${process.env.DOMAINNAME}/workers/worker1');
+	test('task1 should match JSON { "message": "Hello World!" }', async ({ request }) => {
+		const response = await request.get(\`https://\${process.env.PROJECTNAME}.\${process.env.DOMAINNAME}/workers/worker1\`);
 
 		await expect(response).toHaveStatusCode(200);
 		await expect(response).toMatchJSON({ message: 'Hello World!' });		
