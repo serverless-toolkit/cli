@@ -4,10 +4,10 @@ import { config } from 'dotenv';
 import { ServerlessToolkitStack } from './index';
 
 (async () => {
-	const environment = config({ path: join(process.cwd(), '.env') }).parsed;
+	const environment = config({ path: join(process.cwd(), '.env') }).parsed || process.env;
 	const pkg = await import(join(process.cwd(), 'package.json'));
-	const projectName = environment.PROJECTNAME || pkg.name.replace('@', '').replace('/', '-');
-	const domainName = environment.DOMAINNAME || pkg.stk?.domainName;
+	const projectName = environment?.PROJECTNAME || pkg?.name?.replace('@', '').replace('/', '-');
+	const domainName = environment?.DOMAINNAME || pkg?.stk?.domainName;
 
 	const app = new App();
 	Tags.of(app).add('stk-name', projectName);
