@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
 
 export async function handler(request: any) {
@@ -19,7 +20,11 @@ export async function handler(request: any) {
 		console: 'redirect',
 		env: process.env,
 		sandbox: {
-			event
+			event,
+			process,
+			context: {
+				store
+			}
 		},
 		wrapper: 'none',
 		require: {

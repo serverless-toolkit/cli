@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import { v1 } from 'uuid';
-import * as store from './kv-store';
+import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
 
 export async function handler(request: any): Promise<any> {
@@ -21,8 +21,8 @@ export async function handler(request: any): Promise<any> {
 	};
 
 	//Restore state from DDB
-	const state = await store.get(event?.id);
-	let saga = { state };
+	const state = await store.get(event?.id, 'saga');
+	let saga = { state: { id: event?.id, alarm: undefined }, id: event?.id };
 
 	//Init domain object
 	const vm = new NodeVM({
@@ -35,13 +35,21 @@ export async function handler(request: any): Promise<any> {
 			context: {
 				store,
 				alarm: {
+					//TODO: deprecated
+					/**
+					 * @deprecated The method should not be used
+					 */
 					async set(minute: number) {
 						saga.state.alarm = new Date(new Date().getTime() + minute * 60000).getTime();
-						await store.set(saga.state);
+						await store.set(saga.state, 'saga');
+					},
+					async inMinutes(minute: number) {
+						saga.state.alarm = new Date(new Date().getTime() + minute * 60000).getTime();
+						await store.set(saga.state, 'saga');
 					},
 					async clear() {
 						saga.state.alarm = undefined;
-						await store.set(saga.state);
+						await store.set(saga.state, 'saga');
 					}
 				}
 			}
@@ -80,7 +88,10 @@ const saga = new ${event.object || request.rawPath?.replace('/sagas/', '')}(even
 Object.assign(saga, event, state, { context });
 event.command && saga[event.command] && saga[event.command]();
 return saga;`);
-		await store.set({ ...saga, object: event.object, context: undefined, command: undefined });
+		await store.set(
+			{ ...saga, object: event.object, context: undefined, command: undefined },
+			'saga'
+		);
 
 		return { ...saga, type: undefined, context: undefined, object: undefined, command: undefined };
 	} catch (error) {

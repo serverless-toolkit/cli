@@ -74,3 +74,38 @@ to prepare the development in AWS.
 ```
 ➜ stk destroy
 ```
+
+## API
+
+### Key-Value Store
+
+#### `get`
+
+```typescript
+context.store.get(id: string, type?: string);
+```
+
+#### `set`
+
+```typescript
+interface Item {
+  id: string
+}
+context.store.set(item: Item, type?: string);
+```
+
+### Alarms
+
+> Currently only supported in Sagas.
+
+#### `inMinutes`
+
+```typescript
+context.alarm.inMintes(minutes: number);
+```
+
+#### `clear`
+
+```typescript
+context.alarm.clear();
+```
