@@ -241,7 +241,12 @@ cdk.outputs.json
 `
 	);
 
-	await exec('yarn', { cwd: join(process.cwd(), projectName) });
+	let yarn = undefined;
+	try {
+		yarn = await exec('yarn', { cwd: join(process.cwd(), projectName) });
+	} catch {
+		console.error(yarn.stderr);
+	}
 
 	console.log(`Project ${projectName} initiated. Change to folder "${projectName}" and enter
 
@@ -250,4 +255,5 @@ cdk.outputs.json
 to prepare the development in AWS.`);
 
 	spinner.stop();
+	return;
 }

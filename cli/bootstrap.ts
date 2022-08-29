@@ -32,21 +32,21 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		'cdk'
 	);
 
-	const deploy = await exec(
-		`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
-			process.cwd(),
-			'cdk.out',
-			'cdk-env-vars.json'
-		)} --app ${appFilePath} "*"`,
-		{ maxBuffer: 1024 * 1024 * 150 }
-	);
-
-	spinner.stop();
-
-	if (deploy.stderr) {
+	let deploy = undefined;
+	try {
+		deploy = await exec(
+			`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
+				process.cwd(),
+				'cdk.out',
+				'cdk-env-vars.json'
+			)} --app ${appFilePath} "*"`,
+			{ maxBuffer: 1024 * 1024 * 150 }
+		);
+		console.log(deploy.stdout);
+	} catch {
 		console.error(deploy.stderr);
 	}
 
-	console.log(deploy.stdout);
+	spinner.stop();
 	return deploy;
 }

@@ -13,7 +13,7 @@ const exec = promisify(child_process.exec);
 
 export async function runTests(env: { [key: string]: any }): Promise<void> {
 	try {
-		const { stdout, stderr } = await exec(`npx playwright test --reporter json`, {
+		const { stdout } = await exec(`npx playwright test --reporter json`, {
 			env: {
 				...process.env,
 				...env
