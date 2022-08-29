@@ -241,11 +241,10 @@ cdk.outputs.json
 `
 	);
 
-	let yarn = undefined;
 	try {
-		yarn = await exec('yarn', { cwd: join(process.cwd(), projectName) });
-	} catch {
-		console.error(yarn.stderr);
+		const yarn = await exec('yarn', { cwd: join(process.cwd(), projectName) });
+	} catch (err) {
+		console.error(err.stderr || err.stdout);
 	}
 
 	console.log(`Project ${projectName} initiated. Change to folder "${projectName}" and enter

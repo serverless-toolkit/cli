@@ -30,16 +30,15 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
-	let destroy = undefined;
 	try {
-		destroy = await exec(`npx cdk destroy -f --app ${appFilePath} "*"`, {
+		const destroy = await exec(`npx cdk destroy -f --app ${appFilePath} "*"`, {
 			maxBuffer: 1024 * 1024 * 150
 		});
 		console.log(destroy.stdout);
-	} catch {
-		console.error(destroy.stderr);
+	} catch (err) {
+		console.error(err.stderr || err.stdout);
 	}
 
 	spinner.stop();
-	return destroy;
+	return;
 }
