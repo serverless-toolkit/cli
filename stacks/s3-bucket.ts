@@ -25,7 +25,7 @@ export class S3BucketStack extends NestedStack {
 			bucketName: `stk-objects-${props.projectName}`
 		});
 
-		new CfnOutput(this, 'CODEBUCKET', {
+		new CfnOutput(this.nestedStackParent, 'CODEBUCKET', {
 			value: this.codeBucket.bucketName
 		});
 	}
