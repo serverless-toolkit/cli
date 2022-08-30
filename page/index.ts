@@ -41,8 +41,8 @@ module.exports.handler = async function (request): Promise<any> {
 	if (!request.rawPath.includes('/pages')) {
 		request.rawPath = `/pages${request.rawPath}`;
 	}
-	const codeFileName = request.rawPath.slice(1).toLowerCase();
 
+	const codeFileName = request.rawPath.slice(1).toLowerCase();
 	const ct = mimetype.contentType(path.extname(codeFileName)) || 'text/html; charset=UTF-8';
 	const isBase64Encoded = ct.includes('image/');
 	const s3 = new AWS.S3();
@@ -57,21 +57,39 @@ module.exports.handler = async function (request): Promise<any> {
 				})
 				.promise()
 		).Body.toString();
-	} catch (error) {}
+	} catch {}
 
 	//handle static files
 	if (!svxContent) {
-		await send({ timestamp: new Date(), message: `Invoke static: ${codeFileName}` });
-		const staticContent = await s3
-			.getObject({ Bucket: process.env.CODEBUCKET, Key: codeFileName })
-			.promise();
+		try {
+			await send({ timestamp: new Date(), message: `Invoke static: ${codeFileName}` });
+			const staticContent = await s3
+				.getObject({ Bucket: process.env.CODEBUCKET, Key: codeFileName })
+				.promise();
+			return {
+				statusCode: 200,
+				headers: { 'Content-Type': ct },
+				body: isBase64Encoded
+					? staticContent.Body.toString('base64')
+					: staticContent.Body.toString(),
+				isBase64Encoded
+			};
+		} catch (error) {
+			await send({ timestamp: new Date(), message: `Not found static: ${codeFileName}` });
+			return {
+				statusCode: 404
+			};
+		}
+	}
+
+	if (!svxContent) {
+		await send({ timestamp: new Date(), message: `Not found page: ${codeFileName}` });
 		return {
-			statusCode: 200,
-			headers: { 'Content-Type': ct },
-			body: isBase64Encoded ? staticContent.Body.toString('base64') : staticContent.Body.toString(),
-			isBase64Encoded
+			statusCode: 404
 		};
 	}
+
+	await send({ timestamp: new Date(), message: `Found page: ${codeFileName}` });
 
 	//application/x-www-form-urlencoded
 	if (
@@ -95,68 +113,65 @@ module.exports.handler = async function (request): Promise<any> {
 	) {
 		request.body = await multipartFormParser.parse(request);
 	}
-
-	const vm = new NodeVM({
-		console: 'redirect',
-		sandbox: {
-			process,
-			context: {
-				store
-			}
-		},
-		require: {
-			external: true,
-			builtin: ['*'],
-			resolve: (a) => require.resolve(a)
-		}
-	});
-
-	vm.on('console.log', async (data) => {
-		await send({ timestamp: new Date(), message: data });
-	});
-	vm.on('console.error', async (data) => {
-		await send({ timestamp: new Date(), message: data });
-	});
-
+	
 	await send({ timestamp: new Date(), message: `Invoke page: ${codeFileName}` });
-	const svelteComponent = vm.run(svxContent);
-	const response = { statusCode: 200, cookies: [], headers: {} };
-	const data =
-		svelteComponent.load &&
-		(await svelteComponent.load(
-			{
-				...request,
-				...svelteComponent.metadata,
+
+	try {
+		const vm = new NodeVM({
+			timeout: 60 * 1000 * 15,
+			console: 'redirect',
+			sandbox: {
+				process,
 				context: {
 					store
 				}
 			},
-			response
-		));
-	const { html, css, head } = svelteComponent.default.render({});
+			require: {
+				external: true,
+				builtin: ['*'],
+				resolve: (a) => require.resolve(a)
+			}
+		});
+		vm.on('console.log', async (data) => {
+			await send({ timestamp: new Date(), message: data });
+		});
+		vm.on('console.error', async (data) => {
+			await send({ timestamp: new Date(), message: data });
+		});
 
-	return {
-		...response,
-		cookies: [...response.cookies],
-		headers: { ...response.headers, 'content-type': ct },
-		isBase64Encoded,
-		body: `
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		${data ? `<script>var __data = ${JSON.stringify(data)}</script>` : ''}
-		${head}		
-		<style type="text/css">
-			${css.code}
-		</style>
-	</head>
-	<body>
-		${html}
-	</body>	
-</html>
-`
-	};
+		const svelteComponent = vm.run(svxContent);
+		const response = { statusCode: 200, cookies: [], headers: {} };
+		const data =
+			svelteComponent.load &&
+			(await svelteComponent.load(
+				{
+					...request,
+					...svelteComponent.metadata,
+					context: {
+						store
+					}
+				},
+				response
+			));
+
+		const { html, css, head } = svelteComponent.default.render({});
+
+		return {
+			...response,
+			cookies: [...response.cookies],
+			headers: { ...response.headers, 'content-type': ct },
+			isBase64Encoded,
+			body: generateHtml(head, css.code, html, data)
+		};
+	} catch (error) {
+		console.error(error);
+		await send({
+			timestamp: new Date(),
+			codeFileName,
+			message: error.message,
+			error
+		});
+	}
 };
 
 async function send(message) {
@@ -202,4 +217,23 @@ async function send(message) {
 	} catch (error) {
 		console.error(error);
 	}
+}
+
+function generateHtml(head: string, css: string, html: string, data: any) {
+	return `
+	<!doctype html>
+	<html>
+		<head>
+			<meta charset="utf-8">
+			${data ? `<script>var __data = ${JSON.stringify(data)}</script>` : ''}
+			${head}		
+			<style type="text/css">
+				${css}
+			</style>
+		</head>
+		<body>
+			${html}
+		</body>	
+	</html>
+	`;
 }

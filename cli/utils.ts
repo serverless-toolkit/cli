@@ -36,10 +36,10 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		outbase: './',
 		outdir: '.build',
 		bundle: true,
-		minify: false,
+		minify: true,
 		platform: 'node',
-		sourcemap: true,
-		target: 'node16',
+		sourcemap: 'inline',
+		target: 'node',
 		write: false,
 		treeShaking: false,
 		plugins: [
