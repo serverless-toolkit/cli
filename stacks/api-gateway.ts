@@ -111,8 +111,6 @@ export class ApiGatewayStack extends NestedStack {
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
 		});
 
-		new CfnOutput(this, 'http-api-wndpoint-utl', { value: this.httpApi.apiEndpoint });
-
 		new aws_route53.ARecord(this, 'http-api-alias-record', {
 			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(httpCustomDomain)),
 			zone: this.zone,
@@ -142,8 +140,6 @@ export class ApiGatewayStack extends NestedStack {
 			disconnectRouteOptions: { integration },
 			defaultRouteOptions: { integration }
 		});
-
-		new CfnOutput(this, 'webSocket-api-endpoint-url', { value: this.websocketApi.apiEndpoint });
 
 		const wsCertificate = new aws_certificatemanager.Certificate(
 			this,
@@ -178,10 +174,10 @@ export class ApiGatewayStack extends NestedStack {
 		props.pageHandler.addEnvironment('HTTP_API_URL', this.httpApiUrl);
 		props.pageHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
 
-		new CfnOutput(this, 'HTTPAPIURL', {
+		new CfnOutput(this.nestedStackParent, 'HTTPAPIURL', {
 			value: this.httpApiUrl
 		});
-		new CfnOutput(this, 'WSAPIURL', {
+		new CfnOutput(this.nestedStackParent, 'WSAPIURL', {
 			value: this.wsApiUrl
 		});
 	}

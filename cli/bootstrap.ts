@@ -22,31 +22,20 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		? customDeployFile
 		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
 
-	const globalPath = join(
-		realpathSync(__filename),
-		'..',
-		'..',
-		'..',
-		'node_modules',
-		'.bin',
-		'cdk'
-	);
-
-	const deploy = await exec(
-		`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
-			process.cwd(),
-			'cdk.out',
-			'cdk-env-vars.json'
-		)} --app ${appFilePath} "*"`,
-		{ maxBuffer: 1024 * 1024 * 150 }
-	);
-
-	spinner.stop();
-
-	if (deploy.stderr) {
-		console.error(deploy.stderr);
+	try {
+		const deploy = await exec(
+			`npx cdk --no-color deploy --require-approval never --outputsFile ${join(
+				process.cwd(),
+				'cdk.out',
+				'cdk-env-vars.json'
+			)} --app ${appFilePath} "*"`,
+			{ maxBuffer: 1024 * 1024 * 150 }
+		);
+		console.log(deploy.stdout);
+	} catch (err) {
+		console.error(err.stderr || err.stdout);
 	}
 
-	console.log(deploy.stdout);
-	return deploy;
+	spinner.stop();
+	return;
 }
