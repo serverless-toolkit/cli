@@ -39,7 +39,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		minify: true,
 		platform: 'node',
 		sourcemap: 'inline',
-		target: 'node',
+		target: 'node16',
 		write: false,
 		treeShaking: false,
 		plugins: [
