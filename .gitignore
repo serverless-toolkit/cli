@@ -7,4 +7,6 @@ yarn-error.log
 .env
 cdk.context.json
 cdk.outputs.json
-deploy
+stacks/*.js
+stacks/*.js.map
+stacks/*.d.ts

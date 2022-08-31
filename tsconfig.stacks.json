@@ -6,9 +6,8 @@
 		"target": "ESNext",
 		"moduleResolution": "node",
 		"sourceMap": true,
-		"outDir": "deploy",
 		"resolveJsonModule": true,
 		"declaration": true
 	},
-	"include": ["stacks", "saga", "page", "worker"]
+	"include": ["stacks"]
 }
