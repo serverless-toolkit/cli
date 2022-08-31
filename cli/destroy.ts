@@ -28,7 +28,7 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 	const customDeployFile = join(process.cwd(), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
-		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
+		: join(realpathSync(__filename), '..', '..', '..', 'stacks/deploy.js');
 
 	try {
 		const destroy = await exec(`npx cdk destroy -f --app ${appFilePath} "*"`, {

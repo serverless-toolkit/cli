@@ -20,7 +20,7 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 	const customDeployFile = join(process.cwd(), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
-		: join(realpathSync(__filename), '..', '..', '..', '.build/stacks/deploy.js');
+		: join(realpathSync(__filename), '..', '..', '..', 'stacks/deploy.js');
 
 	try {
 		const deploy = await exec(
