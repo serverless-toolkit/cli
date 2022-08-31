@@ -35,7 +35,7 @@
 		"build": "npm run build:libs && npm run build:stacks",
 		"build:libs": "tsc",
 		"build:stacks": " tsc --project tsconfig.stacks.json",
-		"prepublishOnly": "npm version patch && npm run build",
+		"prepublishOnly": "npm version patch && npm run build && npm run test",
 		"cli": "npm run build:libs && node .build/cli"
 	},
 	"devDependencies": {
