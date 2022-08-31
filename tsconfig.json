@@ -10,5 +10,5 @@
 		"resolveJsonModule": true,
 		"declaration": true
 	},
-	"include": ["stacks", "saga", "page", "worker", "cli"]
+	"include": ["stacks", "saga", "page", "worker", "lib", "cli"]
 }

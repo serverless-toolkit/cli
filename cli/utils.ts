@@ -38,7 +38,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		bundle: true,
 		minify: false,
 		platform: 'node',
-		sourcemap: true,
+		sourcemap: 'inline',
 		target: 'node16',
 		write: false,
 		treeShaking: false,
@@ -49,12 +49,13 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			sveltePlugin({
 				compilerOptions: {
 					generate: 'ssr',
-					format: 'cjs',
-					enableSourcemap: true,
-					dev: true
+					format: 'cjs'
 				},
 				include: /\.svx|.svelte$/,
-				preprocess: [sveltePreprocess(), mdsvex()]
+				preprocess: [
+					sveltePreprocess(),
+					mdsvex()
+				]
 			})
 		],
 		loader: {

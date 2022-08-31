@@ -1,31 +1,14 @@
 import AWS from 'aws-sdk';
 import path from 'path';
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import querystring from 'querystring';
 import mimetype from 'mime-types';
 import multipartFormParser from 'lambda-multipart-parser';
 import { NodeVM } from 'vm2';
 import * as store from '../lib/kv-store';
+import { PageRequest, PageResponse } from '../lib';
 
-interface HandlerRequest {
-	domainName: string;
-	domainPrefix: string;
-	requestContext: {
-		http: {
-			method: string;
-			path: string;
-			sourceIp: string;
-			userAgent: string;
-		};
-	};
-	body: any;
-	rawPath: string;
-	cookies: string[];
-	headers: { [key: string]: string };
-	queryStringParameters: { [key: string]: string };
-	isBase64Encoded: boolean;
-}
-
-module.exports.handler = async function (request): Promise<any> {
+module.exports.handler = async function (request: APIGatewayProxyEventV2): Promise<any> {
 	if (!request) return { statusCode: 404 };
 
 	//set default to index
@@ -102,7 +85,7 @@ module.exports.handler = async function (request): Promise<any> {
 			request.body = Buffer.from(request.body, 'base64').toString();
 			request.isBase64Encoded = false;
 		}
-		request.body = querystring.decode(request.body);
+		request.body = querystring.decode(request.body).toString();
 	}
 	//multipart/form-data
 	if (
@@ -111,9 +94,9 @@ module.exports.handler = async function (request): Promise<any> {
 		request.requestContext?.http?.method?.toLowerCase() === 'post' &&
 		request.body
 	) {
-		request.body = await multipartFormParser.parse(request);
+		request.body = (await multipartFormParser.parse(request as any)) as any;
 	}
-	
+
 	await send({ timestamp: new Date(), message: `Invoke page: ${codeFileName}` });
 
 	try {
@@ -140,7 +123,7 @@ module.exports.handler = async function (request): Promise<any> {
 		});
 
 		const svelteComponent = vm.run(svxContent);
-		const response = { statusCode: 200, cookies: [], headers: {} };
+		const response: PageResponse = { statusCode: 200, cookies: [], headers: {} };
 		const data =
 			svelteComponent.load &&
 			(await svelteComponent.load(
@@ -150,7 +133,7 @@ module.exports.handler = async function (request): Promise<any> {
 					context: {
 						store
 					}
-				},
+				} as PageRequest,
 				response
 			));
 
