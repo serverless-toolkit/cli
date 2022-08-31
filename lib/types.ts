@@ -22,5 +22,5 @@ export interface PageResponse {
 	cookies?: string[];
 	headers?: { [key: string]: string };
 	isBase64Encoded?: boolean;
-	body?: string;
+	body?: any;
 }

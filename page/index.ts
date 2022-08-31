@@ -85,7 +85,7 @@ module.exports.handler = async function (request: APIGatewayProxyEventV2): Promi
 			request.body = Buffer.from(request.body, 'base64').toString();
 			request.isBase64Encoded = false;
 		}
-		request.body = querystring.decode(request.body).toString();
+		request.body = querystring.decode(request.body);
 	}
 	//multipart/form-data
 	if (
@@ -94,7 +94,7 @@ module.exports.handler = async function (request: APIGatewayProxyEventV2): Promi
 		request.requestContext?.http?.method?.toLowerCase() === 'post' &&
 		request.body
 	) {
-		request.body = (await multipartFormParser.parse(request as any)) as any;
+		request.body = await multipartFormParser.parse(request as any);
 	}
 
 	await send({ timestamp: new Date(), message: `Invoke page: ${codeFileName}` });
