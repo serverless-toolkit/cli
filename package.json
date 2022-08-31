@@ -32,8 +32,8 @@
 		"init": ".build/cli/index.js init",
 		"test": "playwright test",
 		"build": "tsc && tsc --project tsconfig.stacks.json ",
-		"prepublish": "npm version patch && npm run build",
-		"cli": "yarn build && node .build/cli",
+		"prepare": "npm version patch && npm run build",
+		"cli": "npm run build && node .build/cli",
 		"bootstrap": "npm run build && cdk deploy --app .build/stacks/app.js \"*\" --require-approval never --outputs-file cdk.outputs.json",
 		"destroy": "cdk destroy --app .build/stacks/app.js \"*\" --force",
 		"run:saga-simple": "npm run build && lambda-local -l .build/saga/index.js -e tests/saga-alarmcounter.json --envfile .env --timeout 10000"
