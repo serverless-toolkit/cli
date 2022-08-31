@@ -31,6 +31,7 @@
 	"scripts": {
 		"init": ".build/cli/index.js init",
 		"test": "playwright test",
+		"preview": "npm run build && node .build/preview/server.js",
 		"build": "tsc && tsc --project tsconfig.stacks.json ",
 		"prepare": "npm version patch && npm run build",
 		"cli": "npm run build && node .build/cli",
@@ -40,16 +41,19 @@
 		"@playwright/test": "1.25.1",
 		"@types/aws-lambda": "8.10.102",
 		"@types/cli-spinner": "0.2.1",
+		"@types/express": "^4.17.13",
 		"@types/node": "18.7.14",
 		"@types/uuid": "8.3.4",
 		"@types/yargs": "17.0.12",
 		"aws-lambda": "1.0.7",
+		"express": "4.18.1",
 		"lambda-local": "2.0.2",
 		"lambda-multipart-parser": "1.0.1",
 		"mime-types": "2.1.35",
 		"prettier": "2.7.1",
 		"uuid": "8.3.2",
-		"vm2": "3.9.11"
+		"vm2": "3.9.11",
+		"odottaa": "1.1.7"
 	},
 	"dependencies": {
 		"@aws-cdk/aws-apigatewayv2-alpha": "2.39.1-alpha.0",

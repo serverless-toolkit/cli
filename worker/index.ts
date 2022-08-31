@@ -1,6 +1,8 @@
 import AWS from 'aws-sdk';
 import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 export async function handler(request: any) {
 	const s3 = new AWS.S3();
@@ -43,9 +45,13 @@ export async function handler(request: any) {
 	try {
 		let s3Content: any = { Body: '' };
 		try {
-			s3Content = await s3
-				.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
-				.promise();
+			s3Content = request.filePath
+				? (await readFile(join(request.filePath, `${request.rawPath}.js`))).toString()
+				: (
+						await s3
+							.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
+							.promise()
+				  ).Body.toString();
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Worker: ${codeFileName} not found` });
 			return {
@@ -53,7 +59,7 @@ export async function handler(request: any) {
 			};
 		}
 		await send({ timestamp: new Date(), message: `Invoke worker: ${codeFileName}` });
-		return vm.run(`${s3Content.Body.toString()}
+		return vm.run(`${s3Content}
 return  ${codeFileName?.replace('workers/', '')}(event);
 		`);
 	} catch (error) {
@@ -63,6 +69,11 @@ return  ${codeFileName?.replace('workers/', '')}(event);
 }
 
 async function send(message) {
+	if (!(process.env.DBTABLE && process.env.WS_API_URL)) {
+		console.log(JSON.stringify(message, null, 4));
+		return;
+	}
+
 	const ddb = new AWS.DynamoDB();
 	const api = new AWS.ApiGatewayManagementApi({ endpoint: process.env.WS_API_URL });
 
