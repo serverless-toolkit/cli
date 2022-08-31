@@ -31,7 +31,8 @@
 	"scripts": {
 		"init": ".build/cli/index.js init",
 		"test": "playwright test",
-		"build": "tsc",
+		"build": "tsc && tsc -p tsconfig.deploy.json",
+		"publish": "npm version patch && npm run build && npm publish",
 		"cli": "yarn build && node .build/cli",
 		"bootstrap": "npm run build && cdk deploy --app .build/stacks/app.js \"*\" --require-approval never --outputs-file cdk.outputs.json",
 		"destroy": "cdk destroy --app .build/stacks/app.js \"*\" --force",
