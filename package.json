@@ -33,7 +33,7 @@
 		"test": "playwright test",
 		"preview": "npm run build && node .build/preview/server.js",
 		"build": "tsc && tsc --project tsconfig.stacks.json ",
-		"prepare": "npm version patch && npm run build",
+		"prepublishOnly": "npm version patch && npm run build",
 		"cli": "npm run build && node .build/cli",
 		"run:saga-simple": "npm run build && lambda-local -l .build/saga/index.js -e tests/saga-alarmcounter.json --envfile .env --timeout 10000"
 	},
