@@ -25,9 +25,9 @@ export class WorkerLambdaStack extends NestedStack {
 		super(scope, id, props);
 
 		this.workerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'worker-function-handler', {
-			entry: join(realpathSync(__filename), '..', '..', '..', 'worker', 'index.ts'),
-			depsLockFilePath: join(realpathSync(__filename), '..', '..', '..', 'yarn.lock'),
-			projectRoot: join(realpathSync(__filename), '..', '..', '..'),
+			entry: join(realpathSync(__filename), '..', '..', 'worker', 'index.ts'),
+			depsLockFilePath: join(realpathSync(__filename), '..', '..', 'yarn.lock'),
+			projectRoot: join(realpathSync(__filename), '..', '..'),
 			awsSdkConnectionReuse: true,
 			runtime: aws_lambda.Runtime.NODEJS_16_X,
 			memorySize: 256,
