@@ -8,6 +8,7 @@ app.all('/workers/:name', async function (req, res) {
 	const result = await execute({
 		event: { rawPath: `/${req.params.name}`, filePath: join(__dirname, 'workers') },
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js'),
+		envfile: join(__dirname, '..', '..', '.env'),
 		profilePath: '~/.aws/credentials',
 		profileName: 'default',
 		timeoutMs: 1000,

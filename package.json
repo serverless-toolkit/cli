@@ -31,11 +31,12 @@
 	"scripts": {
 		"init": ".build/cli/index.js init",
 		"test": "playwright test",
-		"preview": "npm run build && node .build/preview/server.js",
-		"build": "tsc && tsc --project tsconfig.stacks.json ",
+		"preview": "npm run build:libs && node .build/preview/server.js",
+		"build": "npm run build:libs && npm run build:stacks",
+		"build:libs": "tsc",
+		"build:stacks": " tsc --project tsconfig.stacks.json",
 		"prepublishOnly": "npm version patch && npm run build",
-		"cli": "npm run build && node .build/cli",
-		"run:saga-simple": "npm run build && lambda-local -l .build/saga/index.js -e tests/saga-alarmcounter.json --envfile .env --timeout 10000"
+		"cli": "npm run build:libs && node .build/cli"
 	},
 	"devDependencies": {
 		"@playwright/test": "1.25.1",
