@@ -8,7 +8,9 @@ import { NodeVM } from 'vm2';
 import * as store from '../lib/kv-store';
 import { PageRequest, PageResponse } from '../lib';
 
-module.exports.handler = async function (request: APIGatewayProxyEventV2): Promise<any> {
+module.exports.handler = async function (
+	request: APIGatewayProxyEventV2 & { fileContent: string }
+): Promise<any> {
 	if (!request) return { statusCode: 404 };
 
 	//set default to index
@@ -32,14 +34,13 @@ module.exports.handler = async function (request: APIGatewayProxyEventV2): Promi
 
 	let svxContent = '';
 	try {
-		svxContent = (
-			await s3
-				.getObject({
-					Bucket: process.env.CODEBUCKET,
-					Key: `${codeFileName}.js`
-				})
-				.promise()
-		).Body.toString();
+		svxContent = request.fileContent
+			? request.fileContent
+			: (
+					await s3
+						.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
+						.promise()
+			  ).Body.toString();
 	} catch {}
 
 	//handle static files
