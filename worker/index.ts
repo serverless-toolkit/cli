@@ -68,10 +68,10 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 		const workerResult = await vm.run(`${s3Content}
 return ${codeFileName?.replace('workers/', '')}(event, response);
 		`);
-		
+
 		return {
 			...response,
-			body: workerResult
+			body: JSON.stringify(workerResult)
 		};
 	} catch (error) {
 		await send({ timestamp: new Date(), message: `Worker error: ${error}` });
