@@ -6,6 +6,7 @@ import sveltePlugin from 'esbuild-svelte';
 import sveltePreprocess from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
+import { readFile } from 'fs/promises';
 
 const app = express();
 const defaultLambdaConfig = {
@@ -17,9 +18,13 @@ const defaultLambdaConfig = {
 };
 
 app.all('/workers/:name', async function (req, res) {
+	const fileContent = (
+		await readFile(join(__dirname, 'workers', `${req.params.name}.js`))
+	).toString();
+
 	const result = await execute({
 		...defaultLambdaConfig,
-		event: { rawPath: `/${req.params.name}`, filePath: join(__dirname, 'workers') },
+		event: { rawPath: `/${req.params.name}`, fileContent },
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js')
 	});
 

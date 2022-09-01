@@ -1,8 +1,6 @@
 import AWS from 'aws-sdk';
 import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 
 export async function handler(request: any) {
 	const s3 = new AWS.S3();
@@ -43,15 +41,15 @@ export async function handler(request: any) {
 	});
 	const codeFileName: string = request.rawPath.slice(1);
 	try {
-		let s3Content: any = { Body: '' };
+		let s3Content: string;
 		try {
-			s3Content = request.filePath
-				? (await readFile(join(request.filePath, `${request.rawPath}.js`))).toString()
+			s3Content = request.fileContent
+				? request.fileContent
 				: (
 						await s3
 							.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
 							.promise()
-				  ).Body.toString();
+				  ).Body?.toString();
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Worker: ${codeFileName} not found` });
 			return {
