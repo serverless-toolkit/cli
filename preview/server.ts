@@ -38,7 +38,7 @@ app.all('/workers/:name', async function (req, res) {
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js')
 	})) as any;
 
-	res.status(result.statusCode).json(result.body);
+	res.status(result.statusCode).send(result.body);
 });
 
 app.all('/sagas/:name', async function (req, res) {
