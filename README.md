@@ -22,6 +22,12 @@ Optionen:
 ## Setup a new project
 
 ```
+➜ npx @serverless-toolkit/cli init
+```
+
+**or**
+
+```
 ➜ npm create @serverless-toolkit/cli
 ```
 
@@ -104,4 +110,13 @@ context.alarm.inMintes(minutes: number);
 
 ```typescript
 context.alarm.clear();
+```
+
+## Run tests in local development
+
+```
+➜ yarn test
+➜ yarn test workers
+➜ yarn test pages
+➜ yarn test sagas
 ```

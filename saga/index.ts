@@ -107,7 +107,7 @@ return saga;`);
 }
 
 async function send(message) {
-	if (!(process.env.DBTABLE && process.env.WS_API_URL)) {
+	if (!(process.env.DBTABLE || process.env.WS_API_URL)) {
 		console.log(JSON.stringify(message, null, 4));
 		return;
 	}

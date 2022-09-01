@@ -6,7 +6,7 @@ import mimetype from 'mime-types';
 import multipartFormParser from 'lambda-multipart-parser';
 import { NodeVM } from 'vm2';
 import * as store from '../lib/kv-store';
-import { PageRequest, PageResponse } from '../lib';
+import { Request, Response } from '../lib';
 
 module.exports.handler = async function (
 	request: APIGatewayProxyEventV2 & { fileContent: string }
@@ -54,8 +54,8 @@ module.exports.handler = async function (
 				statusCode: 200,
 				headers: { 'Content-Type': ct },
 				body: isBase64Encoded
-					? staticContent.Body.toString('base64')
-					: staticContent.Body.toString(),
+					? staticContent?.Body?.toString('base64')
+					: staticContent?.Body?.toString(),
 				isBase64Encoded
 			};
 		} catch (error) {
@@ -124,7 +124,7 @@ module.exports.handler = async function (
 		});
 
 		const svelteComponent = vm.run(svxContent);
-		const response: PageResponse = { statusCode: 200, cookies: [], headers: {} };
+		const response: Response = { statusCode: 200, cookies: [], headers: {} };
 		const data =
 			svelteComponent.load &&
 			(await svelteComponent.load(
@@ -134,7 +134,7 @@ module.exports.handler = async function (
 					context: {
 						store
 					}
-				} as PageRequest,
+				} as Request,
 				response
 			));
 
@@ -159,6 +159,11 @@ module.exports.handler = async function (
 };
 
 async function send(message) {
+	if (!(process.env.DBTABLE || process.env.WS_API_URL)) {
+		console.log(JSON.stringify(message, null, 4));
+		return;
+	}
+	
 	const ddb = new AWS.DynamoDB();
 	const api = new AWS.ApiGatewayManagementApi({ endpoint: process.env.WS_API_URL });
 

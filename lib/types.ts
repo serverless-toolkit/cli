@@ -1,4 +1,4 @@
-export interface PageRequest {
+export interface Request {
 	domainName?: string;
 	domainPrefix?: string;
 	requestContext?: {
@@ -17,10 +17,8 @@ export interface PageRequest {
 	isBase64Encoded?: boolean;
 }
 
-export interface PageResponse {
+export interface Response {
 	statusCode?: number;
 	cookies?: string[];
 	headers?: { [key: string]: string };
-	isBase64Encoded?: boolean;
-	body?: any;
 }

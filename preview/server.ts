@@ -16,27 +16,29 @@ const defaultLambdaConfig = {
 	envfile: join(__dirname, '..', '.env'),
 	profilePath: '~/.aws/credentials',
 	profileName: 'default',
-	timeoutMs: 1000,
+	timeoutMs: 5000,
 	verboseLevel: 3
 };
 
 app.all('/workers/:name', async function (req, res) {
+	console.log(req);
 	const fileContent = (
 		await readFile(join(__dirname, 'workers', `${req.params.name}.js`))
 	).toString();
 
-	const result = await execute({
+	const result = (await execute({
 		...defaultLambdaConfig,
 		event: {
 			rawPath: `/${req.params.name}`,
 			fileContent,
 			queryStringParameters: req.query,
-			body: req.body
+			body: req.body,
+			requestContext: { http: { method: req.method } }
 		},
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js')
-	});
+	})) as any;
 
-	res.json(result);
+	res.status(result.statusCode).json(result.body);
 });
 
 app.all('/sagas/:name', async function (req, res) {
@@ -112,7 +114,8 @@ app.all(['/pages/:name', '/:name'], async function (req, res) {
 			rawPath: path,
 			fileContent: fileContent.text,
 			queryStringParameters: req.query,
-			body: req.body
+			body: req.body,
+			requestContext: { http: { method: req.method } }
 		},
 		lambdaPath: join(__dirname, '..', 'page', 'index.js')
 	})) as any;

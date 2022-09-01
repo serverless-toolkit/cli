@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
+import { Request, Response } from '../lib/types';
 
 export async function handler(request: APIGatewayProxyEventV2 & { fileContent: string }) {
 	const s3 = new AWS.S3();
@@ -14,15 +15,19 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 	} catch (error) {
 		console.error(error);
 	}
+
 	const event = {
-		...body,
-		...request.queryStringParameters
-	};
+		...request,
+		body
+	} as Request;
+
+	const response: Response = { statusCode: 200, cookies: [], headers: {} };
 	const vm = new NodeVM({
 		console: 'redirect',
 		env: process.env,
 		sandbox: {
 			event,
+			response,
 			process,
 			context: {
 				store
@@ -59,9 +64,15 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 			};
 		}
 		await send({ timestamp: new Date(), message: `Invoke worker: ${codeFileName}` });
-		return vm.run(`${s3Content}
-return  ${codeFileName?.replace('workers/', '')}(event);
+
+		const workerResult = await vm.run(`${s3Content}
+return ${codeFileName?.replace('workers/', '')}(event, response);
 		`);
+		
+		return {
+			...response,
+			body: workerResult
+		};
 	} catch (error) {
 		await send({ timestamp: new Date(), message: `Worker error: ${error}` });
 		return { message: error };
@@ -69,7 +80,7 @@ return  ${codeFileName?.replace('workers/', '')}(event);
 }
 
 async function send(message) {
-	if (!(process.env.DBTABLE && process.env.WS_API_URL)) {
+	if (!process.env.DBTABLE || !process.env.WS_API_URL) {
 		console.log(JSON.stringify(message, null, 4));
 		return;
 	}

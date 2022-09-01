@@ -2,7 +2,6 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB();
 
 export async function handler(request: any) {
-	console.log(JSON.stringify(request, null, 4));
 	const connectionId = request.requestContext?.connectionId;
 	const eventType = request.requestContext?.eventType;
 
