@@ -1,6 +1,7 @@
 import { execute } from 'lambda-local';
 import { join } from 'path';
 import express from 'express';
+import bodyParser from 'body-parser';
 import * as esbuild from 'esbuild';
 import sveltePlugin from 'esbuild-svelte';
 import sveltePreprocess from 'svelte-preprocess';
@@ -9,12 +10,14 @@ import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import { readFile } from 'fs/promises';
 
 const app = express();
+app.use(bodyParser.json());
+
 const defaultLambdaConfig = {
 	envfile: join(__dirname, '..', '.env'),
 	profilePath: '~/.aws/credentials',
 	profileName: 'default',
 	timeoutMs: 1000,
-	verboseLevel: 0
+	verboseLevel: 3
 };
 
 app.all('/workers/:name', async function (req, res) {
@@ -24,7 +27,12 @@ app.all('/workers/:name', async function (req, res) {
 
 	const result = await execute({
 		...defaultLambdaConfig,
-		event: { rawPath: `/${req.params.name}`, fileContent },
+		event: {
+			rawPath: `/${req.params.name}`,
+			fileContent,
+			queryStringParameters: req.query,
+			body: req.body
+		},
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js')
 	});
 
@@ -38,7 +46,12 @@ app.all('/sagas/:name', async function (req, res) {
 
 	const result = await execute({
 		...defaultLambdaConfig,
-		event: { rawPath: `${req.params.name}`, fileContent },
+		event: {
+			rawPath: `${req.params.name}`,
+			fileContent,
+			queryStringParameters: req.query,
+			body: req.body
+		},
 		lambdaPath: join(__dirname, '..', 'saga', 'index.js')
 	});
 
@@ -95,7 +108,12 @@ app.all(['/pages/:name', '/:name'], async function (req, res) {
 	const [fileContent] = buildResult.outputFiles;
 	const result = (await execute({
 		...defaultLambdaConfig,
-		event: { rawPath: path, fileContent: fileContent.text },
+		event: {
+			rawPath: path,
+			fileContent: fileContent.text,
+			queryStringParameters: req.query,
+			body: req.body
+		},
 		lambdaPath: join(__dirname, '..', 'page', 'index.js')
 	})) as any;
 

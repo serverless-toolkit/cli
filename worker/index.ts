@@ -1,18 +1,20 @@
 import AWS from 'aws-sdk';
 import * as store from '../lib/kv-store';
 import { NodeVM } from 'vm2';
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
 
-export async function handler(request: any) {
+export async function handler(request: APIGatewayProxyEventV2 & { fileContent: string }) {
 	const s3 = new AWS.S3();
-	let body: any = {};
+	let body = request.body || {};
 
 	try {
-		body = request.body && JSON.parse(Buffer.from(request.body, 'base64').toString());
+		if (request.body && request.isBase64Encoded) {
+			body = request.body && JSON.parse(Buffer.from(request.body, 'base64').toString());
+		}
 	} catch (error) {
 		console.error(error);
 	}
 	const event = {
-		...request.event,
 		...body,
 		...request.queryStringParameters
 	};
@@ -41,7 +43,7 @@ export async function handler(request: any) {
 	});
 	const codeFileName: string = request.rawPath.slice(1);
 	try {
-		let s3Content: string;
+		let s3Content: string | undefined;
 		try {
 			s3Content = request.fileContent
 				? request.fileContent
@@ -98,7 +100,7 @@ async function send(message) {
 						console.error(error);
 						return ddb
 							.deleteItem({
-								TableName: process.env.DBTABLE,
+								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
 									id: x.id,
 									type: 'connection'

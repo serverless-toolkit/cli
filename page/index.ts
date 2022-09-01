@@ -48,7 +48,7 @@ module.exports.handler = async function (
 		try {
 			await send({ timestamp: new Date(), message: `Invoke static: ${codeFileName}` });
 			const staticContent = await s3
-				.getObject({ Bucket: process.env.CODEBUCKET, Key: codeFileName })
+				.getObject({ Bucket: process.env.CODEBUCKET!, Key: codeFileName })
 				.promise();
 			return {
 				statusCode: 200,

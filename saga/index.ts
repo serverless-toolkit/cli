@@ -5,10 +5,12 @@ import { NodeVM } from 'vm2';
 
 export async function handler(request: any): Promise<any> {
 	const s3 = new AWS.S3();
-	let body: any = {};
+	let body = request.body || {};
 
 	try {
-		body = request.body && JSON.parse(Buffer.from(request.body, 'base64').toString());
+		if (request.body && request.isBase64Encoded) {
+			body = JSON.parse(Buffer.from(request.body, 'base64').toString());
+		}
 	} catch (error) {
 		console.error(error);
 	}
@@ -77,7 +79,7 @@ export async function handler(request: any): Promise<any> {
 						await s3
 							.getObject({ Bucket: process.env.CODEBUCKET!, Key: `${codeFileName}.js` })
 							.promise()
-				  ).Body?.toString();
+				  )?.Body?.toString();
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Saga: ${codeFileName} not found.` });
 			return {
