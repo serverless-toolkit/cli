@@ -29,12 +29,12 @@
 	"main": ".build/lib/index.js",
 	"types": ".build/lib/types.d.ts",
 	"scripts": {
-		"init": ".build/cli/index.js init",
-		"test": "playwright test",
-		"preview": "npm run build:libs && node .build/preview/server.js",
+		"test": "npm run build:preview && playwright test",
+		"preview": "npm run build:preview && node preview/server.js",
 		"build": "npm run build:libs && npm run build:stacks",
 		"build:libs": "tsc",
 		"build:stacks": " tsc --project tsconfig.stacks.json",
+		"build:preview": " tsc --project tsconfig.preview.json",
 		"prepublishOnly": "npm run test && npm version patch && npm run build",
 		"cli": "npm run build:libs && node .build/cli"
 	},

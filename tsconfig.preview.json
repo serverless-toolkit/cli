@@ -5,10 +5,9 @@
 		"skipLibCheck": true,
 		"target": "ESNext",
 		"moduleResolution": "node",
-		"sourceMap": true,
-		"outDir": ".build",
+		"sourceMap": true,		
 		"resolveJsonModule": true,
 		"declaration": true
 	},
-	"include": ["lib", "cli"]
+	"include": ["page", "worker", "saga", "preview"]
 }
