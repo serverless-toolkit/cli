@@ -32,15 +32,15 @@ module.exports.handler = async function (
 	const isBase64Encoded = ct.includes('image/');
 	const s3 = new AWS.S3();
 
-	let svxContent = '';
+	let svxContent: string | undefined;
 	try {
 		svxContent = request.fileContent
 			? request.fileContent
 			: (
 					await s3
-						.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
+						.getObject({ Bucket: process.env.CODEBUCKET!, Key: `${codeFileName}.js` })
 						.promise()
-			  ).Body.toString();
+			  )?.Body?.toString();
 	} catch {}
 
 	//handle static files

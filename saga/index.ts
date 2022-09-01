@@ -69,11 +69,15 @@ export async function handler(request: any): Promise<any> {
 	try {
 		const codeFileName = request.rawPath?.slice(1) || `sagas/${event.object}`;
 
-		let s3Content: any = { Body: '' };
+		let s3Content: string;
 		try {
-			s3Content = await s3
-				.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
-				.promise();
+			s3Content = request.fileContent
+				? request.fileContent
+				: (
+						await s3
+							.getObject({ Bucket: process.env.CODEBUCKET!, Key: `${codeFileName}.js` })
+							.promise()
+				  ).Body?.toString();
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Saga: ${codeFileName} not found.` });
 			return {
@@ -83,7 +87,7 @@ export async function handler(request: any): Promise<any> {
 
 		await send({ timestamp: new Date(), message: `Invoke saga: ${codeFileName}.` });
 
-		saga = vm.run(`${s3Content?.Body?.toString()}
+		saga = vm.run(`${s3Content}
 const saga = new ${event.object || request.rawPath?.replace('/sagas/', '')}(event);
 Object.assign(saga, event, state, { context });
 event.command && saga[event.command] && saga[event.command]();
@@ -101,6 +105,11 @@ return saga;`);
 }
 
 async function send(message) {
+	if (!(process.env.DBTABLE && process.env.WS_API_URL)) {
+		console.log(JSON.stringify(message, null, 4));
+		return;
+	}
+
 	const ddb = new AWS.DynamoDB();
 	const api = new AWS.ApiGatewayManagementApi({ endpoint: process.env.WS_API_URL });
 

@@ -10,7 +10,7 @@ import { readFile } from 'fs/promises';
 
 const app = express();
 const defaultLambdaConfig = {
-	envfile: join(__dirname, '..', '..', '.env'),
+	envfile: join(__dirname, '..', '.env'),
 	profilePath: '~/.aws/credentials',
 	profileName: 'default',
 	timeoutMs: 1000,
@@ -26,6 +26,20 @@ app.all('/workers/:name', async function (req, res) {
 		...defaultLambdaConfig,
 		event: { rawPath: `/${req.params.name}`, fileContent },
 		lambdaPath: join(__dirname, '..', 'worker', 'index.js')
+	});
+
+	res.json(result);
+});
+
+app.all('/sagas/:name', async function (req, res) {
+	const fileContent = (
+		await readFile(join(__dirname, 'sagas', `${req.params.name}.js`))
+	).toString();
+
+	const result = await execute({
+		...defaultLambdaConfig,
+		event: { rawPath: `${req.params.name}`, fileContent },
+		lambdaPath: join(__dirname, '..', 'saga', 'index.js')
 	});
 
 	res.json(result);

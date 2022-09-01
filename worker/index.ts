@@ -47,9 +47,9 @@ export async function handler(request: any) {
 				? request.fileContent
 				: (
 						await s3
-							.getObject({ Bucket: process.env.CODEBUCKET, Key: `${codeFileName}.js` })
+							.getObject({ Bucket: process.env.CODEBUCKET!, Key: `${codeFileName}.js` })
 							.promise()
-				  ).Body?.toString();
+				  )?.Body?.toString();
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Worker: ${codeFileName} not found` });
 			return {
