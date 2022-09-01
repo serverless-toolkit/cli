@@ -190,12 +190,12 @@ title: Example Page
 	);
 	writeFileSync(
 		join(process.cwd(), projectName, 'workers/worker1.ts'),
-		`async function worker1(params) {
-	console.log({ params })
+		`import { Request, Response } from "@serverless-toolkit/cli";
+
+async function worker1(request: Request): Promise<Response> {
 	
 	return { 
-		message: 'Hello World!', 
-		...params
+		message: 'Hello World!'
 	};
 }
 `
