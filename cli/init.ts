@@ -1,11 +1,12 @@
 const { Input, Confirm } = require('enquirer');
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
 import child_process from 'child_process';
 import { promisify } from 'util';
 const exec = promisify(child_process.exec);
+import AWS from 'aws-sdk';
 import replaceAll from 'replace-in-files';
 
 export async function init(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
@@ -30,6 +31,17 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 		message: `Do you wanna use GitHub actions for deployments?`,
 		name: 'isGitHubActions'
 	}).run();
+
+	let defaultAWSRegion = 'eu-central-1';
+	let defaultAWSAccount = '1234567890';
+
+	if (isGitHubActions) {
+		try {
+			defaultAWSRegion = (await exec('aws configure get region')).stdout.replace('\n', '');
+			defaultAWSAccount = (await new AWS.STS().getCallerIdentity({}).promise()).Account;
+		} catch {}
+	}
+
 	const gitBranchName =
 		isGitHubActions &&
 		(await new Input({
@@ -40,14 +52,15 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 		isGitHubActions &&
 		(await new Input({
 			message: `Enter your AWS account number:`,
-			name: 'awsAccount'
+			name: 'awsAccount',
+			default: defaultAWSAccount
 		}).run());
 	const awsRegion =
 		isGitHubActions &&
 		(await new Input({
 			message: `Enter your AWS region:`,
 			name: 'awsRegion',
-			default: 'eu-central-1'
+			default: defaultAWSRegion
 		}).run());
 
 	if (!projectName) return;
