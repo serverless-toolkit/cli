@@ -125,9 +125,10 @@ module.exports.handler = async function (
 
 		const svelteComponent = vm.run(svxContent);
 		const response: Response = { statusCode: 200, cookies: [], headers: {} };
+		const functionNameToInvoke = 'load' || request.requestContext?.http?.method?.toLowerCase();
 		const data =
-			svelteComponent.load &&
-			(await svelteComponent.load(
+			svelteComponent[functionNameToInvoke] &&
+			(await svelteComponent[functionNameToInvoke](
 				{
 					...request,
 					...svelteComponent.metadata,
@@ -142,7 +143,8 @@ module.exports.handler = async function (
 
 		return {
 			...response,
-			cookies: [...response.cookies],
+			statusCode: response.statusCode,
+			cookies: response.cookies,
 			headers: { ...response.headers, 'content-type': ct },
 			isBase64Encoded,
 			body: generateHtml(head, css.code, html, data)
@@ -163,7 +165,7 @@ async function send(message) {
 		console.log(JSON.stringify(message, null, 4));
 		return;
 	}
-	
+
 	const ddb = new AWS.DynamoDB();
 	const api = new AWS.ApiGatewayManagementApi({ endpoint: process.env.WS_API_URL });
 
