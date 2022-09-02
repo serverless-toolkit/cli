@@ -6,6 +6,7 @@ import { ArgumentsCamelCase } from 'yargs';
 import child_process from 'child_process';
 import { promisify } from 'util';
 const exec = promisify(child_process.exec);
+import replaceAll from 'replace-in-files';
 
 export async function init(argv: ArgumentsCamelCase, env: { [key: string]: string }) {
 	const projectName = await new Input({
@@ -53,7 +54,7 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 
 	console.log('\r\n');
 	const spinner = new Spinner({
-		text: `%s initializing your project ${projectName}`,
+		text: `%s initializing your project ${projectName}\r\n`,
 		stream: process.stdout,
 		onTick: function (msg: any) {
 			this.clearLine(this.stream);
@@ -61,69 +62,38 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 		}
 	});
 	spinner.start();
+	console.log(join(process.cwd(), projectName));
+	mkdirSync(join(process.cwd(), projectName));
+	const result = await exec(`npx degit serverless-toolkit/init`, {
+		cwd: join(process.cwd(), projectName),
+		maxBuffer: 1000 * 1000 * 150
+	});
+	const files = [`${projectName}/**/*`, `${projectName}/**/.*`, `${projectName}/.github/**/*`];
 
+	await replaceAll({ files, from: /\$\{projectName\}/g, to: projectName });
+	await replaceAll({ files, from: /\$\{domainName\}/g, to: domainName || '' });
+	await replaceAll({ files, from: /\$\{awsRegion\}/g, to: awsRegion || '' });
+	await replaceAll({ files, from: /\$\{awsAccount\}/g, to: awsAccount || '' });
+	await replaceAll({
+		files,
+		from: /\$\{gitBranchName\}/g,
+		to: gitBranchName || ''
+	});
+
+	spinner.stop();
+	return;
+}
+
+/*
 	if (isGitHubActions) {
 		mkdirSync(join(process.cwd(), projectName, '.github/workflows'), { recursive: true });
 		writeFileSync(
 			join(process.cwd(), projectName, '.github/workflows/deploy.yml'),
-			`name: STK-${projectName}-Deployment
-
-on:
-  push:
-    branches: [${gitBranchName}]
-		
-env:
-  AWS_REGION: "${awsRegion}"
-  AWS_ACCOUNT: "${awsAccount}"
-		
-permissions:
-  id-token: write
-  contents: read
-jobs:
-  deployment:
-    runs-on: ubuntu-latest
-		
-    steps:
-    - name: Git clone the repository
-      uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: "npm"
-    - name: Get current STK package version
-      id: get-stk-pkg-version
-      run: |
-        echo "::set-output name=version::$(npm view @serverless-toolkit/cli version)"
-      shell: bash
-    - name: Cache STK already bootstrapped
-      uses: actions/cache@v3
-      id: cache
-      with:
-        path: /tmp/stk
-        key: \${{ steps.get-stk-pkg-version.outputs.version }}
-    - name: Install yarn dependencies
-      run: |
-        yarn install
-    - name: AWS configure credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: arn:aws:iam::\${{ env.AWS_ACCOUNT }}:role/GitHubActionRole
-        role-session-name: stk-${projectName}-deployment
-        aws-region: \${{ env.AWS_REGION }}
-    - name: STK bootstrap
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        yarn bootstrap
-    - name: STK deploy
-      run: |
-        yarn sync
-    - name: STK test
-      run: |
-        yarn test		
+			`
 `
 		);
 	}
-
+	
 	mkdirSync(join(process.cwd(), projectName, 'pages'), { recursive: true });
 	mkdirSync(join(process.cwd(), projectName, 'sagas'), { recursive: true });
 	mkdirSync(join(process.cwd(), projectName, 'workers'), { recursive: true });
@@ -252,7 +222,4 @@ cdk.outputs.json
 > stk bootstrap
 
 to prepare the development in AWS.`);
-
-	spinner.stop();
-	return;
-}
+*/
