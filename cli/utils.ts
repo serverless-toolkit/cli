@@ -52,10 +52,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 					format: 'cjs'
 				},
 				include: /\.svx|.svelte$/,
-				preprocess: [
-					sveltePreprocess(),
-					mdsvex()
-				]
+				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()]
 			})
 		],
 		loader: {
