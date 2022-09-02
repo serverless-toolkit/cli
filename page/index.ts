@@ -125,7 +125,9 @@ module.exports.handler = async function (
 
 		const svelteComponent = vm.run(svxContent);
 		const response: Response = { statusCode: 200, cookies: [], headers: {} };
-		const functionNameToInvoke = 'load' || request.requestContext?.http?.method?.toLowerCase();
+		const functionNameToInvoke = request.requestContext?.http?.method
+			? request.requestContext?.http?.method?.toLowerCase()
+			: 'load';
 		const data =
 			svelteComponent[functionNameToInvoke] &&
 			(await svelteComponent[functionNameToInvoke](
