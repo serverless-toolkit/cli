@@ -1,4 +1,4 @@
-const { Input, Confirm } = require('enquirer');
+const { Input, Confirm, Select } = require('enquirer');
 import { mkdirSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
@@ -13,6 +13,13 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 	const projectName = await new Input({
 		message: `Enter your project name:`,
 		name: 'projectName'
+	}).run();
+
+	const templateName = await new Select({
+		message: `Choose a init template:`,
+		name: 'templateName',
+		choices: ['main', 'custom-stack'],
+		default: 'main'
 	}).run();
 
 	const isRoute53Domain = await new Confirm({
@@ -77,7 +84,7 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 	spinner.start();
 	try {
 		mkdirSync(join(process.cwd(), projectName));
-		const result = await exec(`npx degit serverless-toolkit/init`, {
+		const result = await exec(`npx degit serverless-toolkit/init#${templateName}`, {
 			cwd: join(process.cwd(), projectName),
 			maxBuffer: 1000 * 1000 * 150
 		});
