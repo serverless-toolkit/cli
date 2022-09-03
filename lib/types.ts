@@ -25,7 +25,7 @@ export interface Response {
 	headers?: { [key: string]: string };
 }
 
-export type Saga = {
+export type ISaga = {
 	id?: string;
 	onAlarm?: () => void;
 	context?: Context;

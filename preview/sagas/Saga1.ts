@@ -1,6 +1,6 @@
-import { Context, Saga, Request } from '../../lib/types';
+import { Context, ISaga, Request } from '../../lib/types';
 
-class Saga1 implements Saga {
+class Saga1 implements ISaga {
 	value: number = 0;
 	context: Context;
 	request: Request;
