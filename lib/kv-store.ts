@@ -2,7 +2,11 @@ import AWS from 'aws-sdk';
 
 const ddb = new AWS.DynamoDB();
 
-export async function get(id: string, type: string) {
+export interface Item {
+	id: string;
+}
+
+export async function get<T extends Item>(id: string, type: string): Promise<T> {
 	const result = await ddb
 		.getItem({
 			TableName: process.env.DBTABLE,
@@ -10,14 +14,10 @@ export async function get(id: string, type: string) {
 			Key: AWS.DynamoDB.Converter.marshall({ id, type })
 		})
 		.promise();
-	return AWS.DynamoDB.Converter.unmarshall(result.Item);
+	return AWS.DynamoDB.Converter.unmarshall(result.Item) as T;
 }
 
-export interface Item {
-	id: string;
-}
-
-export async function set(item: Item & { [key: string]: any }, type: string) {
+export async function set<T extends Item>(item: T & { [key: string]: any }, type: string): Promise<void> {
 	await ddb
 		.putItem({
 			TableName: process.env.DBTABLE,

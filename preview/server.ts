@@ -8,6 +8,8 @@ import sveltePreprocess from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { send } from 'process';
 
 const app = express();
 app.use(bodyParser.json());
@@ -21,11 +23,10 @@ const defaultLambdaConfig = {
 };
 
 app.all('/workers/:name', async function (req, res) {
-	console.log(req);
-	const fileContent = (
-		await readFile(join(__dirname, 'workers', `${req.params.name}.js`))
-	).toString();
+	const path = join(__dirname, 'workers', `${req.params.name}.js`);
+	if (!existsSync(path)) return res.sendStatus(404);
 
+	const fileContent = (await readFile(path)).toString();
 	const result = (await execute({
 		...defaultLambdaConfig,
 		event: {
@@ -42,10 +43,10 @@ app.all('/workers/:name', async function (req, res) {
 });
 
 app.all('/sagas/:name', async function (req, res) {
-	const fileContent = (
-		await readFile(join(__dirname, 'sagas', `${req.params.name}.js`))
-	).toString();
+	const path = join(__dirname, 'sagas', `${req.params.name}.js`);
+	if (!existsSync(path)) return res.sendStatus(404);
 
+	const fileContent = (await readFile(path)).toString();
 	const result = await execute({
 		...defaultLambdaConfig,
 		event: {
@@ -62,6 +63,7 @@ app.all('/sagas/:name', async function (req, res) {
 
 app.all(['/pages/:name', '/:name'], async function (req, res) {
 	const path = join(process.cwd(), 'preview', 'pages', `/${req.params.name}.svx`);
+	if (!existsSync(path)) return res.sendStatus(404);
 
 	const buildResult = await esbuild.build({
 		entryPoints: [path],
@@ -106,7 +108,6 @@ app.all(['/pages/:name', '/:name'], async function (req, res) {
 			'.pdf': 'copy'
 		}
 	});
-
 	const [fileContent] = buildResult.outputFiles;
 	const result = (await execute({
 		...defaultLambdaConfig,

@@ -162,7 +162,7 @@ module.exports.handler = async function (
 	}
 };
 
-async function send(message) {
+async function send(message: any) {
 	if (!(process.env.DBTABLE || process.env.WS_API_URL)) {
 		console.log(JSON.stringify(message, null, 4));
 		return;
@@ -174,7 +174,7 @@ async function send(message) {
 	try {
 		const result = await ddb
 			.scan({
-				TableName: process.env.DBTABLE,
+				TableName: process.env.DBTABLE!,
 				ConsistentRead: true,
 				FilterExpression: '#d0a30 = :d0a30',
 				ExpressionAttributeValues: { ':d0a30': { S: 'connection' } },
@@ -182,29 +182,30 @@ async function send(message) {
 			})
 			.promise();
 
+		if (!result.Items) return;
+
 		await Promise.all(
-			result.Items?.map((x) => AWS.DynamoDB.Converter.unmarshall(x)).map((x) => {
-				return api
-					.postToConnection({
-						ConnectionId: x.id,
-						Data: JSON.stringify(message, null, 4)
-					})
-					.promise()
-					.catch((error) => {
-						console.error(error);
-						return ddb
+			result.Items.map((x) => AWS.DynamoDB.Converter.unmarshall(x)).map(async (x) => {
+				try {
+					return await api
+						.postToConnection({
+							ConnectionId: x?.id,
+							Data: JSON.stringify(message, null, 4)
+						})
+						.promise();
+				} catch {
+					try {
+						return await ddb
 							.deleteItem({
-								TableName: process.env.DBTABLE,
+								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
-									id: x.id,
+									id: x?.id,
 									type: 'connection'
 								})
 							})
-							.promise()
-							.catch((error) => {
-								console.error(error);
-							});
-					});
+							.promise();
+					} catch {}
+				}
 			})
 		);
 	} catch (error) {

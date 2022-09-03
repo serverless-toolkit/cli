@@ -82,6 +82,12 @@ export class ApiGatewayStack extends NestedStack {
 		});
 
 		this.httpApi.addRoutes({
+			path: '/api/{proxy+}',
+			methods: [HttpMethod.ANY],
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler)
+		});
+
+		this.httpApi.addRoutes({
 			path: '/pages/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler)
@@ -107,6 +113,18 @@ export class ApiGatewayStack extends NestedStack {
 
 		this.httpApi.addRoutes({
 			path: '/sagas/{proxy+}',
+			methods: [HttpMethod.ANY],
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
+		});
+
+		this.httpApi.addRoutes({
+			path: '/object/{proxy+}',
+			methods: [HttpMethod.ANY],
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
+		});
+
+		this.httpApi.addRoutes({
+			path: '/objects/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
 		});

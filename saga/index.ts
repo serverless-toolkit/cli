@@ -5,26 +5,24 @@ import { NodeVM } from 'vm2';
 
 export async function handler(request: any): Promise<any> {
 	const s3 = new AWS.S3();
-	let body = request.body || {};
 
 	try {
 		if (request.body && request.isBase64Encoded) {
-			body = JSON.parse(Buffer.from(request.body, 'base64').toString());
+			request.body = JSON.parse(Buffer.from(request.body, 'base64').toString());
 		}
 	} catch (error) {
 		console.error(error);
 	}
 
 	const event = {
-		id: request.queryStringParameters?.id || request.event?.id || body?.id || v1(),
-		...request.event,
-		...body,
-		...request.queryStringParameters
+		id: request.queryStringParameters?.id || request.event?.id || request.body?.id || v1(),
+		object: request.body.object,
+		command: request.queryStringParameters.command || request.body.command
 	};
 
 	//Restore state from DDB
 	const state = await store.get(event?.id, 'saga');
-	let saga = { state: { id: event?.id, alarm: undefined }, id: event?.id };
+	let saga = { state: { id: event?.id, alarm: 0 }, id: event?.id };
 
 	//Init domain object
 	const vm = new NodeVM({
@@ -34,6 +32,7 @@ export async function handler(request: any): Promise<any> {
 			process,
 			event,
 			state,
+			request,
 			context: {
 				store,
 				alarm: {
@@ -49,8 +48,12 @@ export async function handler(request: any): Promise<any> {
 						saga.state.alarm = new Date(new Date().getTime() + minute * 60000).getTime();
 						await store.set(saga.state, 'saga');
 					},
+					async atDate(date: Date) {
+						saga.state.alarm = date.getTime();
+						await store.set(saga.state, 'saga');
+					},
 					async clear() {
-						saga.state.alarm = undefined;
+						saga.state.alarm = 0;
 						await store.set(saga.state, 'saga');
 					}
 				}
@@ -90,12 +93,12 @@ export async function handler(request: any): Promise<any> {
 		await send({ timestamp: new Date(), message: `Invoke saga: ${codeFileName}.` });
 
 		saga = vm.run(`${s3Content}
-const saga = new ${event.object || request.rawPath?.replace('/sagas/', '')}(event);
-Object.assign(saga, event, state, { context });
+const saga = new ${event.object || request.rawPath?.replace('/sagas/', '')}();
+Object.assign(saga, event, state, { request, context });
 event.command && saga[event.command] && saga[event.command]();
 return saga;`);
 		await store.set(
-			{ ...saga, object: event.object, context: undefined, command: undefined },
+			{ ...saga, object: event.object, context: undefined, command: undefined, request: undefined },
 			'saga'
 		);
 
@@ -106,7 +109,7 @@ return saga;`);
 	}
 }
 
-async function send(message) {
+async function send(message: any) {
 	if (!(process.env.DBTABLE || process.env.WS_API_URL)) {
 		console.log(JSON.stringify(message, null, 4));
 		return;
@@ -118,7 +121,7 @@ async function send(message) {
 	try {
 		const result = await ddb
 			.scan({
-				TableName: process.env.DBTABLE,
+				TableName: process.env.DBTABLE!,
 				ConsistentRead: true,
 				FilterExpression: '#d0a30 = :d0a30',
 				ExpressionAttributeValues: { ':d0a30': { S: 'connection' } },
@@ -126,29 +129,30 @@ async function send(message) {
 			})
 			.promise();
 
+		if (!result.Items) return;
+
 		await Promise.all(
-			result.Items?.map((x) => AWS.DynamoDB.Converter.unmarshall(x)).map((x) => {
-				return api
-					.postToConnection({
-						ConnectionId: x?.id,
-						Data: JSON.stringify(message, null, 4)
-					})
-					.promise()
-					.catch((error) => {
-						console.error(error);
-						return ddb
+			result.Items.map((x) => AWS.DynamoDB.Converter.unmarshall(x)).map(async (x) => {
+				try {
+					return await api
+						.postToConnection({
+							ConnectionId: x?.id,
+							Data: JSON.stringify(message, null, 4)
+						})
+						.promise();
+				} catch {
+					try {
+						return await ddb
 							.deleteItem({
-								TableName: process.env.DBTABLE,
+								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
 									id: x?.id,
 									type: 'connection'
 								})
 							})
-							.promise()
-							.catch((error) => {
-								console.error(error);
-							});
-					});
+							.promise();
+					} catch {}
+				}
 			})
 		);
 	} catch (error) {

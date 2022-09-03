@@ -9,4 +9,10 @@ test.describe('Workers tests', () => {
 		await expect(response).toHaveStatusCode(200);
 		await expect(response).toMatchJSON({ value: 'Hello World!' });
 	});
+
+	test('worker1 that not exists should status code 404', async ({ request }) => {
+		const response = await request.get('/workers/404');
+
+		await expect(response).toHaveStatusCode(404);
+	});
 });

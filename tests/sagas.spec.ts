@@ -5,7 +5,13 @@ expect.extend(playwrightApiMatchers);
 test.describe('Sagas tests', () => {
 	let sagaId: string;
 
-	test('Saga1 should return JSON "Hello World!"', async ({ request }) => {
+	test('Saga1 that not exists should status code 404', async ({ request }) => {
+		const response = await request.get('/sagas/404');
+
+		await expect(response).toHaveStatusCode(404);
+	});
+
+	test('Saga1 should return JSON "value: 0"', async ({ request }) => {
 		const response = await request.get(`/sagas/Saga1`);
 		const data = await response.json();
 
