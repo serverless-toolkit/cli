@@ -22,13 +22,13 @@ Optionen:
 ## Setup a new project
 
 ```
-➜ npx @serverless-toolkit/cli init
+➜ npx @serverless-toolkit/cli@latest init
 ```
 
 **or**
 
 ```
-➜ npm create @serverless-toolkit/cli
+➜ npm create @serverless-toolkit/cli@latest
 ```
 
 ```
