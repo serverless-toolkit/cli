@@ -16,8 +16,8 @@ export async function handler(request: any): Promise<any> {
 
 	const event = {
 		id: request.queryStringParameters?.id || request.event?.id || request.body?.id || v1(),
-		object: request.body.object,
-		command: request.queryStringParameters.command || request.body.command
+		object: request.body?.object,
+		command: request.queryStringParameters?.command || request.body?.command
 	};
 
 	//Restore state from DDB
