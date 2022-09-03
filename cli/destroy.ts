@@ -1,5 +1,5 @@
 const { Confirm } = require('enquirer');
-import { existsSync, realpathSync } from 'fs';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import { Spinner } from 'cli-spinner';
 import { ArgumentsCamelCase } from 'yargs';
@@ -28,7 +28,7 @@ export async function destroy(argv: ArgumentsCamelCase, env: { [key: string]: st
 	const customDeployFile = join(process.cwd(), 'stacks', 'deploy.js');
 	const appFilePath = existsSync(customDeployFile)
 		? customDeployFile
-		: join(realpathSync(__filename), '..', '..', '..', 'stacks/deploy.js');
+		: join(__dirname, 'deploy.js');
 
 	try {
 		const destroy = await exec(`npx cdk destroy -f --app ${appFilePath} "*"`, {

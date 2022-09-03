@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { App, Tags } from 'aws-cdk-lib';
 import { config } from 'dotenv';
-import { ServerlessToolkitStack } from './index';
+import { ServerlessToolkitStack } from '@serverless-toolkit/stacks';
 
 (async () => {
 	const environment = config({ path: join(process.cwd(), '.env') }).parsed || {};

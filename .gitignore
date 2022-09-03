@@ -5,9 +5,6 @@ yarn-error.log
 .build
 cdk.context.json
 cdk.outputs.json
-stacks/**/*.js
-stacks/**/*.js.map
-stacks/**/*.d.ts
 preview/**/*.js
 preview/**/*.js.map
 preview/**/*.d.ts
