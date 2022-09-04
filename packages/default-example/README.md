@@ -1,1 +1,1 @@
-# Serverless-Toolkit Example
+# Serverless-Toolkit Default Example
