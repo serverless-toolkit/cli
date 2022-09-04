@@ -26,5 +26,6 @@
 		"lambda-multipart-parser": "1.0.1",
 		"mime-types": "2.1.35",
 		"vm2": "3.9.11"
-	}
+	},
+	"gitHead": "d0c1e1923611c9525c67f94f651d7176011a65c0"
 }

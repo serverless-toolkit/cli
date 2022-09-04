@@ -67,5 +67,6 @@
 		"update-dotenv": "1.1.1",
 		"ws-reconnect": "1.0.7",
 		"yargs": "17.5.1"
-	}
+	},
+	"gitHead": "d0c1e1923611c9525c67f94f651d7176011a65c0"
 }
