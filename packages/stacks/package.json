@@ -3,7 +3,7 @@
 	"version": "3.0.23",
 	"description": "Serverless-Toolkit AWS-CDK Stacks",
 	"main": ".build/index.js",
-	"types": "./build/index.d.ts",
+	"types": ".build/index.d.ts",
 	"scripts": {
 		"build": "tsc"
 	},

@@ -1,0 +1,12 @@
+---
+title: Demo
+---
+
+<svelte:head>
+	<title>{title}</title>
+</svelte:head>
+
+# {title}
+
+<style>
+</style>

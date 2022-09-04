@@ -1,0 +1,12 @@
+---
+title: Simple Page Example
+description: A simple example page using MdSvx.
+---
+
+<svelte:head>
+    <title>{title}</title>
+</svelte:head>
+
+# {title}
+
+<pre data-test="description">{description}</pre>

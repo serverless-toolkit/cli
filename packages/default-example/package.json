@@ -17,8 +17,10 @@
 		"@playwright/test": "latest",
 		"@serverless-toolkit/cli": "^3.0.23",
 		"@serverless-toolkit/stacks": "^3.0.23",
+		"@serverless-toolkit/sdk": "^3.0.22",
 		"aws-cdk": "latest",
 		"odottaa": "latest",
-		"playwright": "latest"
+		"playwright": "latest",
+		"randomstring": "1.2.2"
 	}
 }

@@ -1,0 +1,37 @@
+---
+title: STK examples page
+---
+
+# {title}
+
+![Logo](image1.png)
+
+## Pages
+
+- [Markdown + Svelte - load data from DynamoDB](/page1)
+- [HTML form submit](/form1)
+- [Serve static files](/data.json)
+- [File upload using a form](/form2)
+- [Import of Svelte components](/page2)
+- [Use query parameters](/page3?a=1&b=2)
+- [Set cookies](/page4)
+- [Get cookies](/page7)
+- [Use base layouts](/page5)
+- [Redirect back to index page](/page6)
+- [Simple Testing Page](/simple-test)
+
+## Workers
+
+- [Worker Task 1](/workers/task1)
+- [Worker Task 2](/workers/task2)
+- [Worker Task 3](/workers/task3)
+- [Worker Task 4](/workers/task4)
+
+## Sagas
+
+- [Saga Counter](/sagas/Counter)
+- [Saga counter-1 get state](/sagas/Counter?id=counter-1)
+- [Saga counter-1 "increment" command](/sagas/Counter?id=counter-1&command=increment)
+- [Saga counter-1 "decrement" command](/sagas/Counter?id=counter-1&command=decrement)
+- [Saga Simple](/sagas/Simple)
+- [Saga simple-1 "next" command](/sagas/Simple?id=simple-1&command=next)

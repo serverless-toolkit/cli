@@ -1,16 +1,35 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Pages tests', () => {
-	test('page page1.svx should contain title "Page1"', async ({ page }) => {
-		const response = await page.goto('/page1');
+test.describe("Page tests", () => {
+  test('page index.svx should contain title "Simple Page Example"', async ({
+    page,
+  }) => {
+    await page.goto("https://examples.serverless-toolkit.com/simple-test");
 
-		expect(response?.status()).toBe(200);
-		await expect(page).toHaveTitle('Page1');
+    await expect(page).toHaveTitle("Simple Page Example");
+  });
+
+  test('page index.svx should contain "data-test=description" with text', async ({
+    page,
+  }) => {
+    await page.goto("https://examples.serverless-toolkit.com/simple-test");
+
+    await expect(page.locator("data-test=description")).toHaveText(
+      "A simple example page using MdSvx."
+    );
+  });
+
+  test('page2 should contain a button', async ({ page }) => {
+		await page.goto('https://examples.serverless-toolkit.com/pages/page2');
+		const name = await page.locator('data-testid=btn').innerText();
+
+		expect(name).toBe('Press Me!');
 	});
 
-	test('page that not exists should status code 404', async ({ page }) => {
-		const response = await page.goto('/404');
+	test('page3 should have title "Query Parameters"', async ({ page }) => {
+		await page.goto('https://examples.serverless-toolkit.com/pages/page3');
+		const title = await page.title();
 
-		expect(response?.status()).toBe(404);
+		expect(title).toBe('Query Parameters');
 	});
 });

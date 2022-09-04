@@ -1,9 +1,0 @@
----
-title: Page1
----
-
-# {title}
-
-<svelte:head>
-    <title>{title}</title>
-</svelte:head>
