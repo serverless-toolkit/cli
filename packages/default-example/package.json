@@ -14,8 +14,8 @@
 		"aws-sdk": "latest"
 	},
 	"devDependencies": {
-		"@serverless-toolkit/cli": "*",
-		"@serverless-toolkit/sdk": "*",
+		"@serverless-toolkit/cli": "^3.0.4",
+		"@serverless-toolkit/sdk": "^3.0.4",
 		"@playwright/test": "latest",
 		"odottaa": "latest",
 		"playwright": "latest",
