@@ -7,7 +7,9 @@
 	"scripts": {
 		"build": "tsc"
 	},
-	"keywords": [],
+	"keywords": [
+		"serverless"
+	],
 	"license": "MIT",
 	"dependencies": {
 		"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
