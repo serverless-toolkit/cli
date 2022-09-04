@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "@serverless-toolkit/default-example",
-	"version": "3.0.22",
+	"version": "3.0.23",
 	"scripts": {
 		"sync": "stk sync",
 		"bootstrap": "stk bootstrap",
@@ -15,8 +15,8 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "latest",
-		"@serverless-toolkit/cli": "^3.0.22",
-		"@serverless-toolkit/stacks": "^3.0.22",
+		"@serverless-toolkit/cli": "^3.0.23",
+		"@serverless-toolkit/stacks": "^3.0.23",
 		"aws-cdk": "latest",
 		"odottaa": "latest",
 		"playwright": "latest"
