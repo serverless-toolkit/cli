@@ -11,13 +11,15 @@
 		"serverless"
 	],
 	"license": "MIT",
-	"dependencies": {
-		"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
-		"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
+	"devDependencies": {
 		"@serverless-toolkit/sdk": "^3.0.13",
 		"@types/aws-lambda": "8.10.102",
 		"@types/node": "18.7.14",
-		"@types/uuid": "8.3.4",
+		"@types/uuid": "8.3.4"
+	},
+	"dependencies": {
+		"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
+		"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
 		"aws-cdk": "2.40.0",
 		"aws-cdk-lib": "2.40.0",
 		"aws-lambda": "1.0.7",
