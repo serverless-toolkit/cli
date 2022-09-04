@@ -1,9 +1,9 @@
 {
 	"scripts": {
-		"lerna": "lerna bootstrap",
+		"lerna": "lerna bootstrap && lerna exec -- npm shrinkwrap",
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
-		"publish": "npm run build && lerna exec -- npm shrinkwrap && lerna version patch && lerna publish from-git --no-private",
+		"publish": "lerna version patch && npm run build && lerna publish from-git --no-private",
 		"example:bootstrap": "lerna run bootstrap --stream"
 	},
 	"devDependencies": {
