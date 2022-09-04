@@ -21,6 +21,7 @@
 		"aws-cdk": "latest",
 		"odottaa": "latest",
 		"playwright": "latest",
-		"randomstring": "1.2.2"
+		"randomstring": "1.2.2",
+		"svelte": "3.50.0"
 	}
 }

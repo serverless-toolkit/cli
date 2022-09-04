@@ -1,7 +1,7 @@
 class Simple {
-  message = "Start";
+	message = 'Start';
 
-  next() {
-    this.message += " - Next";
-  }
+	next() {
+		this.message += ' - Next';
+	}
 }
