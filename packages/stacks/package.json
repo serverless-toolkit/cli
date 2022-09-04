@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.19",
+	"version": "3.0.20",
 	"description": "Serverless-Toolkit AWS-CDK Stacks",
 	"main": ".build/index.js",
 	"types": "./build/index.d.ts",
@@ -11,7 +11,7 @@
 		"serverless"
 	],
 	"license": "MIT",
-	"devDependencies": {		
+	"devDependencies": {
 		"@types/aws-lambda": "8.10.102",
 		"@types/node": "18.7.14",
 		"@types/uuid": "8.3.4"
