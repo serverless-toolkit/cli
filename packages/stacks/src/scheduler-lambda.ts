@@ -27,7 +27,7 @@ export class SchedulerLambdaStack extends NestedStack {
 		super(scope, id, props);
 		this.schedulerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'SchedulerFunctionHandler', {
 			entry: join(realpathSync(__filename), '..', '..', 'scheduler', 'index.ts'),
-			depsLockFilePath: join(realpathSync(__filename), '..', '..', 'yarn.lock'),
+			depsLockFilePath: join(realpathSync(__filename), '..', '..', 'package-lock.json'),
 			projectRoot: join(realpathSync(__filename), '..', '..'),
 			awsSdkConnectionReuse: true,
 			runtime: aws_lambda.Runtime.NODEJS_16_X,

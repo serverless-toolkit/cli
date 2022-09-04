@@ -100,14 +100,14 @@ export async function init(argv: ArgumentsCamelCase, env: { [key: string]: strin
 			to: gitBranchName || ''
 		});
 
-		await exec('yarn', { cwd: join(process.cwd(), projectName) });
+		await exec('npm install', { cwd: join(process.cwd(), projectName) });
 	} catch (err) {
 		console.error(err.stderr || err.stdout);
 	}
 	console.log('\r\n');
 	console.log(`Project ${projectName} initiated. Change to folder "${projectName}" and enter
 
-> yarn bootstrap
+> npm run bootstrap
 
 to prepare the development in AWS.`);
 

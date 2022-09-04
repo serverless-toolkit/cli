@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
 cdk.out
-yarn-error.log
 .build
 cdk.context.json
 cdk.outputs.json

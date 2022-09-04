@@ -9,7 +9,7 @@
 	},
 	"keywords": [],
 	"license": "MIT",
-	"devDependencies": {
+	"dependencies": {
 		"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
 		"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
 		"@serverless-toolkit/sdk": "^3.0.6",
