@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"scripts": {
-		"lerna": "lerna bootstrap && lerna exec -- npm shrinkwrap",
+		"lerna": "lerna bootstrap && lerna exec --scope=stacks -- npm shrinkwrap",
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
 		"publish": "lerna version patch && npm run build && lerna publish from-package --no-private",
