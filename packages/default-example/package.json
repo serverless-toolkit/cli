@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "@serverless-toolkit/example",
+	"name": "@serverless-toolkit/default-example",
 	"version": "1.0.0",
 	"scripts": {
 		"sync": "stk sync",

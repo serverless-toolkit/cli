@@ -27,8 +27,7 @@
 		"stk": ".build/cli/index.js"
 	},
 	"scripts": {
-		"build": "tsc",
-		"prepublishOnly": "npm run test && npm version patch && npm run build"
+		"build": "tsc"
 	},
 	"devDependencies": {
 		"@playwright/test": "1.25.1",
