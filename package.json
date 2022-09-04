@@ -3,7 +3,7 @@
 		"lerna": "lerna bootstrap",
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
-		"publish": "npm run build && lerna publish patch --no-private",
+		"publish": "lerna exec -- npm shrinkwrap && npm run build && lerna publish patch --no-private",
 		"example:bootstrap": "lerna run bootstrap --stream"
 	},
 	"devDependencies": {

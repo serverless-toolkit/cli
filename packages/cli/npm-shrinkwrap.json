@@ -9,6 +9,7 @@
 			"version": "3.0.12",
 			"license": "MIT",
 			"dependencies": {
+				"@serverless-toolkit/stacks": "^3.0.12",
 				"aws-cdk": "2.40.0",
 				"aws-cdk-lib": "2.40.0",
 				"aws-sdk": "2.1209.0",

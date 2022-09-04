@@ -3,4 +3,3 @@ node_modules
 cli
 tsconfig.json
 .gitignore
-!package-lock.json
