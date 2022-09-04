@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/sdk",
-	"version": "3.0.16",
+	"version": "3.0.17",
 	"description": "Serverless-Toolkit SDK",
 	"main": ".build/index.js",
 	"types": ".build/index.d.ts",
