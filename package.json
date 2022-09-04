@@ -3,8 +3,7 @@
 		"lerna": "lerna bootstrap",
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
-		"version": "lerna version --no-private",
-		"publish": "lerna publish --no-private"
+		"publish": "lerna version --no-private && lerna publish --no-private"
 	},
 	"devDependencies": {
 		"lerna": "5.5.0"
