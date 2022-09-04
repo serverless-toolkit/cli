@@ -5,7 +5,9 @@
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
 		"publish": "lerna version patch && npm run build && lerna publish from-package --no-private",
-		"example:bootstrap": "lerna run bootstrap --stream"
+		"example:bootstrap": "lerna run bootstrap --stream",
+		"example:sync": "lerna run sync --stream",
+		"example:test": "lerna run test --stream"
 	},
 	"devDependencies": {
 		"lerna": "5.5.0"
