@@ -1,17 +1,17 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.20",
+	"version": "3.0.22",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.20",
+			"version": "3.0.22",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
 				"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
-				"@serverless-toolkit/sdk": "^3.0.19",
+				"@serverless-toolkit/sdk": "^3.0.22",
 				"aws-cdk": "2.40.0",
 				"aws-cdk-lib": "2.40.0",
 				"aws-lambda": "1.0.7",
