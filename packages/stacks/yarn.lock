@@ -22,6 +22,13 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.6.tgz#45be4184f00e505411bc265a05e709764114acd8"
   integrity sha512-hqmVU2mUjH6J2ZivHphJ/Pdse2ZD+uGCHK0uvsiLDk/JnSedEVj77CiVUnbMKuU4tih1TZZL8tG9DExQg/GZsw==
 
+"@serverless-toolkit/sdk@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@serverless-toolkit/sdk/-/sdk-3.0.6.tgz#5200acdbd5397a1eaec6104f214e9414ba983133"
+  integrity sha512-nIJIGSnsSN+BeNbBVzFV67rrW/tWSsHgiTVWvnykqVmJlIQ6C89EqrAbycJYwx4jn4S1Nv7HUxQ1YShQ88aEUg==
+  dependencies:
+    aws-sdk "2.1209.0"
+
 "@types/aws-lambda@8.10.102":
   version "8.10.102"
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.102.tgz#d2402224ec30cdddfb669005c25b6ee01fd6f5be"

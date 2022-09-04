@@ -4,7 +4,8 @@
 		"build": "lerna run build --stream",
 		"clean": "lerna clean",
 		"publish": "npm run build && lerna publish patch --no-private",
-		"example:bootstrap": "lerna run bootstrap --stream"
+		"example:bootstrap": "lerna run bootstrap --stream",
+		"upgrade": "lerna exec -- yarn upgrade-interactive --latest"
 	},
 	"devDependencies": {
 		"lerna": "5.5.0"

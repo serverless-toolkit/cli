@@ -33,6 +33,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@serverless-toolkit/stacks@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@serverless-toolkit/stacks/-/stacks-3.0.7.tgz#34540d8b736809ad1f0237db195e032179c7be5a"
+  integrity sha512-nnHuBVZ7KokpMZWRz2DIsmcLv6/1noEKJwnKE1KWwYtp+D11LWxmFlsPVvyZo5bKznssffTuv0SNbnsZCsGVbg==
+
 "@types/cli-spinner@0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@types/cli-spinner/-/cli-spinner-0.2.1.tgz#d41515446773b40693ad5dd23ed74ea897a58278"
