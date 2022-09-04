@@ -1,20 +1,16 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.12",
+	"version": "3.0.13",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.12",
+			"version": "3.0.13",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
 				"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
-				"@serverless-toolkit/sdk": "^3.0.11",
-				"@types/aws-lambda": "8.10.102",
-				"@types/node": "18.7.14",
-				"@types/uuid": "8.3.4",
 				"aws-cdk": "2.40.0",
 				"aws-cdk-lib": "2.40.0",
 				"aws-lambda": "1.0.7",
@@ -33,6 +29,12 @@
 				"typescript": "4.8.2",
 				"uuid": "8.3.2",
 				"vm2": "3.9.11"
+			},
+			"devDependencies": {
+				"@serverless-toolkit/sdk": "^3.0.13",
+				"@types/aws-lambda": "8.10.102",
+				"@types/node": "18.7.14",
+				"@types/uuid": "8.3.4"
 			}
 		},
 		"node_modules/@aws-cdk/aws-apigatewayv2-alpha": {
@@ -78,7 +80,8 @@
 		"node_modules/@types/aws-lambda": {
 			"version": "8.10.102",
 			"resolved": "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.102.tgz",
-			"integrity": "sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg=="
+			"integrity": "sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg==",
+			"dev": true
 		},
 		"node_modules/@types/node": {
 			"version": "18.7.14",
@@ -106,7 +109,8 @@
 		"node_modules/@types/uuid": {
 			"version": "8.3.4",
 			"resolved": "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.4.tgz",
-			"integrity": "sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw=="
+			"integrity": "sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==",
+			"dev": true
 		},
 		"node_modules/acorn": {
 			"version": "8.8.0",
@@ -2028,7 +2032,8 @@
 		"@types/aws-lambda": {
 			"version": "8.10.102",
 			"resolved": "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.102.tgz",
-			"integrity": "sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg=="
+			"integrity": "sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg==",
+			"dev": true
 		},
 		"@types/node": {
 			"version": "18.7.14",
@@ -2056,7 +2061,8 @@
 		"@types/uuid": {
 			"version": "8.3.4",
 			"resolved": "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.4.tgz",
-			"integrity": "sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw=="
+			"integrity": "sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==",
+			"dev": true
 		},
 		"acorn": {
 			"version": "8.8.0",
