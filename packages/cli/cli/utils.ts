@@ -16,10 +16,10 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 		const { stdout } = await exec(`npx playwright test --reporter json`, {
 			env: {
 				...process.env,
-				...env
+				...env,
 			},
 
-			maxBuffer: 1024 * 1024 * 150
+			maxBuffer: 1024 * 1024 * 150,
 		});
 		testReport(JSON.parse(stdout));
 	} catch (err) {
@@ -44,16 +44,17 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		treeShaking: false,
 		plugins: [
 			nodeExternalsPlugin({
-				devDependencies: false
+				devDependencies: false,
 			}),
 			sveltePlugin({
 				compilerOptions: {
 					generate: 'ssr',
-					format: 'cjs'
+					format: 'cjs',
+					sveltePath: join(__dirname, '..', '..', 'node_modules', 'svelte'),
 				},
 				include: /\.svx|.svelte$/,
-				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()]
-			})
+				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
+			}),
 		],
 		loader: {
 			'.css': 'copy',
@@ -71,8 +72,8 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			'.mp3': 'copy',
 			'.mp4': 'copy',
 			'.avi': 'copy',
-			'.pdf': 'copy'
-		}
+			'.pdf': 'copy',
+		},
 	});
 
 	for (const file of buildResult.outputFiles) {
@@ -82,7 +83,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			.putObject({
 				Bucket: `stk-objects-${projectName}`,
 				Key: file.path,
-				Body: file.contents
+				Body: file.contents,
 			})
 			.promise();
 	}
@@ -104,7 +105,7 @@ export async function syncCode(projectName: string, s3: AWS.S3) {
 		.watch(['workers', 'pages', 'sagas'], {
 			ignoreInitial: false,
 			ignored: /(^|[\/\\])\../,
-			persistent: false
+			persistent: false,
 		})
 		.on('all', async (event, path) => {
 			if (event !== 'add') return;
