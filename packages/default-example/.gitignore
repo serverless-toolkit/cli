@@ -3,3 +3,4 @@ node_modules
 .build
 cdk.out
 cdk.context.json
+npm-shrinkwrap.json
