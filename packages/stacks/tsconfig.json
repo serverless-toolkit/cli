@@ -10,5 +10,5 @@
 		"resolveJsonModule": true,
 		"declaration": true
 	},
-	"include": ["lib", "cli"]
+	"include": ["src"]
 }

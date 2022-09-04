@@ -1,0 +1,24 @@
+{
+	"private": true,
+	"name": "@serverless-toolkit/example",
+	"version": "1.0.0",
+	"scripts": {
+		"sync": "stk sync",
+		"bootstrap": "stk bootstrap",
+		"destroy": "stk destroy",
+		"test": "stk test",
+		"dev": "stk dev",
+		"logs": "stk logs"
+	},
+	"dependencies": {
+		"aws-sdk": "latest"
+	},
+	"devDependencies": {
+		"@serverless-toolkit/cli": "*",
+		"@serverless-toolkit/sdk": "*",
+		"@playwright/test": "latest",
+		"odottaa": "latest",
+		"playwright": "latest",
+		"aws-cdk": "latest"
+	}
+}

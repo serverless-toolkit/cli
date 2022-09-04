@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"module": "Node16",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "ESNext",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": ".build",
+		"resolveJsonModule": true,
+		"declaration": true
+	},
+	"include": ["src/"]
+}

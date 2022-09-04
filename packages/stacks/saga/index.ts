@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import { v1 } from 'uuid';
-import * as store from '../lib/kv-store';
+import { kvStore as store } from '@serverless-toolkit/sdk';
 import { NodeVM } from 'vm2';
 
 export async function handler(request: any): Promise<any> {
@@ -93,7 +93,7 @@ export async function handler(request: any): Promise<any> {
 		await send({ timestamp: new Date(), message: `Invoke saga: ${codeFileName}.` });
 
 		saga = vm.run(`${s3Content}
-const saga = new ${event.object || request.rawPath?.replace('/sagas/', '')}();
+const saga = new ${event.object || request.rawPath?.split('/').slice(-1).join()}();
 Object.assign(saga, event, state, { request, context });
 event.command && saga[event.command] && saga[event.command]();
 return saga;`);

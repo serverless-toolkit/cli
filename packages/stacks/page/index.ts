@@ -5,8 +5,7 @@ import querystring from 'querystring';
 import mimetype from 'mime-types';
 import multipartFormParser from 'lambda-multipart-parser';
 import { NodeVM } from 'vm2';
-import * as store from '../lib/kv-store';
-import { Request, Response } from '../lib';
+import { Request, Response, kvStore as store } from '@serverless-toolkit/sdk';
 
 module.exports.handler = async function (
 	request: APIGatewayProxyEventV2 & { fileContent: string }
