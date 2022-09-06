@@ -72,6 +72,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			'.mp4': 'copy',
 			'.avi': 'copy',
 			'.pdf': 'copy',
+			'.yml': 'copy',
 		},
 	});
 
