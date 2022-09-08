@@ -4,7 +4,7 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { Request, Response, kvStore as store } from '@serverless-toolkit/sdk';
 
 export async function handler(request: APIGatewayProxyEventV2 & { fileContent: string }) {
-	const s3 = new AWS.S3();
+	const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 	let body = request.body || {};
 
 	try {
@@ -17,7 +17,7 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 
 	const event = {
 		...request,
-		body
+		body,
 	} as Request;
 
 	const response: Response = { statusCode: 200, cookies: [], headers: {} };
@@ -29,15 +29,15 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 			response,
 			process,
 			context: {
-				store
-			}
+				store,
+			},
 		},
 		wrapper: 'none',
 		require: {
 			external: true,
 			builtin: ['*'],
-			resolve: (a) => require.resolve(a)
-		}
+			resolve: (a) => require.resolve(a),
+		},
 	});
 	vm.on('console.log', async (data) => {
 		await send({ timestamp: new Date(), message: data });
@@ -59,7 +59,7 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Worker: ${codeFileName} not found` });
 			return {
-				statusCode: 404
+				statusCode: 404,
 			};
 		}
 		await send({ timestamp: new Date(), message: `Invoke worker: ${codeFileName}` });
@@ -70,7 +70,7 @@ return ${codeFileName?.split('/').slice(-1).join()}(event, response);
 
 		return {
 			...response,
-			body: JSON.stringify(workerResult)
+			body: JSON.stringify(workerResult),
 		};
 	} catch (error) {
 		await send({ timestamp: new Date(), message: `Worker error: ${error}` });
@@ -94,7 +94,7 @@ async function send(message: any) {
 				ConsistentRead: true,
 				FilterExpression: '#d0a30 = :d0a30',
 				ExpressionAttributeValues: { ':d0a30': { S: 'connection' } },
-				ExpressionAttributeNames: { '#d0a30': 'type' }
+				ExpressionAttributeNames: { '#d0a30': 'type' },
 			})
 			.promise();
 
@@ -106,7 +106,7 @@ async function send(message: any) {
 					return await api
 						.postToConnection({
 							ConnectionId: x?.id,
-							Data: JSON.stringify(message, null, 4)
+							Data: JSON.stringify(message, null, 4),
 						})
 						.promise();
 				} catch {
@@ -116,8 +116,8 @@ async function send(message: any) {
 								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
 									id: x?.id,
-									type: 'connection'
-								})
+									type: 'connection',
+								}),
 							})
 							.promise();
 					} catch {}

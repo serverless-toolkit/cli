@@ -29,7 +29,7 @@ module.exports.handler = async function (
 	const codeFileName = request.rawPath.slice(1).toLowerCase();
 	const ct = mimetype.contentType(path.extname(codeFileName)) || 'text/html; charset=UTF-8';
 	const isBase64Encoded = ct.includes('image/');
-	const s3 = new AWS.S3();
+	const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 	let svxContent: string | undefined;
 	try {
@@ -55,12 +55,12 @@ module.exports.handler = async function (
 				body: isBase64Encoded
 					? staticContent?.Body?.toString('base64')
 					: staticContent?.Body?.toString(),
-				isBase64Encoded
+				isBase64Encoded,
 			};
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Not found static: ${codeFileName}` });
 			return {
-				statusCode: 404
+				statusCode: 404,
 			};
 		}
 	}
@@ -68,7 +68,7 @@ module.exports.handler = async function (
 	if (!svxContent) {
 		await send({ timestamp: new Date(), message: `Not found page: ${codeFileName}` });
 		return {
-			statusCode: 404
+			statusCode: 404,
 		};
 	}
 
@@ -106,14 +106,14 @@ module.exports.handler = async function (
 			sandbox: {
 				process,
 				context: {
-					store
-				}
+					store,
+				},
 			},
 			require: {
 				external: true,
 				builtin: ['*'],
-				resolve: (a) => require.resolve(a)
-			}
+				resolve: (a) => require.resolve(a),
+			},
 		});
 		vm.on('console.log', async (data) => {
 			await send({ timestamp: new Date(), message: data });
@@ -134,8 +134,8 @@ module.exports.handler = async function (
 					...request,
 					...svelteComponent.metadata,
 					context: {
-						store
-					}
+						store,
+					},
 				} as Request,
 				response
 			));
@@ -148,7 +148,7 @@ module.exports.handler = async function (
 			cookies: response.cookies,
 			headers: { ...response.headers, 'content-type': ct },
 			isBase64Encoded,
-			body: generateHtml(head, css.code, html, data)
+			body: generateHtml(head, css.code, html, data),
 		};
 	} catch (error) {
 		console.error(error);
@@ -156,7 +156,7 @@ module.exports.handler = async function (
 			timestamp: new Date(),
 			codeFileName,
 			message: error.message,
-			error
+			error,
 		});
 	}
 };
@@ -177,7 +177,7 @@ async function send(message: any) {
 				ConsistentRead: true,
 				FilterExpression: '#d0a30 = :d0a30',
 				ExpressionAttributeValues: { ':d0a30': { S: 'connection' } },
-				ExpressionAttributeNames: { '#d0a30': 'type' }
+				ExpressionAttributeNames: { '#d0a30': 'type' },
 			})
 			.promise();
 
@@ -189,7 +189,7 @@ async function send(message: any) {
 					return await api
 						.postToConnection({
 							ConnectionId: x?.id,
-							Data: JSON.stringify(message, null, 4)
+							Data: JSON.stringify(message, null, 4),
 						})
 						.promise();
 				} catch {
@@ -199,8 +199,8 @@ async function send(message: any) {
 								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
 									id: x?.id,
-									type: 'connection'
-								})
+									type: 'connection',
+								}),
 							})
 							.promise();
 					} catch {}

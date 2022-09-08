@@ -9,7 +9,7 @@ export async function dev(
 	projectName: string,
 	domainName: string
 ) {
-	const s3 = new AWS.S3();
+	const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 	console.log('Watching ...');
 
@@ -20,7 +20,7 @@ export async function dev(
 		.watch(['workers', 'pages', 'sagas', 'tests'], {
 			ignoreInitial: true,
 			ignored: /(^|[\/\\])\../,
-			awaitWriteFinish: true
+			awaitWriteFinish: true,
 		})
 		.on('all', async (event, path) => {
 			switch (event) {
@@ -38,7 +38,7 @@ export async function dev(
 					await s3
 						.deleteObject({
 							Bucket: `stk-objects-${projectName}`,
-							Key: path
+							Key: path,
 						})
 						.promise();
 					break;

@@ -7,7 +7,7 @@ export async function sync(
 	projectName: string,
 	env: { [key: string]: string }
 ) {
-	const s3 = new AWS.S3();
+	const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 	console.log('Updating files ...');
 

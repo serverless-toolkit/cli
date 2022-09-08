@@ -4,7 +4,7 @@ import { kvStore as store } from '@serverless-toolkit/sdk';
 import { NodeVM } from 'vm2';
 
 export async function handler(request: any): Promise<any> {
-	const s3 = new AWS.S3();
+	const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 	try {
 		if (request.body && request.isBase64Encoded) {
@@ -17,7 +17,7 @@ export async function handler(request: any): Promise<any> {
 	const event = {
 		id: request.queryStringParameters?.id || request.event?.id || request.body?.id || v1(),
 		object: request.body?.object,
-		command: request.queryStringParameters?.command || request.body?.command
+		command: request.queryStringParameters?.command || request.body?.command,
 	};
 
 	//Restore state from DDB
@@ -55,15 +55,15 @@ export async function handler(request: any): Promise<any> {
 					async clear() {
 						saga.state.alarm = 0;
 						await store.set(saga.state, 'saga');
-					}
-				}
-			}
+					},
+				},
+			},
 		},
 		require: {
 			external: true,
 			builtin: ['*'],
-			resolve: (a) => require.resolve(a)
-		}
+			resolve: (a) => require.resolve(a),
+		},
 	});
 	vm.on('console.log', async (data) => {
 		await send({ timestamp: new Date(), message: data });
@@ -86,7 +86,7 @@ export async function handler(request: any): Promise<any> {
 		} catch (error) {
 			await send({ timestamp: new Date(), message: `Saga: ${codeFileName} not found.` });
 			return {
-				statusCode: 404
+				statusCode: 404,
 			};
 		}
 
@@ -125,7 +125,7 @@ async function send(message: any) {
 				ConsistentRead: true,
 				FilterExpression: '#d0a30 = :d0a30',
 				ExpressionAttributeValues: { ':d0a30': { S: 'connection' } },
-				ExpressionAttributeNames: { '#d0a30': 'type' }
+				ExpressionAttributeNames: { '#d0a30': 'type' },
 			})
 			.promise();
 
@@ -137,7 +137,7 @@ async function send(message: any) {
 					return await api
 						.postToConnection({
 							ConnectionId: x?.id,
-							Data: JSON.stringify(message, null, 4)
+							Data: JSON.stringify(message, null, 4),
 						})
 						.promise();
 				} catch {
@@ -147,8 +147,8 @@ async function send(message: any) {
 								TableName: process.env.DBTABLE!,
 								Key: AWS.DynamoDB.Converter.marshall({
 									id: x?.id,
-									type: 'connection'
-								})
+									type: 'connection',
+								}),
 							})
 							.promise();
 					} catch {}
