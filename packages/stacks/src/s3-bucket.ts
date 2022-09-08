@@ -4,7 +4,7 @@ import {
 	NestedStackProps,
 	aws_dynamodb,
 	aws_s3,
-	CfnOutput
+	CfnOutput,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
@@ -22,11 +22,12 @@ export class S3BucketStack extends NestedStack {
 		this.codeBucket = new aws_s3.Bucket(this, 'stk-objects-bucket', {
 			removalPolicy: RemovalPolicy.DESTROY,
 			autoDeleteObjects: true,
-			bucketName: `stk-objects-${props.projectName}`
+			bucketName: `stk-objects-${props.projectName}`,
+			transferAcceleration: true,
 		});
 
 		new CfnOutput(this.nestedStackParent || this, 'CODEBUCKET', {
-			value: this.codeBucket.bucketName
+			value: this.codeBucket.bucketName,
 		});
 	}
 }
