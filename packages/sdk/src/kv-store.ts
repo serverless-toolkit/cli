@@ -28,3 +28,28 @@ export async function set<T extends Item>(
 		})
 		.promise();
 }
+
+export async function remove(id: string, type: string): Promise<void> {
+	await ddb
+		.deleteItem({
+			TableName: process.env.DBTABLE,
+			Key: AWS.DynamoDB.Converter.marshall({
+				id,
+				type,
+			}),
+		})
+		.promise();
+}
+
+export async function list<T extends Item>(type: string): Promise<T[]> {
+	return (
+		await ddb
+			.scan({
+				TableName: process.env.DBTABLE!,
+				FilterExpression: '#type = :type',
+				ExpressionAttributeValues: { ':type': { S: type } },
+				ExpressionAttributeNames: { '#type': 'type' },
+			})
+			.promise()
+	).Items?.map((x) => AWS.DynamoDB.Converter.unmarshall(x) as T);
+}
