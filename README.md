@@ -4,7 +4,6 @@
 [SDK](packages/sdk)
 [Stacks](packages/stacks)
 [Default Example](packages/default-example)
-[Custom Example](packages/custom-example)
 
 ## Development
 
