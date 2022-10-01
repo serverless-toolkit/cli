@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.29",
+	"version": "3.0.30",
 	"description": "Serverless-Toolkit AWS-CDK Stacks",
 	"main": ".build/index.js",
 	"types": ".build/index.d.ts",
@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
 		"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
-		"@serverless-toolkit/sdk": "^3.0.27",
+		"@serverless-toolkit/sdk": "^3.0.30",
 		"aws-cdk": "2.40.0",
 		"aws-cdk-lib": "2.40.0",
 		"aws-lambda": "1.0.7",
