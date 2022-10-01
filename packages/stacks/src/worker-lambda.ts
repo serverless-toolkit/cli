@@ -9,17 +9,16 @@ import {
 	aws_lambda,
 	aws_lambda_nodejs,
 	aws_s3,
-	aws_iam
+	aws_iam,
 } from 'aws-cdk-lib';
 
 interface WorkerLambdaStackProps extends NestedStackProps {
-	table: aws_dynamodb.Table;
-	codeBucket: aws_s3.Bucket;
+	table: aws_dynamodb.ITable;
+	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
 export class WorkerLambdaStack extends NestedStack {
-	workerHandler: aws_lambda_nodejs.NodejsFunction;
-	workerHandlerUrl: aws_lambda.FunctionUrl;
+	workerHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: WorkerLambdaStackProps) {
 		super(scope, id, props);
@@ -35,11 +34,11 @@ export class WorkerLambdaStack extends NestedStack {
 			environment: {
 				DBTABLE: props.table.tableName,
 				CODEBUCKET: props.codeBucket.bucketName,
-				...props.environment
+				...props.environment,
 			},
 			bundling: {
-				nodeModules: ['vm2']
-			}
+				nodeModules: ['vm2'],
+			},
 		});
 		props.table.grantReadWriteData(this.workerHandler);
 		props.codeBucket.grantRead(this.workerHandler);

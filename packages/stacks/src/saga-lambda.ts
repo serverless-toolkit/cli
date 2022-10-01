@@ -8,17 +8,17 @@ import {
 	aws_s3,
 	aws_lambda,
 	aws_iam,
-	aws_lambda_nodejs
+	aws_lambda_nodejs,
 } from 'aws-cdk-lib';
 import { realpathSync } from 'fs';
 
 interface SagaLambdaStackProps extends NestedStackProps {
-	table: aws_dynamodb.Table;
-	codeBucket: aws_s3.Bucket;
+	table: aws_dynamodb.ITable;
+	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
 export class SagaLambdaStack extends NestedStack {
-	sagaHandler: aws_lambda_nodejs.NodejsFunction;
+	sagaHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {
 		super(scope, id, props);
@@ -34,11 +34,11 @@ export class SagaLambdaStack extends NestedStack {
 			environment: {
 				DBTABLE: props.table.tableName,
 				CODEBUCKET: props.codeBucket.bucketName,
-				...props.environment
+				...props.environment,
 			},
 			bundling: {
-				nodeModules: ['vm2']
-			}
+				nodeModules: ['vm2'],
+			},
 		});
 		props.table.grantReadWriteData(this.sagaHandler);
 		props.codeBucket.grantRead(this.sagaHandler);

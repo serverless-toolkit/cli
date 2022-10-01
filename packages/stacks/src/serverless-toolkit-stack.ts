@@ -9,11 +9,11 @@ import { SchedulerLambdaStack } from './scheduler-lambda';
 import { PageLambdaStack } from './page-lambda';
 import { S3BucketStack } from './s3-bucket';
 import { Construct } from 'constructs';
-import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { HttpApi, WebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
+import { IBucket } from 'aws-cdk-lib/aws-s3';
+import { IHttpApi, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
+import { IFunction } from 'aws-cdk-lib/aws-lambda';
 
 export const env = config({ path: join(process.cwd(), '.env') }).parsed;
 
@@ -24,13 +24,13 @@ export interface ServerlessToolkitStackProps extends StackProps {
 }
 
 export class ServerlessToolkitStack extends Stack {
-	public table: Table;
-	public codeBucket: Bucket;
-	public sagaHandler: NodejsFunction;
-	public pageHandler: NodejsFunction;
-	public workerHandler: NodejsFunction;
-	public httpApi: HttpApi;
-	public websocketApi: WebSocketApi;
+	public table: ITable;
+	public codeBucket: IBucket;
+	public sagaHandler: IFunction;
+	public pageHandler: IFunction;
+	public workerHandler: IFunction;
+	public httpApi: IHttpApi;
+	public websocketApi: IWebSocketApi;
 	public zone: IHostedZone;
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
@@ -41,30 +41,30 @@ export class ServerlessToolkitStack extends Stack {
 		this.table = table;
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
-			projectName
+			projectName,
 		});
 		this.codeBucket = codeBucket;
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
 			codeBucket,
-			environment: { ...env, ...environment }
+			environment: { ...env, ...environment },
 		});
 		this.sagaHandler = sagaHandler;
 		new SchedulerLambdaStack(this, `scheduler-stack`, {
 			table,
 			codeBucket,
-			sagaHandler
+			sagaHandler,
 		});
 		const { pageHandler } = new PageLambdaStack(this, `page-stack`, {
 			table,
 			codeBucket,
-			environment: { ...env, ...environment }
+			environment: { ...env, ...environment },
 		});
 		this.pageHandler = pageHandler;
 		const { workerHandler } = new WorkerLambdaStack(this, `worker-stack`, {
 			table,
 			codeBucket,
-			environment: { ...env, ...environment }
+			environment: { ...env, ...environment },
 		});
 		this.workerHandler = workerHandler;
 		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
@@ -74,7 +74,7 @@ export class ServerlessToolkitStack extends Stack {
 			table,
 			sagaHandler,
 			workerHandler,
-			pageHandler
+			pageHandler,
 		});
 		this.httpApi = httpApi;
 		this.websocketApi = websocketApi;

@@ -9,16 +9,16 @@ import {
 	aws_lambda,
 	aws_lambda_nodejs,
 	aws_s3,
-	aws_iam
+	aws_iam,
 } from 'aws-cdk-lib';
 
 interface PageLambdaStackProps extends NestedStackProps {
-	table: aws_dynamodb.Table;
-	codeBucket: aws_s3.Bucket;
+	table: aws_dynamodb.ITable;
+	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
 export class PageLambdaStack extends NestedStack {
-	pageHandler: aws_lambda_nodejs.NodejsFunction;
+	pageHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: PageLambdaStackProps) {
 		super(scope, id, props);
@@ -34,13 +34,13 @@ export class PageLambdaStack extends NestedStack {
 			environment: {
 				DBTABLE: props.table.tableName,
 				CODEBUCKET: props.codeBucket.bucketName,
-				...props.environment
+				...props.environment,
 			},
 			bundling: {
 				sourceMap: true,
 				target: 'node16',
-				nodeModules: ['svelte', 'mdsvex', 'mime-types', 'lambda-multipart-parser', 'vm2']
-			}
+				nodeModules: ['svelte', 'mdsvex', 'mime-types', 'lambda-multipart-parser', 'vm2'],
+			},
 		});
 		props.table.grantReadWriteData(this.pageHandler);
 		props.codeBucket.grantRead(this.pageHandler);

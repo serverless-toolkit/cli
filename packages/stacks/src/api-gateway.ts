@@ -10,7 +10,7 @@ import {
 	aws_lambda_nodejs,
 	aws_lambda,
 	aws_certificatemanager,
-	aws_dynamodb
+	aws_dynamodb,
 } from 'aws-cdk-lib';
 import {
 	CorsHttpMethod,
@@ -19,28 +19,31 @@ import {
 	WebSocketApi,
 	DomainName,
 	IDomainName,
-	WebSocketStage
+	WebSocketStage,
+	IHttpApi,
+	IWebSocketApi,
 } from '@aws-cdk/aws-apigatewayv2-alpha';
 import {
 	HttpLambdaIntegration,
-	WebSocketLambdaIntegration
+	WebSocketLambdaIntegration,
 } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { IAliasRecordTarget } from 'aws-cdk-lib/aws-route53';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 interface ApiGatewayStackProps extends NestedStackProps {
-	workerHandler: aws_lambda_nodejs.NodejsFunction;
-	sagaHandler: aws_lambda_nodejs.NodejsFunction;
-	pageHandler: aws_lambda_nodejs.NodejsFunction;
-	table: aws_dynamodb.Table;
+	workerHandler: aws_lambda.IFunction;
+	sagaHandler: aws_lambda.IFunction;
+	pageHandler: aws_lambda.IFunction;
+	table: aws_dynamodb.ITable;
 	domainName: string;
 	httpRecordName: string;
 	wsRecordName: string;
 }
 
 export class ApiGatewayStack extends NestedStack {
-	httpApi: HttpApi;
-	websocketApi: WebSocketApi;
-	realtimeHandler: aws_lambda_nodejs.NodejsFunction;
+	httpApi: IHttpApi;
+	websocketApi: IWebSocketApi;
+	realtimeHandler: aws_lambda.IFunction;
 	httpApiUrl: string;
 	wsApiUrl: string;
 	zone: aws_route53.IHostedZone;
@@ -52,87 +55,87 @@ export class ApiGatewayStack extends NestedStack {
 		this.wsApiUrl = `${props.wsRecordName}.${props.domainName}`;
 
 		this.zone = aws_route53.HostedZone.fromLookup(this, 'http-api-hosted-zone', {
-			domainName: props.domainName
+			domainName: props.domainName,
 		});
 
 		const httpCertificate = new aws_certificatemanager.Certificate(this, 'http-api-certificate', {
 			domainName: this.httpApiUrl,
-			validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone)
+			validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone),
 		});
 		const httpCustomDomain = new DomainName(this, 'http-api-domain', {
 			certificate: httpCertificate,
-			domainName: this.httpApiUrl
+			domainName: this.httpApiUrl,
 		});
 		this.httpApi = new HttpApi(this, 'http-api', {
 			createDefaultStage: true,
 			corsPreflight: {
 				allowOrigins: ['*'],
 				allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key'],
-				allowMethods: [CorsHttpMethod.ANY]
+				allowMethods: [CorsHttpMethod.ANY],
 			},
 			defaultDomainMapping: {
-				domainName: httpCustomDomain
-			}
+				domainName: httpCustomDomain,
+			},
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/workers/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler)
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/api/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler)
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/pages/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler)
+			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/pages',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler)
+			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler)
+			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler)
+			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/sagas/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/object/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
 		});
 
-		this.httpApi.addRoutes({
+		(this.httpApi as HttpApi).addRoutes({
 			path: '/objects/{proxy+}',
 			methods: [HttpMethod.ANY],
-			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler)
+			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
 		});
 
 		new aws_route53.ARecord(this, 'http-api-alias-record', {
 			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(httpCustomDomain)),
 			zone: this.zone,
-			recordName: props.httpRecordName
+			recordName: props.httpRecordName,
 		});
 
 		this.realtimeHandler = new aws_lambda_nodejs.NodejsFunction(this, 'realtime-function-handler', {
@@ -144,8 +147,8 @@ export class ApiGatewayStack extends NestedStack {
 			memorySize: 128,
 			timeout: Duration.minutes(1),
 			environment: {
-				DBTABLE: props.table.tableName
-			}
+				DBTABLE: props.table.tableName,
+			},
 		});
 		props.table.grantReadWriteData(this.realtimeHandler);
 
@@ -156,7 +159,7 @@ export class ApiGatewayStack extends NestedStack {
 		this.websocketApi = new WebSocketApi(this, 'websocket-api', {
 			connectRouteOptions: { integration },
 			disconnectRouteOptions: { integration },
-			defaultRouteOptions: { integration }
+			defaultRouteOptions: { integration },
 		});
 
 		const wsCertificate = new aws_certificatemanager.Certificate(
@@ -164,39 +167,39 @@ export class ApiGatewayStack extends NestedStack {
 			'webSocket-api-certificate',
 			{
 				domainName: this.wsApiUrl,
-				validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone)
+				validation: aws_certificatemanager.CertificateValidation.fromDns(this.zone),
 			}
 		);
 		const wsCustomDomain = new DomainName(this, 'webSocket-api-domain', {
 			certificate: wsCertificate,
-			domainName: this.wsApiUrl
+			domainName: this.wsApiUrl,
 		});
 
 		new WebSocketStage(this, 'webSocket-api-stage', {
 			webSocketApi: this.websocketApi,
 			stageName: 'prod',
 			autoDeploy: true,
-			domainMapping: { domainName: wsCustomDomain }
+			domainMapping: { domainName: wsCustomDomain },
 		});
 
 		new aws_route53.ARecord(this, 'webSocket-api-alias-record', {
 			zone: this.zone,
 			target: aws_route53.RecordTarget.fromAlias(new ApiGatewayDomain(wsCustomDomain)),
-			recordName: props.wsRecordName
+			recordName: props.wsRecordName,
 		});
 
-		props.workerHandler.addEnvironment('HTTP_API_URL', this.httpApiUrl);
-		props.workerHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
-		props.sagaHandler.addEnvironment('HTTP_API_URL', this.httpApiUrl);
-		props.sagaHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
-		props.pageHandler.addEnvironment('HTTP_API_URL', this.httpApiUrl);
-		props.pageHandler.addEnvironment('WS_API_URL', this.wsApiUrl);
+		(props.workerHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
+		(props.workerHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
+		(props.sagaHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
+		(props.sagaHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
+		(props.pageHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
+		(props.pageHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
 
 		new CfnOutput(this.nestedStackParent || this, 'HTTPAPIURL', {
-			value: this.httpApiUrl
+			value: this.httpApiUrl,
 		});
 		new CfnOutput(this.nestedStackParent || this, 'WSAPIURL', {
-			value: this.wsApiUrl
+			value: this.wsApiUrl,
 		});
 	}
 }
@@ -207,7 +210,7 @@ class ApiGatewayDomain implements IAliasRecordTarget {
 	public bind(_record: aws_route53.IRecordSet): aws_route53.AliasRecordTargetConfig {
 		return {
 			dnsName: this.domainName.regionalDomainName,
-			hostedZoneId: this.domainName.regionalHostedZoneId
+			hostedZoneId: this.domainName.regionalHostedZoneId,
 		};
 	}
 }

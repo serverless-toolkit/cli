@@ -2,7 +2,7 @@ import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb, CfnOutput } from 
 import { Construct } from 'constructs';
 
 export class DynamoStack extends NestedStack {
-	table: aws_dynamodb.Table;
+	table: aws_dynamodb.ITable;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);

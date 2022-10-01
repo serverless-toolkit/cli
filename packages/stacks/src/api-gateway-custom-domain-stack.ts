@@ -23,6 +23,7 @@ export class ApiGatewayCustomDomainStack extends Stack {
 	httpApiUrl: string;
 	zone: aws_route53.IHostedZone;
 	wsApiUrl: string;
+	
 	constructor(scope: Construct, id: string, props: ApiGatewayCustomDomainStackProps) {
 		super(scope, id, props);
 
