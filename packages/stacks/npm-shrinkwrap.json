@@ -1,17 +1,17 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.31",
+	"version": "3.0.32",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.31",
+			"version": "3.0.32",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
 				"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.40.0-alpha.0",
-				"@serverless-toolkit/sdk": "^3.0.30",
+				"@serverless-toolkit/sdk": "^3.0.32",
 				"aws-cdk": "2.40.0",
 				"aws-cdk-lib": "2.40.0",
 				"aws-lambda": "1.0.7",
@@ -2137,8 +2137,7 @@
 			"optional": true
 		},
 		"@serverless-toolkit/sdk": {
-			"version": "3.0.30",
-			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.30.tgz",
+			"version": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.30.tgz",
 			"integrity": "sha512-6QUARH+C8Xt0aF4p1rB87wws2h2olJtQUU3m0UVvs0waGqBEYJcSp4qUSoNDt5ZY0XtrXKjeruwqqAgaLPV6aA==",
 			"requires": {
 				"aws-sdk": "2.1209.0"
