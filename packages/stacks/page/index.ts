@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import path from 'path';
+import fetch from 'node-fetch';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import querystring from 'querystring';
 import mimetype from 'mime-types';
@@ -136,6 +137,7 @@ module.exports.handler = async function (
 					context: {
 						store,
 					},
+					fetch,
 				} as Request,
 				response
 			));
