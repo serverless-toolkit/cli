@@ -29,30 +29,80 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 
 export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
+	const isSvelte = path.includes('.svelte') || path.includes('.svx');
 
 	console.log(`Compile   : ${path}`);
+	const { outputFiles } =
+		isSvelte &&
+		(await esbuild.build({
+			stdin: {
+				contents: `import App from "./${path}";
+	window.addEventListener("load", () => {
+	  new App({ target: document.body, hydrate: true });
+	});`,
+				resolveDir: process.cwd(),
+				sourcefile: 'App.ts',
+				loader: 'ts',
+			},
+			bundle: true,
+			mainFields: ['svelte', 'browser', 'module', 'main'],
+			logLevel: 'error',
+			minify: true,
+			sourcemap: false,
+			write: false,
+			treeShaking: true,
+			plugins: [
+				sveltePlugin({
+					compilerOptions: { css: true, hydratable: true },
+					include: /\.svx|.svelte$/,
+					preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
+				}),
+			],
+		}));
+	const [csrCode] = outputFiles || [];
+
 	const buildResult = await esbuild.build({
 		entryPoints: [path],
+		logLevel: 'error',
 		outbase: './',
 		outdir: '.build',
 		bundle: true,
-		minify: false,
+		minify: true,
 		platform: 'node',
-		sourcemap: 'inline',
+		sourcemap: false,
 		target: 'node16',
 		write: false,
-		treeShaking: false,
+		treeShaking: true,
 		plugins: [
 			nodeExternalsPlugin({
 				devDependencies: false,
 			}),
 			sveltePlugin({
 				compilerOptions: {
-					generate: 'ssr',
+					css: true,
+					hydratable: true,
 					format: 'cjs',
+					generate: 'ssr',
 				},
 				include: /\.svx|.svelte$/,
-				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
+				preprocess: [
+					mdsvex({ extensions: ['.svx'] }),
+					sveltePreprocess(),
+					{
+						markup: ({ content }) => {
+							return isSvelte
+								? {
+										code: content.includes(`<svelte:head>`)
+											? content.replace(
+													`<svelte:head>`,
+													`<svelte:head><script>${outputFiles[0].text}</script>`
+											  )
+											: `<svelte:head><script>${outputFiles[0].text}</script></svelte:head>`,
+								  }
+								: { code: content };
+						},
+					},
+				],
 			}),
 		],
 		loader: {
