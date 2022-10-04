@@ -1,9 +1,12 @@
 import { Item } from './kv-store';
+import { RequestInfo, RequestInit, Response as FetchResponse } from 'node-fetch';
 
 export interface Request {
-	domainName?: string;
-	domainPrefix?: string;
+	fetch: (url: RequestInfo, init?: RequestInit) => Promise<FetchResponse>;
+	rawQueryString?: string;
 	requestContext?: {
+		domainName?: string;
+		domainPrefix?: string;
 		http?: {
 			method?: string;
 			path?: string;
