@@ -37,6 +37,8 @@ export class SagaLambdaStack extends NestedStack {
 				...props.environment,
 			},
 			bundling: {
+				minify: true,
+				sourceMap: false,
 				nodeModules: ['vm2'],
 			},
 		});

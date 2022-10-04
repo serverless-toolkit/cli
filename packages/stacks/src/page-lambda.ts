@@ -37,7 +37,8 @@ export class PageLambdaStack extends NestedStack {
 				...props.environment,
 			},
 			bundling: {
-				sourceMap: true,
+				sourceMap: false,				
+				minify: true,
 				target: 'node16',
 				nodeModules: ['svelte', 'mdsvex', 'mime-types', 'lambda-multipart-parser', 'vm2'],
 			},

@@ -37,6 +37,8 @@ export class WorkerLambdaStack extends NestedStack {
 				...props.environment,
 			},
 			bundling: {
+				sourceMap: false,
+				minify: true,
 				nodeModules: ['vm2'],
 			},
 		});
