@@ -11,16 +11,16 @@
 		"logs": "stk logs"
 	},
 	"dependencies": {
-		"aws-sdk": "latest"
+		"aws-sdk": "^2.1228.0"
 	},
 	"devDependencies": {
-		"@playwright/test": "latest",
+		"@playwright/test": "^1.26.1",
 		"@serverless-toolkit/cli": "^3.0.31",
 		"@serverless-toolkit/sdk": "^3.0.30",
 		"@serverless-toolkit/stacks": "^3.0.31",
-		"aws-cdk": "latest",
-		"odottaa": "latest",
-		"playwright": "latest",
+		"aws-cdk": "^2.44.0",
+		"odottaa": "^1.1.9",
+		"playwright": "^1.26.1",
 		"randomstring": "1.2.2",
 		"svelte": "3.50.0"
 	}
