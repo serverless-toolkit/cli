@@ -79,9 +79,9 @@
 			}
 		},
 		"node_modules/@serverless-toolkit/sdk": {
-			"version": "3.0.30",
-			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.30.tgz",
-			"integrity": "sha512-6QUARH+C8Xt0aF4p1rB87wws2h2olJtQUU3m0UVvs0waGqBEYJcSp4qUSoNDt5ZY0XtrXKjeruwqqAgaLPV6aA==",
+			"version": "3.0.32",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.32.tgz",
+			"integrity": "sha512-Mp1ehoINsL4gNKSrm5CcQtbMgvoXm3W21zoVI7hnS6u88IIroxWniHfBZ2+pa8JNCbYK49pqkRj3Z7ASWYJ1iw==",
 			"dependencies": {
 				"aws-sdk": "2.1209.0"
 			}
@@ -2137,8 +2137,9 @@
 			"optional": true
 		},
 		"@serverless-toolkit/sdk": {
-			"version": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.30.tgz",
-			"integrity": "sha512-6QUARH+C8Xt0aF4p1rB87wws2h2olJtQUU3m0UVvs0waGqBEYJcSp4qUSoNDt5ZY0XtrXKjeruwqqAgaLPV6aA==",
+			"version": "3.0.32",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.32.tgz",
+			"integrity": "sha512-Mp1ehoINsL4gNKSrm5CcQtbMgvoXm3W21zoVI7hnS6u88IIroxWniHfBZ2+pa8JNCbYK49pqkRj3Z7ASWYJ1iw==",
 			"requires": {
 				"aws-sdk": "2.1209.0"
 			}

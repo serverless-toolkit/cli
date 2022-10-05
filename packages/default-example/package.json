@@ -11,7 +11,7 @@
 		"logs": "stk logs"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.1228.0"
+		"aws-sdk": "^2.1229.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.26.1",
