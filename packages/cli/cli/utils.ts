@@ -45,6 +45,9 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 				loader: 'ts',
 			},
 			bundle: true,
+			define: {
+				global: 'window',
+			},
 			mainFields: ['svelte', 'browser', 'module', 'main'],
 			logLevel: 'error',
 			minify: true,
@@ -95,9 +98,9 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 										code: content.includes(`<svelte:head>`)
 											? content.replace(
 													`<svelte:head>`,
-													`<svelte:head><script>${outputFiles[0].text}</script>`
+													`<svelte:head><script>${csrCode.text}</script>`
 											  )
-											: `<svelte:head><script>${outputFiles[0].text}</script></svelte:head>`,
+											: `<svelte:head><script>${csrCode.text}</script></svelte:head>${content}`,
 								  }
 								: { code: content };
 						},
