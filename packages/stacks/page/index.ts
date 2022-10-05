@@ -142,7 +142,7 @@ module.exports.handler = async function (
 				response
 			));
 
-		const { html, css, head } = svelteComponent.default.render({});
+		const { html, css, head } = svelteComponent.default.render(data);
 
 		return {
 			...response,
@@ -220,7 +220,7 @@ function generateHtml(head: string, css: string, html: string, data: any) {
 	<html>
 		<head>
 			<meta charset="utf-8">
-			${data ? `<script>var __data = ${JSON.stringify(data)}</script>` : ''}
+			<script>var __data = ${JSON.stringify(data || {})}</script>
 			${head}		
 			<style type="text/css">
 				${css}

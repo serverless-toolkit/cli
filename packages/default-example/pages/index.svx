@@ -12,7 +12,7 @@ title: STK examples page
 - [HTML form submit](/form1)
 - [Serve static files](/data.json)
 - [File upload using a form](/form2)
-- [Import of Svelte components](/page2)
+- [Client Side Rendering](/page2)
 - [Use query parameters](/page3?a=1&b=2)
 - [Set cookies](/page4)
 - [Get cookies](/page7)

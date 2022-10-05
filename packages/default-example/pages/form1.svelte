@@ -1,15 +1,16 @@
 <script context="module" lang="ts">
-	import { Request, Response } from '@serverless-toolkit/sdk';
+	import { Request } from '@serverless-toolkit/sdk';
 
 	export const title = 'HTML form submit';
-	export let data = {
-		fname: '',
-		lname: '',
-	};
 
-	export async function load(request: Request, response: Response) {
-		data = request.body || {};
+	export async function load(request: Request) {
+		return request.body || {};
 	}
+</script>
+
+<script lang="ts">
+	export let fname = '';
+	export let lname = '';
 </script>
 
 <svelte:head>
@@ -20,15 +21,16 @@
 
 <form method="post">
 	<label for="fname">First name:</label><br />
-	<input type="text" id="fname" name="fname" value={data.fname} /><br />
+	<input type="text" id="fname" name="fname" value={fname} /><br />
 	<label for="lname">Last name:</label><br />
-	<input type="text" id="lname" name="lname" value={data.lname} /><br />
+	<input type="text" id="lname" name="lname" value={lname} /><br />
 	<input type="submit" value="Submit" />
 </form>
 
 <div>
-	Your input was: {data.fname}
-	{data.lname}
+	Your input was:
+	<div>Firstname: {fname}</div>
+	<div>Lastname: {lname}</div>
 </div>
 
 <style>

@@ -1,15 +1,18 @@
 <script context="module" lang="ts">
-	import { DynamoDB } from 'aws-sdk';
+	import DynamoDB from 'aws-sdk/clients/dynamodb';
 	import { Request, Response } from '@serverless-toolkit/sdk';
 
 	export const title = 'Load data from DynamoDB using Svelte and Markdown';
-	export let data = [];
 
 	export async function load(request: Request, response: Response) {
 		const ddb = new DynamoDB();
 		const result = await ddb.scan({ TableName: process.env.DBTABLE }).promise();
-		data = result.Items?.map((x) => DynamoDB.Converter.unmarshall(x));
+		return result.Items?.map((x) => DynamoDB.Converter.unmarshall(x));
 	}
+</script>
+
+<script lang="ts">
+	export let data = [];
 </script>
 
 <svelte:head>

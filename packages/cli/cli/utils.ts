@@ -29,7 +29,7 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 
 export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
-	const isSvelte = path.includes('.svelte') || path.includes('.svx');
+	const isSvelte = path.includes('.svelte');
 
 	console.log(`Compile   : ${path}`);
 	const { outputFiles } =
@@ -38,7 +38,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			stdin: {
 				contents: `import App from "./${path}";
 	window.addEventListener("load", () => {
-	  new App({ target: document.body, hydrate: true });
+	  new App({ target: document.body, hydrate: true, props: __data });
 	});`,
 				resolveDir: process.cwd(),
 				sourcefile: 'App.ts',
@@ -50,19 +50,17 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			},
 			mainFields: ['svelte', 'browser', 'module', 'main'],
 			logLevel: 'error',
-			minify: true,
+			minify: false,
 			sourcemap: false,
 			write: false,
 			treeShaking: true,
 			plugins: [
 				sveltePlugin({
 					compilerOptions: { css: true, hydratable: true },
-					include: /\.svx|.svelte$/,
-					preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
+					preprocess: [sveltePreprocess()],
 				}),
 			],
 		}));
-	const [csrCode] = outputFiles || [];
 
 	const buildResult = await esbuild.build({
 		entryPoints: [path],
@@ -70,7 +68,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		outbase: './',
 		outdir: '.build',
 		bundle: true,
-		minify: true,
+		minify: false,
 		platform: 'node',
 		sourcemap: false,
 		target: 'node16',
@@ -82,6 +80,8 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			}),
 			sveltePlugin({
 				compilerOptions: {
+					dev: false,
+					immutable: true,
 					css: true,
 					hydratable: true,
 					format: 'cjs',
@@ -93,16 +93,17 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 					sveltePreprocess(),
 					{
 						markup: ({ content }) => {
-							return isSvelte
-								? {
-										code: content.includes(`<svelte:head>`)
-											? content.replace(
-													`<svelte:head>`,
-													`<svelte:head><script>${csrCode.text}</script>`
-											  )
-											: `<svelte:head><script>${csrCode.text}</script></svelte:head>${content}`,
-								  }
-								: { code: content };
+							if (!isSvelte) return { code: content };
+							if (content.includes(`<svelte:head><script>`)) return { code: content };
+
+							return {
+								code: content.includes(`<svelte:head>`)
+									? content.replace(
+											`<svelte:head>`,
+											`<svelte:head><script>${outputFiles[0].text}</script>`
+									  )
+									: `<svelte:head><script>${outputFiles[0].text}</script></svelte:head>${content}`,
+							};
 						},
 					},
 				],

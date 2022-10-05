@@ -2,11 +2,14 @@
 	import { Request } from '@serverless-toolkit/sdk';
 
 	export const title = 'Query Parameters';
-	export let data = {};
 
 	export async function load(request: Request) {
-		data = request.queryStringParameters || {};
+		return request.queryStringParameters || {};
 	}
+</script>
+
+<script lang="ts">
+	export let data = {};
 </script>
 
 <svelte:head>
