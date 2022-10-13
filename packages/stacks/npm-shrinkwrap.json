@@ -79,9 +79,9 @@
 			}
 		},
 		"node_modules/@serverless-toolkit/sdk": {
-			"version": "3.0.32",
-			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.32.tgz",
-			"integrity": "sha512-Mp1ehoINsL4gNKSrm5CcQtbMgvoXm3W21zoVI7hnS6u88IIroxWniHfBZ2+pa8JNCbYK49pqkRj3Z7ASWYJ1iw==",
+			"version": "3.0.34",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.34.tgz",
+			"integrity": "sha512-TK7DTvhl6vT2PYWZOQvvi1GqkVGKi25XlRdX0t+gmn67+Uxs90Hy6XbKMwYUj1x647KgXQN0tDDf0DliMfywQQ==",
 			"dependencies": {
 				"aws-sdk": "2.1209.0"
 			}
@@ -542,9 +542,9 @@
 			}
 		},
 		"node_modules/es-abstract": {
-			"version": "1.20.3",
-			"resolved": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.20.3.tgz",
-			"integrity": "sha512-AyrnaKVpMzljIdwjzrj+LxGmj8ik2LckwXacHqrJJ/jxz6dDDBcZ7I7nlHM0FvEW8MfbWJwOd+yT2XzYW49Frw==",
+			"version": "1.20.4",
+			"resolved": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.20.4.tgz",
+			"integrity": "sha512-0UtvRN79eMe2L+UNEF1BwRe364sj/DXhQ/k5FmivgoSdpM90b8Jc0mDzKMGo7QS0BVbOP/bTwBKNnDc9rNzaPA==",
 			"dependencies": {
 				"call-bind": "^1.0.2",
 				"es-to-primitive": "^1.2.1",
@@ -556,7 +556,7 @@
 				"has-property-descriptors": "^1.0.0",
 				"has-symbols": "^1.0.3",
 				"internal-slot": "^1.0.3",
-				"is-callable": "^1.2.6",
+				"is-callable": "^1.2.7",
 				"is-negative-zero": "^2.0.2",
 				"is-regex": "^1.1.4",
 				"is-shared-array-buffer": "^1.0.2",
@@ -1522,9 +1522,12 @@
 			}
 		},
 		"node_modules/minimist": {
-			"version": "1.2.6",
-			"resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
-			"integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q=="
+			"version": "1.2.7",
+			"resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.7.tgz",
+			"integrity": "sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==",
+			"funding": {
+				"url": "https://github.com/sponsors/ljharb"
+			}
 		},
 		"node_modules/mkdirp": {
 			"version": "0.5.6",
@@ -2137,8 +2140,9 @@
 			"optional": true
 		},
 		"@serverless-toolkit/sdk": {
-			"version": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.32.tgz",
-			"integrity": "sha512-Mp1ehoINsL4gNKSrm5CcQtbMgvoXm3W21zoVI7hnS6u88IIroxWniHfBZ2+pa8JNCbYK49pqkRj3Z7ASWYJ1iw==",
+			"version": "3.0.34",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.34.tgz",
+			"integrity": "sha512-TK7DTvhl6vT2PYWZOQvvi1GqkVGKi25XlRdX0t+gmn67+Uxs90Hy6XbKMwYUj1x647KgXQN0tDDf0DliMfywQQ==",
 			"requires": {
 				"aws-sdk": "2.1209.0"
 			}
@@ -2456,9 +2460,9 @@
 			"integrity": "sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA=="
 		},
 		"es-abstract": {
-			"version": "1.20.3",
-			"resolved": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.20.3.tgz",
-			"integrity": "sha512-AyrnaKVpMzljIdwjzrj+LxGmj8ik2LckwXacHqrJJ/jxz6dDDBcZ7I7nlHM0FvEW8MfbWJwOd+yT2XzYW49Frw==",
+			"version": "1.20.4",
+			"resolved": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.20.4.tgz",
+			"integrity": "sha512-0UtvRN79eMe2L+UNEF1BwRe364sj/DXhQ/k5FmivgoSdpM90b8Jc0mDzKMGo7QS0BVbOP/bTwBKNnDc9rNzaPA==",
 			"requires": {
 				"call-bind": "^1.0.2",
 				"es-to-primitive": "^1.2.1",
@@ -2470,7 +2474,7 @@
 				"has-property-descriptors": "^1.0.0",
 				"has-symbols": "^1.0.3",
 				"internal-slot": "^1.0.3",
-				"is-callable": "^1.2.6",
+				"is-callable": "^1.2.7",
 				"is-negative-zero": "^2.0.2",
 				"is-regex": "^1.1.4",
 				"is-shared-array-buffer": "^1.0.2",
@@ -3039,9 +3043,9 @@
 			}
 		},
 		"minimist": {
-			"version": "1.2.6",
-			"resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
-			"integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q=="
+			"version": "1.2.7",
+			"resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.7.tgz",
+			"integrity": "sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g=="
 		},
 		"mkdirp": {
 			"version": "0.5.6",
