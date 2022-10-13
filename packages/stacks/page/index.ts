@@ -141,7 +141,8 @@ module.exports.handler = async function (
 				} as Request,
 				response
 			));
-
+		
+		//TODO: how to handle redirects like response.headers.location = '/auth/signin' in "load" function;
 		const { html, css, head } = svelteComponent.default.render(data);
 
 		return {
