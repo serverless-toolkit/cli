@@ -60,7 +60,20 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 				sveltePlugin({
 					include: /\.svx|.svelte$/,
 					compilerOptions: { css: true, hydratable: true },
-					preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
+					preprocess: [
+						mdsvex({ extensions: ['.svx'] }),
+						sveltePreprocess(),
+						{
+							markup({ content }) {
+								const scriptRegex =
+									/<script context="module"(?:(?!\/\/)(?!\/\*)[^'"]|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\/\/.*(?:\n)|\/\*(?:(?:.|\s))*?\*\/)*?<\/script>/gi;
+
+								return {
+									code: content.replace(scriptRegex, ''),
+								};
+							},
+						},
+					],
 				}),
 			],
 		}));
