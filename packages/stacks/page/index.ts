@@ -150,7 +150,7 @@ module.exports.handler = async function (
 			cookies: response.cookies,
 			headers: { ...response.headers, 'content-type': ct },
 			isBase64Encoded,
-			body: generateHtml(head, css.code, html, data),
+			body: generateHtml(head, css.code, html, data, codeFileName),
 		};
 	} catch (error) {
 		console.error(error);
@@ -214,13 +214,14 @@ async function send(message: any) {
 	}
 }
 
-function generateHtml(head: string, css: string, html: string, data: any) {
+function generateHtml(head: string, css: string, html: string, data: any, fileName: string) {
 	return `
 	<!doctype html>
 	<html>
 		<head>
 			<meta charset="utf-8">
-			<script>var __data = ${JSON.stringify(data || {})}</script>
+			<script>const __data = ${JSON.stringify(data || {})}</script>
+			<script defer src="/${fileName}.csr.js"></script>
 			${head}		
 			<style type="text/css">
 				${css}

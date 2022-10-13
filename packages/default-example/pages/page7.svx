@@ -2,11 +2,15 @@
 	import { Request, Response } from '@serverless-toolkit/sdk';
 
 	export const title = 'Get cookies';
-	export let data = {};
 
 	export async function load(request: Request, response: Response) {
-		data = request.cookies;
+		return { data: request.cookies }
 	}
+</script>
+
+<script lang="ts">
+	
+	export let data;
 </script>
 
 <svelte:head>

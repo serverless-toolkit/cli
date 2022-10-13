@@ -29,10 +29,10 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 
 export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
-	const isSvelte = path.includes('.svelte');
+	const isSvelte = path.includes('.svelte') || path.includes('.svx');
 
 	console.log(`Compile   : ${path}`);
-	const { outputFiles } =
+	const buildCSRResult =
 		isSvelte &&
 		(await esbuild.build({
 			stdin: {
@@ -50,17 +50,33 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			},
 			mainFields: ['svelte', 'browser', 'module', 'main'],
 			logLevel: 'error',
-			minify: false,
+			minify: true,
 			sourcemap: false,
 			write: false,
+			outbase: './',
+			outdir: '.build',
 			treeShaking: true,
 			plugins: [
 				sveltePlugin({
+					include: /\.svx|.svelte$/,
 					compilerOptions: { css: true, hydratable: true },
-					preprocess: [sveltePreprocess()],
+					preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
 				}),
 			],
 		}));
+
+	for (const file of buildCSRResult?.outputFiles || []) {
+		const fileName = path.replace('.svelte', '.csr.js').replace('.svx', '.csr.js');
+		file.path = file.path.replace(`${outDir}/`, '').replace('stdin.js', fileName);
+		console.log(`Upload    : ${file.path}`);
+		await s3
+			.putObject({
+				Bucket: `stk-objects-${projectName}`,
+				Key: file.path,
+				Body: file.contents,
+			})
+			.promise();
+	}
 
 	const buildResult = await esbuild.build({
 		entryPoints: [path],
@@ -68,7 +84,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		outbase: './',
 		outdir: '.build',
 		bundle: true,
-		minify: false,
+		minify: true,
 		platform: 'node',
 		sourcemap: false,
 		target: 'node16',
@@ -88,25 +104,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 					generate: 'ssr',
 				},
 				include: /\.svx|.svelte$/,
-				preprocess: [
-					mdsvex({ extensions: ['.svx'] }),
-					sveltePreprocess(),
-					{
-						markup: ({ content }) => {
-							if (!isSvelte) return { code: content };
-							if (content.includes(`<svelte:head><script>`)) return { code: content };
-
-							return {
-								code: content.includes(`<svelte:head>`)
-									? content.replace(
-											`<svelte:head>`,
-											`<svelte:head><script>${outputFiles[0].text}</script>`
-									  )
-									: `<svelte:head><script>${outputFiles[0].text}</script></svelte:head>${content}`,
-							};
-						},
-					},
-				],
+				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
 			}),
 		],
 		loader: {
