@@ -2,6 +2,10 @@
 title: STK examples page
 ---
 
+<style lang="scss">
+  @import '@picocss/pico/scss/pico.scss';
+</style>
+
 # {title}
 
 ![Logo](image1.png)
