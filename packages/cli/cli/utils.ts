@@ -2,6 +2,7 @@ import * as chokidar from 'chokidar';
 import { join } from 'path';
 import * as esbuild from 'esbuild';
 import sveltePlugin from 'esbuild-svelte';
+import stylePlugin from 'esbuild-style-plugin';
 import sveltePreprocess from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 import * as AWS from 'aws-sdk';
@@ -75,6 +76,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 						},
 					],
 				}),
+				stylePlugin(),
 			],
 		}));
 
@@ -119,6 +121,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 				include: /\.svx|.svelte$/,
 				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
 			}),
+			stylePlugin(),
 		],
 		loader: {
 			'.css': 'copy',
