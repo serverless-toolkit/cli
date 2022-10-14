@@ -1,12 +1,12 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.42",
+	"version": "3.0.43",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.42",
+			"version": "3.0.43",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
@@ -79,9 +79,9 @@
 			}
 		},
 		"node_modules/@serverless-toolkit/sdk": {
-			"version": "3.0.34",
-			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.34.tgz",
-			"integrity": "sha512-TK7DTvhl6vT2PYWZOQvvi1GqkVGKi25XlRdX0t+gmn67+Uxs90Hy6XbKMwYUj1x647KgXQN0tDDf0DliMfywQQ==",
+			"version": "3.0.35",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.35.tgz",
+			"integrity": "sha512-MKbwL6STpXLd2TUBVnQ8rRpmmwlrDEb1IGvewLNFnP5SmeO5aFSzPTv/zWT6e9/z13yEVKGhGafNWRfxeeM5Bw==",
 			"dependencies": {
 				"aws-sdk": "2.1209.0"
 			}
@@ -2140,8 +2140,9 @@
 			"optional": true
 		},
 		"@serverless-toolkit/sdk": {
-			"version": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.34.tgz",
-			"integrity": "sha512-TK7DTvhl6vT2PYWZOQvvi1GqkVGKi25XlRdX0t+gmn67+Uxs90Hy6XbKMwYUj1x647KgXQN0tDDf0DliMfywQQ==",
+			"version": "3.0.35",
+			"resolved": "https://registry.npmjs.org/@serverless-toolkit/sdk/-/sdk-3.0.35.tgz",
+			"integrity": "sha512-MKbwL6STpXLd2TUBVnQ8rRpmmwlrDEb1IGvewLNFnP5SmeO5aFSzPTv/zWT6e9/z13yEVKGhGafNWRfxeeM5Bw==",
 			"requires": {
 				"aws-sdk": "2.1209.0"
 			}
