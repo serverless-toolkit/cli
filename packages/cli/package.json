@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/cli",
-	"version": "3.0.42",
+	"version": "3.0.43",
 	"description": "Serverless application development runtime that deploys to your AWS account using the AWS-CDK.",
 	"repository": {
 		"type": "git",
@@ -35,7 +35,7 @@
 		"@types/yargs": "17.0.12"
 	},
 	"dependencies": {
-		"@serverless-toolkit/stacks": "^3.0.42",
+		"@serverless-toolkit/stacks": "^3.0.43",
 		"aws-cdk": "2.40.0",
 		"aws-cdk-lib": "2.40.0",
 		"aws-sdk": "2.1209.0",
@@ -47,14 +47,14 @@
 		"enquirer": "2.3.6",
 		"esbuild": "0.15.6",
 		"esbuild-node-externals": "1.5.0",
-		"esbuild-svelte": "0.7.1",
 		"esbuild-sass-plugin": "2.3.3",
+		"esbuild-svelte": "0.7.1",
 		"mdsvex": "0.10.6",
+		"node-sass": "7.0.3",
 		"playwright": "1.25.1",
 		"prettier": "2.7.1",
 		"replace-in-files": "3.0.0",
 		"sass": "1.55.0",
-		"node-sass": "7.0.3",
 		"svelte": "3.50.0",
 		"svelte-preprocess": "4.10.7",
 		"typescript": "4.8.2",
