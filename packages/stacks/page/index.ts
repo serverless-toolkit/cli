@@ -143,7 +143,10 @@ module.exports.handler = async function (
 			));
 
 		//TODO: how to handle redirects like response.headers.location = '/auth/signin' in "load" function;
-		const { html, css, head } = svelteComponent.default.render(data);
+		const { html, css, head } = svelteComponent.default.render({
+			...data,
+			...svelteComponent.metadata,
+		});
 
 		return {
 			...response,
@@ -151,7 +154,16 @@ module.exports.handler = async function (
 			cookies: response.cookies,
 			headers: { ...response.headers, 'content-type': ct },
 			isBase64Encoded,
-			body: generateHtml(head, css.code, html, data, codeFileName),
+			body: generateHtml(
+				head,
+				css.code,
+				html,
+				{
+					...data,
+					...svelteComponent.metadata,
+				},
+				codeFileName
+			),
 		};
 	} catch (error) {
 		console.error(error);

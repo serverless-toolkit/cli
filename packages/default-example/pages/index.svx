@@ -4,9 +4,11 @@ title: STK examples page
 
 <script lang="ts">
 	import '@picocss/pico/scss/pico.scss';
+	export let title;
+	export const projectName = process.env.PROJECTNAME;
 </script>
 
-# {title}
+# {title} // {projectName}
 
 ![Logo](image1.png)
 

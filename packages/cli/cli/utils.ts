@@ -32,6 +32,11 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
 	const isSvelte = path.includes('.svelte') || path.includes('.svx');
+	const define = {};
+
+	for (const k in process.env) {
+		define[`process.env.${k}`] = JSON.stringify(process.env[k]);
+	}
 
 	console.log(`Compile   : ${path}`);
 	const buildCSRResult =
@@ -48,6 +53,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			},
 			bundle: true,
 			define: {
+				...define,
 				global: 'window',
 			},
 			mainFields: ['svelte', 'browser', 'module', 'main'],
@@ -59,7 +65,6 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			outdir: '.build',
 			treeShaking: true,
 			plugins: [
-				envFilePlugin,
 				sassPlugin(),
 				sveltePlugin({
 					include: /\.svx|.svelte$/,
@@ -121,7 +126,6 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		write: false,
 		treeShaking: true,
 		plugins: [
-			envFilePlugin,
 			nodeExternalsPlugin({
 				devDependencies: false,
 			}),
