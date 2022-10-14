@@ -141,7 +141,7 @@ module.exports.handler = async function (
 				} as Request,
 				response
 			));
-		
+
 		//TODO: how to handle redirects like response.headers.location = '/auth/signin' in "load" function;
 		const { html, css, head } = svelteComponent.default.render(data);
 
@@ -222,11 +222,9 @@ function generateHtml(head: string, css: string, html: string, data: any, fileNa
 		<head>
 			<meta charset="utf-8">
 			<script>const __data = ${JSON.stringify(data || {})}</script>
-			<script defer src="/${fileName}.csr.js"></script>
-			${head}		
-			<style type="text/css">
-				${css}
-			</style>
+			<link href="/${fileName}.css" rel="stylesheet" />
+			<script src="/${fileName}.csr.js"></script>
+			${head}
 		</head>
 		<body>
 			${html}

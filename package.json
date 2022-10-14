@@ -7,6 +7,7 @@
 		"publish": "lerna version patch && npm run build && lerna publish from-package --no-private",
 		"example:bootstrap": "lerna run bootstrap --stream",
 		"example:sync": "lerna run sync --stream",
+		"example:dev": "lerna run dev --stream",
 		"example:test": "lerna run test --stream",
 		"upgrade":"lerna exec --stream -- npm upgrade -S"
 	},

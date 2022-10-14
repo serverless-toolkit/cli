@@ -6,7 +6,10 @@ title: Page with Layout
 	<title>{title}</title>
 </svelte:head>
 
-# {title}
+<script>
+	import Layout from './layout.svelte'
+</script>
 
-<style>
-</style>
+<Layout>
+	<h1>{title}</h1>
+</Layout>

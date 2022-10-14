@@ -3,6 +3,7 @@ import { join } from 'path';
 import * as esbuild from 'esbuild';
 import sveltePlugin from 'esbuild-svelte';
 import sveltePreprocess from 'svelte-preprocess';
+import { sassPlugin } from 'esbuild-sass-plugin';
 import { mdsvex } from 'mdsvex';
 import * as AWS from 'aws-sdk';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
@@ -57,9 +58,10 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			outdir: '.build',
 			treeShaking: true,
 			plugins: [
+				sassPlugin(),
 				sveltePlugin({
 					include: /\.svx|.svelte$/,
-					compilerOptions: { css: true, hydratable: true },
+					compilerOptions: { css: false, hydratable: true },
 					preprocess: [
 						mdsvex({ extensions: ['.svx'] }),
 						sveltePreprocess(),
@@ -79,14 +81,27 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		}));
 
 	for (const file of buildCSRResult?.outputFiles || []) {
-		const fileName = path.replace('.svelte', '.csr.js').replace('.svx', '.csr.js');
-		file.path = file.path.replace(`${outDir}/`, '').replace('stdin.js', fileName);
+		if (file.path.includes('stdin.js')) {
+			const fileName = path.replace('.svelte', '.csr.js').replace('.svx', '.csr.js');
+			file.path = file.path.replace(`${outDir}/`, '').replace('stdin.js', fileName);
+			console.log(`Upload    : ${file.path}`);
+			await s3
+				.putObject({
+					Bucket: `stk-objects-${projectName}`,
+					Key: file.path,
+					Body: file.contents,
+				})
+				.promise();
+		}
+
+		//TODO: upload empty css file for imports
+		file.path = path.replace('.svelte', '.css').replace('.svx', '.css');
 		console.log(`Upload    : ${file.path}`);
 		await s3
 			.putObject({
 				Bucket: `stk-objects-${projectName}`,
 				Key: file.path,
-				Body: file.contents,
+				Body: '',
 			})
 			.promise();
 	}
@@ -107,11 +122,12 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			nodeExternalsPlugin({
 				devDependencies: false,
 			}),
+			sassPlugin(),
 			sveltePlugin({
 				compilerOptions: {
 					dev: false,
 					immutable: true,
-					css: true,
+					css: false,
 					hydratable: true,
 					format: 'cjs',
 					generate: 'ssr',

@@ -1,14 +1,13 @@
 <script context="module" lang="ts">
 	import { Request } from '@serverless-toolkit/sdk';
 
-	export const title = 'Query Parameters';
-
 	export async function load(request: Request) {
-		return request.queryStringParameters || {};
+		return { data: request.queryStringParameters };
 	}
 </script>
 
 <script lang="ts">
+	export const title = 'Query Parameters';
 	export let data = {};
 </script>
 

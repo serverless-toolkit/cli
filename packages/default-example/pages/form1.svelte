@@ -1,14 +1,13 @@
 <script context="module" lang="ts">
 	import { Request } from '@serverless-toolkit/sdk';
 
-	export const title = 'HTML form submit';
-
 	export async function load(request: Request) {
 		return request.body || {};
 	}
 </script>
 
 <script lang="ts">
+	export const title = 'HTML form submit';
 	export let fname = '';
 	export let lname = '';
 </script>

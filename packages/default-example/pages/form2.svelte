@@ -1,19 +1,26 @@
 <script context="module" lang="ts">
 	import { Request } from '@serverless-toolkit/sdk';
 
-	export const title = 'File upload';
-	export let content = '';
-	export let contentType = '';
-
 	export async function post({ body }: Request) {
 		const [uploaded] = body?.files || [];
-		contentType = uploaded?.contentType || '';
-		content = uploaded?.content || '';
 
-		content = contentType?.includes('image')
-			? `data:${contentType};base64,${Buffer.from(content, 'base64').toString('base64')}`
-			: Buffer.from(content).toString();
+		const contentType = uploaded?.contentType || '';
+		const content = uploaded?.content || '';
+
+		return {
+			contentType,
+			content: contentType?.includes('image')
+				? `data:${contentType};base64,${Buffer.from(content, 'base64').toString('base64')}`
+				: Buffer.from(content).toString(),
+		};
 	}
+</script>
+
+<script lang="ts">
+	export const title = 'File upload';
+	
+	export let content = '';
+	export let contentType = '';
 </script>
 
 <svelte:head>
