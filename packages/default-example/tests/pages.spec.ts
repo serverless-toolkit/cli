@@ -15,13 +15,6 @@ test.describe('Page tests', () => {
 		);
 	});
 
-	test('page2 should contain a button', async ({ page }) => {
-		await page.goto('/pages/page2');
-		const name = await page.locator('data-testid=btn').innerText();
-
-		expect(name).toBe('Press Me!');
-	});
-
 	test('page3 should have title "Query Parameters"', async ({ page }) => {
 		await page.goto('/pages/page3');
 		const title = await page.title();
