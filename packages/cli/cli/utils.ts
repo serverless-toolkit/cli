@@ -58,6 +58,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			outdir: '.build',
 			treeShaking: true,
 			plugins: [
+				stylePlugin(),
 				sveltePlugin({
 					include: /\.svx|.svelte$/,
 					compilerOptions: { css: true, hydratable: true },
@@ -76,7 +77,6 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 						},
 					],
 				}),
-				stylePlugin(),
 			],
 		}));
 
@@ -109,6 +109,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			nodeExternalsPlugin({
 				devDependencies: false,
 			}),
+			stylePlugin(),
 			sveltePlugin({
 				compilerOptions: {
 					dev: false,
@@ -121,7 +122,6 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 				include: /\.svx|.svelte$/,
 				preprocess: [mdsvex({ extensions: ['.svx'] }), sveltePreprocess()],
 			}),
-			stylePlugin(),
 		],
 		loader: {
 			'.css': 'copy',
