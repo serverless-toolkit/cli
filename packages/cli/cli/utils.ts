@@ -121,6 +121,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		write: false,
 		treeShaking: true,
 		plugins: [
+			envFilePlugin,
 			nodeExternalsPlugin({
 				devDependencies: false,
 			}),
