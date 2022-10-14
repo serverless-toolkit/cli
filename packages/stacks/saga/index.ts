@@ -102,7 +102,14 @@ return saga;`);
 			'saga'
 		);
 
-		return { ...saga, type: undefined, context: undefined, object: undefined, command: undefined };
+		return {
+			...saga,
+			type: undefined,
+			context: undefined,
+			object: undefined,
+			command: undefined,
+			request: undefined,
+		};
 	} catch (error) {
 		await send({ timestamp: new Date(), message: `Saga error: ${error}` });
 		return { message: error };

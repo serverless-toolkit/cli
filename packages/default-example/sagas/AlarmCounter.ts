@@ -1,4 +1,4 @@
-class AlarmCounter {
+export class AlarmCounter {
 	value: number = 0;
 	context: any = null;
 	expiresAt: number = 0;

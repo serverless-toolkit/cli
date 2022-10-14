@@ -4,7 +4,6 @@ import * as esbuild from 'esbuild';
 import sveltePlugin from 'esbuild-svelte';
 import sveltePreprocess from 'svelte-preprocess';
 import { sassPlugin } from 'esbuild-sass-plugin';
-import envFilePlugin from 'esbuild-envfile-plugin';
 import { mdsvex } from 'mdsvex';
 import * as AWS from 'aws-sdk';
 import { nodeExternalsPlugin } from 'esbuild-node-externals';
@@ -119,7 +118,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		outbase: './',
 		outdir: '.build',
 		bundle: true,
-		minify: true,
+		minify: false,
 		platform: 'node',
 		sourcemap: false,
 		target: 'node16',

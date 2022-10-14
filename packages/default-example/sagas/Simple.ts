@@ -1,4 +1,4 @@
-class Simple {
+export class Simple {
 	message = 'Start';
 
 	next() {

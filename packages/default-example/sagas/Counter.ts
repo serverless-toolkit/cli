@@ -1,4 +1,4 @@
-class Counter {
+export class Counter {
 	value: number = 0;
 	context: any = null;
 	expiresAt: number = 0;
