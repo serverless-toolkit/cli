@@ -1,12 +1,12 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.46",
+	"version": "3.0.47",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.46",
+			"version": "3.0.47",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.40.0-alpha.0",
