@@ -13,7 +13,7 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 		onTick: function (msg: any) {
 			this.clearLine(this.stream);
 			this.stream.write(msg);
-		}
+		},
 	});
 	spinner.start();
 
@@ -24,7 +24,7 @@ export async function bootstrap(argv: ArgumentsCamelCase, env: { [key: string]: 
 
 	try {
 		const deploy = await exec(
-			`npx cdk --no-color deploy --method direct --require-approval never --outputsFile ${join(
+			`npx cdk deploy --method direct --verbose --require-approval never --outputsFile ${join(
 				process.cwd(),
 				'cdk.out',
 				'cdk-env-vars.json'

@@ -30,7 +30,6 @@ export class SagaLambdaStack extends NestedStack {
 			runtime: aws_lambda.Runtime.NODEJS_16_X,
 			memorySize: 256,
 			timeout: Duration.minutes(15),
-			reservedConcurrentExecutions: 1,
 			environment: {
 				DBTABLE: props.table.tableName,
 				CODEBUCKET: props.codeBucket.bucketName,
