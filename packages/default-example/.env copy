@@ -1,6 +1,0 @@
-PROJECTNAME=stk-dev-example
-DOMAINNAME=serverless-toolkit.com
-WSAPIURL=stk-dev-example-logs.serverless-toolkit.com
-DBTABLE=stk-dev-example-serverless-toolkit-stack-dynamodbstackNestedStackdynamodbstackNestedSt-1I7TH82YOO18H-dynamodbtable650E77A7-ZAUHBD5OJUVS
-CODEBUCKET=stk-objects-stk-dev-example
-HTTPAPIURL=stk-dev-example.serverless-toolkit.com
