@@ -12,7 +12,7 @@ import { init } from './init';
 import { sync } from './sync';
 import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
-import { readFileSync, unlinkSync } from 'fs';
+import { existsSync, readFileSync, unlinkSync } from 'fs';
 
 const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 
@@ -31,7 +31,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 		.alias('h', 'help')
 		.epilogue(
 			[
-				'Serverless application development runtime that deploys to your AWS account using the AWS-CDK.'
+				'Serverless application development runtime that deploys to your AWS account using the AWS-CDK.',
 			].join('\n\n')
 		)
 		.usage('Usage: stk COMMAND')
@@ -82,11 +82,9 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 			async (argv) => {
 				try {
 					await bootstrap(argv, env);
-
-					const rawData = readFileSync(
-						join(process.cwd(), 'cdk.out', 'cdk-env-vars.json')
-					).toString();
-					const data = JSON.parse(rawData);
+					const fileName = join(process.cwd(), 'cdk.out', 'cdk-env-vars.json');
+					const rawData = existsSync(fileName) && readFileSync(fileName).toString();
+					const data = JSON.parse(rawData || '{}');
 					const out = Object.keys(data).reduce(
 						(p, n) => ({
 							...p,
@@ -95,7 +93,7 @@ const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
 								.reduce((p: any, x: string) => {
 									p[x.toUpperCase()] = data[n][x];
 									return p;
-								}, {})
+								}, {}),
 						}),
 						{}
 					);
