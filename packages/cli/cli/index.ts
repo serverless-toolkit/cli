@@ -14,7 +14,7 @@ import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
 import { existsSync, readFileSync, unlinkSync } from 'fs';
 
-const env = config({ path: join(process.cwd(), '.env') }).parsed || {};
+const env = { ...process.env, ...config({ path: join(process.cwd(), '.env') }).parsed };
 
 (async () => {
 	const pkg = await import(join(process.cwd(), 'package.json')).catch(() => ({}));
