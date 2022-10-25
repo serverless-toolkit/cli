@@ -14,10 +14,12 @@ import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
 import { existsSync, readFileSync } from 'fs';
 
+const configuration = config({ path: join(process.cwd(), '.env') });
+
 const env = {
 	PROJECTNAME: process.env.PROJECTNAME,
 	DOMAINNAME: process.env.DOMAINNAME,
-	...config({ path: join(process.cwd(), '.env') }).parsed,
+	...configuration.parsed,
 };
 
 (async () => {
