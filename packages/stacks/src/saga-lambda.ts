@@ -19,7 +19,6 @@ interface SagaLambdaStackProps extends NestedStackProps {
 }
 export class SagaLambdaStack extends NestedStack {
 	public readonly sagaHandler: aws_lambda.IFunction;
-	public readonly sagaHandlerFunctionArn: string;
 
 	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {
 		super(scope, id, props);
@@ -43,8 +42,6 @@ export class SagaLambdaStack extends NestedStack {
 				nodeModules: ['vm2'],
 			},
 		});
-		
-		this.sagaHandlerFunctionArn = this.sagaHandler.functionArn;
 
 		props.table.grantReadWriteData(this.sagaHandler);
 		props.codeBucket.grantRead(this.sagaHandler);

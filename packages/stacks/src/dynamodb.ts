@@ -5,7 +5,7 @@ export class DynamoStack extends NestedStack {
 	public readonly table: aws_dynamodb.ITable;
 	public readonly tableArn: string;
 
-	constructor(scope: Construct, id: string, props: StackProps) {
+	constructor(scope: Construct, id: string, props?: StackProps) {
 		super(scope, id, props);
 
 		this.table = new aws_dynamodb.Table(this, 'dynamodb-table', {
@@ -23,10 +23,10 @@ export class DynamoStack extends NestedStack {
 			timeToLiveAttribute: 'expiresAt',
 		});
 
+		this.tableArn = this.table.tableArn;
+
 		new CfnOutput(this.nestedStackParent || this, 'DBTABLE', {
 			value: this.table.tableName,
 		});
-
-		this.tableArn = this.table.tableArn;
 	}
 }
