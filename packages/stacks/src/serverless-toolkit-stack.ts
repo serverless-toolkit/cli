@@ -38,10 +38,10 @@ export class ServerlessToolkitStack extends Stack {
 		super(scope, id, props);
 		const { environment, projectName, domainName } = props;
 
-		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
+		const { table, tableName } = new DynamoStack(this, `dynamodb-stack`, {});
 		this.table = table;
-		this.tableName = table.tableName;
-		
+		this.tableName = tableName;
+
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
 			projectName,

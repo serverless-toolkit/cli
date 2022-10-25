@@ -2,7 +2,8 @@ import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb, CfnOutput } from 
 import { Construct } from 'constructs';
 
 export class DynamoStack extends NestedStack {
-	table: aws_dynamodb.ITable;
+	public readonly table: aws_dynamodb.ITable;
+	public readonly tableName: string;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);
@@ -12,18 +13,20 @@ export class DynamoStack extends NestedStack {
 			billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
 			partitionKey: {
 				name: 'id',
-				type: aws_dynamodb.AttributeType.STRING
+				type: aws_dynamodb.AttributeType.STRING,
 			},
 			sortKey: {
 				name: 'type',
-				type: aws_dynamodb.AttributeType.STRING
+				type: aws_dynamodb.AttributeType.STRING,
 			},
 			stream: aws_dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
-			timeToLiveAttribute: 'expiresAt'
+			timeToLiveAttribute: 'expiresAt',
 		});
 
 		new CfnOutput(this.nestedStackParent || this, 'DBTABLE', {
-			value: this.table.tableName
+			value: this.table.tableName,
 		});
+
+		this.tableName = this.table.tableName;
 	}
 }
