@@ -124,6 +124,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		target: 'node16',
 		write: false,
 		treeShaking: true,
+		define,
 		plugins: [
 			nodeExternalsPlugin({
 				devDependencies: false,
