@@ -12,7 +12,7 @@ import { init } from './init';
 import { sync } from './sync';
 import { logs } from './logs';
 import updateDotenv from 'update-dotenv';
-import { existsSync, readFileSync, unlinkSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 
 const env = {
 	PROJECTNAME: process.env.PROJECTNAME,
