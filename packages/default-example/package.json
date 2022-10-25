@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "@serverless-toolkit/default-example",
-	"version": "3.0.53",
+	"version": "3.0.54",
 	"scripts": {
 		"sync": "stk sync",
 		"bootstrap": "stk bootstrap",
@@ -16,7 +16,7 @@
 	"devDependencies": {
 		"@picocss/pico": "1.5.6",
 		"@playwright/test": "^1.27.1",
-		"@serverless-toolkit/cli": "^3.0.53",
+		"@serverless-toolkit/cli": "^3.0.54",
 		"@serverless-toolkit/sdk": "^3.0.50",
 		"@serverless-toolkit/stacks": "^3.0.50",
 		"aws-cdk": "^2.47.0",
