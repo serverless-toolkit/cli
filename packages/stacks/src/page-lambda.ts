@@ -18,7 +18,8 @@ interface PageLambdaStackProps extends NestedStackProps {
 	environment?: { [key: string]: string };
 }
 export class PageLambdaStack extends NestedStack {
-	pageHandler: aws_lambda.IFunction;
+	public readonly pageHandler: aws_lambda.IFunction;
+	public readonly pageHandlerFunctionArn: string;
 
 	constructor(scope: Construct, id: string, props: PageLambdaStackProps) {
 		super(scope, id, props);
@@ -37,12 +38,15 @@ export class PageLambdaStack extends NestedStack {
 				...props.environment,
 			},
 			bundling: {
-				sourceMap: false,				
+				sourceMap: false,
 				minify: true,
 				target: 'node16',
 				nodeModules: ['svelte', 'mdsvex', 'mime-types', 'lambda-multipart-parser', 'vm2'],
 			},
 		});
+		
+		this.pageHandlerFunctionArn = this.pageHandler.functionArn;
+
 		props.table.grantReadWriteData(this.pageHandler);
 		props.codeBucket.grantRead(this.pageHandler);
 

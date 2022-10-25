@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 
 export class DynamoStack extends NestedStack {
 	public readonly table: aws_dynamodb.ITable;
-	public readonly tableName: string;
+	public readonly tableArn: string;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);
@@ -27,6 +27,6 @@ export class DynamoStack extends NestedStack {
 			value: this.table.tableName,
 		});
 
-		this.tableName = this.table.tableName;
+		this.tableArn = this.table.tableArn;
 	}
 }

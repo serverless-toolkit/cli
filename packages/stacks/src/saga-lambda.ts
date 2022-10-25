@@ -18,10 +18,12 @@ interface SagaLambdaStackProps extends NestedStackProps {
 	environment?: { [key: string]: string };
 }
 export class SagaLambdaStack extends NestedStack {
-	sagaHandler: aws_lambda.IFunction;
+	public readonly sagaHandler: aws_lambda.IFunction;
+	public readonly sagaHandlerFunctionArn: string;
 
 	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {
 		super(scope, id, props);
+
 		this.sagaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'saga-function-handler', {
 			entry: join(realpathSync(__filename), '..', '..', 'saga', 'index.ts'),
 			depsLockFilePath: join(realpathSync(__filename), '..', '..', 'npm-shrinkwrap.json'),
@@ -41,6 +43,9 @@ export class SagaLambdaStack extends NestedStack {
 				nodeModules: ['vm2'],
 			},
 		});
+		
+		this.sagaHandlerFunctionArn = this.sagaHandler.functionArn;
+
 		props.table.grantReadWriteData(this.sagaHandler);
 		props.codeBucket.grantRead(this.sagaHandler);
 

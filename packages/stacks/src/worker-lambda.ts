@@ -18,7 +18,8 @@ interface WorkerLambdaStackProps extends NestedStackProps {
 	environment?: { [key: string]: string };
 }
 export class WorkerLambdaStack extends NestedStack {
-	workerHandler: aws_lambda.IFunction;
+	public readonly workerHandler: aws_lambda.IFunction;
+	public readonly workerHandlerFunctionArn: string;
 
 	constructor(scope: Construct, id: string, props: WorkerLambdaStackProps) {
 		super(scope, id, props);
@@ -42,6 +43,9 @@ export class WorkerLambdaStack extends NestedStack {
 				nodeModules: ['vm2'],
 			},
 		});
+
+		this.workerHandlerFunctionArn = this.workerHandler.functionArn;
+
 		props.table.grantReadWriteData(this.workerHandler);
 		props.codeBucket.grantRead(this.workerHandler);
 

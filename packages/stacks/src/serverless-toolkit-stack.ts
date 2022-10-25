@@ -24,12 +24,11 @@ export interface ServerlessToolkitStackProps extends StackProps {
 }
 
 export class ServerlessToolkitStack extends Stack {
-	public readonly table: ITable;
-	public readonly tableName: string;
+	public readonly tableArn: string;
 	public readonly codeBucket: IBucket;
-	public readonly sagaHandler: IFunction;
-	public readonly pageHandler: IFunction;
-	public readonly workerHandler: IFunction;
+	public readonly sagaHandlerFunctionArn: string;
+	public readonly pageHandlerFunctionArn: string;
+	public readonly workerHandlerFunctionArn: string;
 	public readonly httpApi: IHttpApi;
 	public readonly websocketApi: IWebSocketApi;
 	public readonly zone: IHostedZone;
@@ -38,38 +37,46 @@ export class ServerlessToolkitStack extends Stack {
 		super(scope, id, props);
 		const { environment, projectName, domainName } = props;
 
-		const { table, tableName } = new DynamoStack(this, `dynamodb-stack`, {});
-		this.table = table;
-		this.tableName = tableName;
+		const { table, tableArn } = new DynamoStack(this, `dynamodb-stack`, {});
+		this.tableArn = tableArn;
 
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
 			projectName,
 		});
 		this.codeBucket = codeBucket;
-		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
+
+		const { sagaHandler, sagaHandlerFunctionArn } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
 			codeBucket,
 			environment: { ...env, ...environment },
 		});
-		this.sagaHandler = sagaHandler;
+		this.sagaHandlerFunctionArn = sagaHandlerFunctionArn;
+
 		new SchedulerLambdaStack(this, `scheduler-stack`, {
 			table,
 			codeBucket,
 			sagaHandler,
 		});
-		const { pageHandler } = new PageLambdaStack(this, `page-stack`, {
+
+		const { pageHandler, pageHandlerFunctionArn } = new PageLambdaStack(this, `page-stack`, {
 			table,
 			codeBucket,
 			environment: { ...env, ...environment },
 		});
-		this.pageHandler = pageHandler;
-		const { workerHandler } = new WorkerLambdaStack(this, `worker-stack`, {
-			table,
-			codeBucket,
-			environment: { ...env, ...environment },
-		});
-		this.workerHandler = workerHandler;
+		this.pageHandlerFunctionArn = pageHandlerFunctionArn;
+
+		const { workerHandler, workerHandlerFunctionArn } = new WorkerLambdaStack(
+			this,
+			`worker-stack`,
+			{
+				table,
+				codeBucket,
+				environment: { ...env, ...environment },
+			}
+		);
+		this.workerHandlerFunctionArn = workerHandlerFunctionArn;
+
 		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
 			domainName,
 			httpRecordName: projectName,
