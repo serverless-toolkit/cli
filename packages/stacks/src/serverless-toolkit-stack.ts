@@ -24,14 +24,15 @@ export interface ServerlessToolkitStackProps extends StackProps {
 }
 
 export class ServerlessToolkitStack extends Stack {
-	public table: ITable;
-	public codeBucket: IBucket;
-	public sagaHandler: IFunction;
-	public pageHandler: IFunction;
-	public workerHandler: IFunction;
-	public httpApi: IHttpApi;
-	public websocketApi: IWebSocketApi;
-	public zone: IHostedZone;
+	public readonly table: ITable;
+	public readonly tableName: string;
+	public readonly codeBucket: IBucket;
+	public readonly sagaHandler: IFunction;
+	public readonly pageHandler: IFunction;
+	public readonly workerHandler: IFunction;
+	public readonly httpApi: IHttpApi;
+	public readonly websocketApi: IWebSocketApi;
+	public readonly zone: IHostedZone;
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
@@ -39,6 +40,8 @@ export class ServerlessToolkitStack extends Stack {
 
 		const { table } = new DynamoStack(this, `dynamodb-stack`, {});
 		this.table = table;
+		this.tableName = table.tableName;
+		
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
 			projectName,
