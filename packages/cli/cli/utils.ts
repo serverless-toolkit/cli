@@ -169,7 +169,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		console.log(`Upload    : ${file.path}`);
 		await s3
 			.putObject({
-				Bucket: `stk-objects-${projectName}`,
+				Bucket: process.env.CODEBUCKET,
 				Key: file.path,
 				Body: file.contents,
 			})
