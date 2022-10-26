@@ -1,10 +1,10 @@
-import { RemovalPolicy, StackProps, aws_dynamodb } from 'aws-cdk-lib';
+import { RemovalPolicy, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-export class DynamoStack extends Construct {
+export class Dynamo extends Construct {
 	public readonly table: aws_dynamodb.ITable;
 
-	constructor(scope: Construct, id: string, props?: StackProps) {
+	constructor(scope: Construct, id: string) {
 		super(scope, id);
 
 		this.table = new aws_dynamodb.Table(this, 'dynamodb-table', {

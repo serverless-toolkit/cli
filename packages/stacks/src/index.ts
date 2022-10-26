@@ -1,9 +1,6 @@
 export {
 	env,
 	ServerlessToolkitStack,
-	ServerlessToolkitStackProps
+	ServerlessToolkitStackProps,
 } from './serverless-toolkit-stack';
-export {
-	ApiGatewayCustomDomainStack,
-	ApiGatewayCustomDomainStackProps
-} from './api-gateway-custom-domain-stack';
+export { ApiGatewayCustomDomain, ApiGatewayCustomDomainProps } from './api-gateway-custom-domain';

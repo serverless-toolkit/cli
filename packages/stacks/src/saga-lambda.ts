@@ -2,8 +2,6 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	NestedStack,
-	NestedStackProps,
 	aws_dynamodb,
 	aws_s3,
 	aws_lambda,
@@ -12,15 +10,15 @@ import {
 } from 'aws-cdk-lib';
 import { realpathSync } from 'fs';
 
-interface SagaLambdaStackProps extends NestedStackProps {
+interface SagaLambdaProps {
 	table: aws_dynamodb.ITable;
 	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
-export class SagaLambdaStack extends Construct {
+export class SagaLambda extends Construct {
 	public readonly sagaHandler: aws_lambda.IFunction;
 
-	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {
+	constructor(scope: Construct, id: string, props: SagaLambdaProps) {
 		super(scope, id);
 
 		this.sagaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'saga-function-handler', {

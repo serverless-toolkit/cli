@@ -3,8 +3,6 @@ import { join } from 'path';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	NestedStack,
-	NestedStackProps,
 	aws_dynamodb,
 	aws_lambda_nodejs,
 	aws_s3,
@@ -13,16 +11,16 @@ import {
 	aws_events_targets,
 } from 'aws-cdk-lib';
 
-interface SchedulerLambdaStackProps extends NestedStackProps {
+interface SchedulerLambdaProps {
 	table: aws_dynamodb.ITable;
 	sagaHandler: aws_lambda.IFunction;
 	codeBucket: aws_s3.IBucket;
 }
 
-export class SchedulerLambdaStack extends Construct {
+export class SchedulerLambda extends Construct {
 	schedulerHandler: aws_lambda.IFunction;
 
-	constructor(scope: Construct, id: string, props: SchedulerLambdaStackProps) {
+	constructor(scope: Construct, id: string, props: SchedulerLambdaProps) {
 		super(scope, id);
 		this.schedulerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'SchedulerFunctionHandler', {
 			entry: join(realpathSync(__filename), '..', '..', 'scheduler', 'index.ts'),

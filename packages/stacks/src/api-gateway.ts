@@ -3,7 +3,6 @@ import { realpathSync } from 'fs';
 import { Construct } from 'constructs';
 import {
 	Duration,
-	NestedStackProps,
 	aws_route53,
 	aws_lambda_nodejs,
 	aws_lambda,
@@ -28,7 +27,7 @@ import {
 import { IAliasRecordTarget } from 'aws-cdk-lib/aws-route53';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
-interface ApiGatewayStackProps extends NestedStackProps {
+interface ApiGatewayProps {
 	workerHandler: aws_lambda.IFunction;
 	sagaHandler: aws_lambda.IFunction;
 	pageHandler: aws_lambda.IFunction;
@@ -38,7 +37,7 @@ interface ApiGatewayStackProps extends NestedStackProps {
 	wsRecordName: string;
 }
 
-export class ApiGatewayStack extends Construct {
+export class ApiGateway extends Construct {
 	httpApi: IHttpApi;
 	websocketApi: IWebSocketApi;
 	realtimeHandler: aws_lambda.IFunction;
@@ -46,7 +45,7 @@ export class ApiGatewayStack extends Construct {
 	wsApiUrl: string;
 	zone: aws_route53.IHostedZone;
 
-	constructor(scope: Construct, id: string, props: ApiGatewayStackProps) {
+	constructor(scope: Construct, id: string, props: ApiGatewayProps) {
 		super(scope, id);
 
 		this.httpApiUrl = `${props.httpRecordName}.${props.domainName}`;
