@@ -1,12 +1,11 @@
-import { RemovalPolicy, NestedStack, StackProps, aws_dynamodb, CfnOutput } from 'aws-cdk-lib';
+import { RemovalPolicy, StackProps, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-export class DynamoStack extends NestedStack {
+export class DynamoStack extends Construct {
 	public readonly table: aws_dynamodb.ITable;
-	public readonly tableArn: string;
 
 	constructor(scope: Construct, id: string, props?: StackProps) {
-		super(scope, id, props);
+		super(scope, id);
 
 		this.table = new aws_dynamodb.Table(this, 'dynamodb-table', {
 			removalPolicy: RemovalPolicy.DESTROY,
@@ -21,12 +20,6 @@ export class DynamoStack extends NestedStack {
 			},
 			stream: aws_dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 			timeToLiveAttribute: 'expiresAt',
-		});
-
-		this.tableArn = this.table.tableArn;
-
-		new CfnOutput(this.nestedStackParent || this, 'DBTABLE', {
-			value: this.table.tableName,
 		});
 	}
 }

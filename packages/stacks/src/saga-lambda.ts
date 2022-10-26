@@ -17,11 +17,11 @@ interface SagaLambdaStackProps extends NestedStackProps {
 	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
-export class SagaLambdaStack extends NestedStack {
+export class SagaLambdaStack extends Construct {
 	public readonly sagaHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: SagaLambdaStackProps) {
-		super(scope, id, props);
+		super(scope, id);
 
 		this.sagaHandler = new aws_lambda_nodejs.NodejsFunction(this, 'saga-function-handler', {
 			entry: join(realpathSync(__filename), '..', '..', 'saga', 'index.ts'),

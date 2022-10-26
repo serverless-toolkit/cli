@@ -19,11 +19,11 @@ interface SchedulerLambdaStackProps extends NestedStackProps {
 	codeBucket: aws_s3.IBucket;
 }
 
-export class SchedulerLambdaStack extends NestedStack {
+export class SchedulerLambdaStack extends Construct {
 	schedulerHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: SchedulerLambdaStackProps) {
-		super(scope, id, props);
+		super(scope, id);
 		this.schedulerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'SchedulerFunctionHandler', {
 			entry: join(realpathSync(__filename), '..', '..', 'scheduler', 'index.ts'),
 			depsLockFilePath: join(realpathSync(__filename), '..', '..', 'npm-shrinkwrap.json'),

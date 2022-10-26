@@ -2,9 +2,7 @@ import { join } from 'path';
 import { realpathSync } from 'fs';
 import { Construct } from 'constructs';
 import {
-	CfnOutput,
 	Duration,
-	NestedStack,
 	NestedStackProps,
 	aws_route53,
 	aws_lambda_nodejs,
@@ -40,7 +38,7 @@ interface ApiGatewayStackProps extends NestedStackProps {
 	wsRecordName: string;
 }
 
-export class ApiGatewayStack extends NestedStack {
+export class ApiGatewayStack extends Construct {
 	httpApi: IHttpApi;
 	websocketApi: IWebSocketApi;
 	realtimeHandler: aws_lambda.IFunction;
@@ -49,7 +47,7 @@ export class ApiGatewayStack extends NestedStack {
 	zone: aws_route53.IHostedZone;
 
 	constructor(scope: Construct, id: string, props: ApiGatewayStackProps) {
-		super(scope, id, props);
+		super(scope, id);
 
 		this.httpApiUrl = `${props.httpRecordName}.${props.domainName}`;
 		this.wsApiUrl = `${props.wsRecordName}.${props.domainName}`;
@@ -194,13 +192,6 @@ export class ApiGatewayStack extends NestedStack {
 		(props.sagaHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
 		(props.pageHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
 		(props.pageHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
-
-		new CfnOutput(this.nestedStackParent || this, 'HTTPAPIURL', {
-			value: this.httpApiUrl,
-		});
-		new CfnOutput(this.nestedStackParent || this, 'WSAPIURL', {
-			value: this.wsApiUrl,
-		});
 	}
 }
 

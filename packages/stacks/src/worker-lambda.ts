@@ -17,11 +17,11 @@ interface WorkerLambdaStackProps extends NestedStackProps {
 	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
-export class WorkerLambdaStack extends NestedStack {
+export class WorkerLambdaStack extends Construct {
 	public readonly workerHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: WorkerLambdaStackProps) {
-		super(scope, id, props);
+		super(scope, id);
 
 		this.workerHandler = new aws_lambda_nodejs.NodejsFunction(this, 'worker-function-handler', {
 			entry: join(realpathSync(__filename), '..', '..', 'worker', 'index.ts'),

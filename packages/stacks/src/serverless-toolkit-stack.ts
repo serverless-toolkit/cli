@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { join } from 'path';
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { DynamoStack } from './dynamodb';
 import { ApiGatewayStack } from './api-gateway';
 import { SagaLambdaStack } from './saga-lambda';
@@ -25,7 +25,7 @@ export interface ServerlessToolkitStackProps extends StackProps {
 
 export class ServerlessToolkitStack extends Stack {
 	public readonly table: ITable;
-	public readonly tableArn: string;
+
 	public readonly codeBucket: IBucket;
 	public readonly sagaHandler: IFunction;
 	public readonly pageHandler: IFunction;
@@ -38,15 +38,20 @@ export class ServerlessToolkitStack extends Stack {
 		super(scope, id, props);
 		const { environment, projectName, domainName } = props;
 
-		const { table, tableArn } = new DynamoStack(this, `dynamodb-stack`);
+		const { table } = new DynamoStack(this, `dynamodb-stack`);
 		this.table = table;
-		this.tableArn = tableArn;
+		new CfnOutput(this, 'DBTABLE', {
+			value: this.table.tableName,
+		});
 
 		const { codeBucket } = new S3BucketStack(this, `s3bucket-stack`, {
 			table,
 			projectName,
 		});
 		this.codeBucket = codeBucket;
+		new CfnOutput(this, 'CODEBUCKET', {
+			value: this.codeBucket.bucketName,
+		});
 
 		const { sagaHandler } = new SagaLambdaStack(this, `saga-stack`, {
 			table,
@@ -75,17 +80,27 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		this.workerHandler = workerHandler;
 
-		const { httpApi, websocketApi, zone } = new ApiGatewayStack(this, `apigateway-stack`, {
-			domainName,
-			httpRecordName: projectName,
-			wsRecordName: `${projectName}-logs`,
-			table,
-			sagaHandler,
-			workerHandler,
-			pageHandler,
-		});
+		const { httpApi, websocketApi, zone, httpApiUrl, wsApiUrl } = new ApiGatewayStack(
+			this,
+			`apigateway-stack`,
+			{
+				domainName,
+				httpRecordName: projectName,
+				wsRecordName: `${projectName}-logs`,
+				table,
+				sagaHandler,
+				workerHandler,
+				pageHandler,
+			}
+		);
 		this.httpApi = httpApi;
 		this.websocketApi = websocketApi;
 		this.zone = zone;
+		new CfnOutput(this, 'HTTPAPIURL', {
+			value: httpApiUrl,
+		});
+		new CfnOutput(this, 'WSAPIURL', {
+			value: wsApiUrl,
+		});
 	}
 }

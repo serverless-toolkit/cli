@@ -17,11 +17,11 @@ interface PageLambdaStackProps extends NestedStackProps {
 	codeBucket: aws_s3.IBucket;
 	environment?: { [key: string]: string };
 }
-export class PageLambdaStack extends NestedStack {
+export class PageLambdaStack extends Construct {
 	public readonly pageHandler: aws_lambda.IFunction;
 
 	constructor(scope: Construct, id: string, props: PageLambdaStackProps) {
-		super(scope, id, props);
+		super(scope, id);
 
 		this.pageHandler = new aws_lambda_nodejs.NodejsFunction(this, 'page-function-handler', {
 			entry: join(realpathSync(__filename), '..', '..', 'page', 'index.ts'),

@@ -11,7 +11,7 @@
 		"logs": "stk logs"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.1238.0"
+		"aws-sdk": "^2.1240.0"
 	},
 	"devDependencies": {
 		"@picocss/pico": "1.5.6",
