@@ -12,7 +12,7 @@ export async function sync(
 	console.log('Updating files ...');
 
 	try {
-		await syncCode(projectName, s3);
+		await syncCode(projectName, env, s3);
 	} catch (err) {
 		console.error(err);
 	}

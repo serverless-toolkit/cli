@@ -28,13 +28,13 @@ export async function runTests(env: { [key: string]: any }): Promise<void> {
 	}
 }
 
-export async function compile(path: string, projectName: string, s3: AWS.S3) {
+export async function compile(path: string, env: { [key: string]: any }, s3: AWS.S3) {
 	const outDir = join(process.cwd(), '.build');
 	const isSvelte = path.includes('.svelte') || path.includes('.svx');
 	const define = {};
 
-	for (const k in process.env) {
-		define[`process.env.${k}`] = JSON.stringify(process.env[k]);
+	for (const k in env) {
+		define[`process.env.${k}`] = JSON.stringify(env[k]);
 	}
 
 	console.log(`Compile   : ${path}`);
@@ -93,7 +93,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 			console.log(`Upload    : ${file.path}`);
 			await s3
 				.putObject({
-					Bucket: `stk-objects-${projectName}`,
+					Bucket: env.CODEBUCKET,
 					Key: file.path,
 					Body: file.contents,
 				})
@@ -105,7 +105,7 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 		console.log(`Upload    : ${file.path}`);
 		await s3
 			.putObject({
-				Bucket: `stk-objects-${projectName}`,
+				Bucket: env.CODEBUCKET,
 				Key: file.path,
 				Body: '',
 			})
@@ -167,9 +167,10 @@ export async function compile(path: string, projectName: string, s3: AWS.S3) {
 	for (const file of buildResult.outputFiles) {
 		file.path = file.path.replace(`${outDir}/`, '');
 		console.log(`Upload    : ${file.path}`);
+
 		await s3
 			.putObject({
-				Bucket: process.env.CODEBUCKET,
+				Bucket: env.CODEBUCKET,
 				Key: file.path,
 				Body: file.contents,
 			})
@@ -188,7 +189,7 @@ export async function watchLogs(projectName: string, domainName: string) {
 	});
 }
 
-export async function syncCode(projectName: string, s3: AWS.S3) {
+export async function syncCode(projectName: string, env: { [key: string]: any }, s3: AWS.S3) {
 	chokidar
 		.watch(['workers', 'pages', 'sagas'], {
 			ignoreInitial: false,
@@ -197,7 +198,7 @@ export async function syncCode(projectName: string, s3: AWS.S3) {
 		})
 		.on('all', async (event, path) => {
 			if (event !== 'add') return;
-			await compile(path, projectName, s3);
+			await compile(path, env, s3);
 		});
 }
 

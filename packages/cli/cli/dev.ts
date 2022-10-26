@@ -14,7 +14,7 @@ export async function dev(
 	console.log('Watching ...');
 
 	await watchLogs(projectName, domainName);
-	await syncCode(projectName, s3);
+	await syncCode(projectName, env, s3);
 
 	chokidar
 		.watch(['workers', 'pages', 'sagas', 'tests'], {
@@ -29,7 +29,7 @@ export async function dev(
 				case 'add':
 				case 'change':
 					if (!path.includes('.spec.ts')) {
-						await compile(path, projectName, s3);
+						await compile(path, env, s3);
 					}
 					await runTests(env);
 					break;
@@ -37,7 +37,7 @@ export async function dev(
 					console.log(`Delete    : ${path}`);
 					await s3
 						.deleteObject({
-							Bucket: `stk-objects-${projectName}`,
+							Bucket: env.CODEBUCKET,
 							Key: path,
 						})
 						.promise();
