@@ -9,13 +9,13 @@
 	},
 	"keywords": [],
 	"dependencies": {
-		"aws-sdk": "2.1209.0"
+		"aws-sdk": "2.1243.0"
 	},
 	"devDependencies": {
-		"@types/node": "18.7.14",
+		"@types/node": "18.11.7",
 		"@types/node-fetch": "2.6.2",
 		"node-fetch": "3.2.10",
-		"typescript": "4.8.2"
+		"typescript": "4.8.4"
 	},
 	"license": "MIT",
 	"gitHead": "2cc22c9810b1e01f92f817bfa4263b927118d1e3"
