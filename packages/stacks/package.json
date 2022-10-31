@@ -13,7 +13,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/aws-lambda": "8.10.108",
-		"@types/node": "18.11.7",
+		"@types/node": "18.11.8",
 		"@types/uuid": "8.3.4"
 	},
 	"dependencies": {
@@ -24,7 +24,7 @@
 		"aws-cdk-lib": "2.49.0",
 		"aws-lambda": "1.0.7",
 		"aws-sdk": "2.1243.0",
-		"constructs": "10.1.143",
+		"constructs": "10.1.145",
 		"dotenv": "16.0.3",
 		"esbuild": "0.15.12",
 		"esbuild-node-externals": "1.5.0",

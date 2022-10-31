@@ -1,22 +1,22 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.64",
+	"version": "3.0.65",
 	"lockfileVersion": 2,
 	"requires": true,
 	"packages": {
 		"": {
 			"name": "@serverless-toolkit/stacks",
-			"version": "3.0.64",
+			"version": "3.0.65",
 			"license": "MIT",
 			"dependencies": {
 				"@aws-cdk/aws-apigatewayv2-alpha": "2.49.0-alpha.0",
 				"@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.49.0-alpha.0",
-				"@serverless-toolkit/sdk": "^3.0.50",
+				"@serverless-toolkit/sdk": "^3.0.65",
 				"aws-cdk": "2.49.0",
 				"aws-cdk-lib": "2.49.0",
 				"aws-lambda": "1.0.7",
 				"aws-sdk": "2.1243.0",
-				"constructs": "10.1.143",
+				"constructs": "10.1.145",
 				"dotenv": "16.0.3",
 				"esbuild": "0.15.12",
 				"esbuild-node-externals": "1.5.0",
@@ -34,7 +34,7 @@
 			},
 			"devDependencies": {
 				"@types/aws-lambda": "8.10.108",
-				"@types/node": "18.11.7",
+				"@types/node": "18.11.8",
 				"@types/uuid": "8.3.4"
 			}
 		},
@@ -100,9 +100,9 @@
 			"dev": true
 		},
 		"node_modules/@types/node": {
-			"version": "18.11.7",
-			"resolved": "https://registry.npmjs.org/@types/node/-/node-18.11.7.tgz",
-			"integrity": "sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ=="
+			"version": "18.11.8",
+			"resolved": "https://registry.npmjs.org/@types/node/-/node-18.11.8.tgz",
+			"integrity": "sha512-uGwPWlE0Hj972KkHtCDVwZ8O39GmyjfMane1Z3GUBGGnkZ2USDq7SxLpVIiIHpweY9DS0QTDH0Nw7RNBsAAZ5A=="
 		},
 		"node_modules/@types/pug": {
 			"version": "2.0.6",
@@ -491,9 +491,9 @@
 			"integrity": "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="
 		},
 		"node_modules/constructs": {
-			"version": "10.1.143",
-			"resolved": "https://registry.npmjs.org/constructs/-/constructs-10.1.143.tgz",
-			"integrity": "sha512-8lb4ooWxUq+U3RLS0YOJdAAz2AuKEsA1wXFUT0OsiMc74gtjbGyco0awNDOOyaLWfAeiIHTYLQiDFOKmiwixGQ==",
+			"version": "10.1.145",
+			"resolved": "https://registry.npmjs.org/constructs/-/constructs-10.1.145.tgz",
+			"integrity": "sha512-56SfAlrDyMLc4Y6MGSo5//oV4A9KpY/k0nedNMMDc1ILbplUbhfKn3yDhLqM/wDQX0P1+kmg9Osyu9h+Huk0jA==",
 			"engines": {
 				"node": ">= 14.17.0"
 			}
@@ -2140,9 +2140,9 @@
 			"dev": true
 		},
 		"@types/node": {
-			"version": "18.11.7",
-			"resolved": "https://registry.npmjs.org/@types/node/-/node-18.11.7.tgz",
-			"integrity": "sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ=="
+			"version": "18.11.8",
+			"resolved": "https://registry.npmjs.org/@types/node/-/node-18.11.8.tgz",
+			"integrity": "sha512-uGwPWlE0Hj972KkHtCDVwZ8O39GmyjfMane1Z3GUBGGnkZ2USDq7SxLpVIiIHpweY9DS0QTDH0Nw7RNBsAAZ5A=="
 		},
 		"@types/pug": {
 			"version": "2.0.6",
@@ -2409,9 +2409,9 @@
 			"integrity": "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="
 		},
 		"constructs": {
-			"version": "10.1.143",
-			"resolved": "https://registry.npmjs.org/constructs/-/constructs-10.1.143.tgz",
-			"integrity": "sha512-8lb4ooWxUq+U3RLS0YOJdAAz2AuKEsA1wXFUT0OsiMc74gtjbGyco0awNDOOyaLWfAeiIHTYLQiDFOKmiwixGQ=="
+			"version": "10.1.145",
+			"resolved": "https://registry.npmjs.org/constructs/-/constructs-10.1.145.tgz",
+			"integrity": "sha512-56SfAlrDyMLc4Y6MGSo5//oV4A9KpY/k0nedNMMDc1ILbplUbhfKn3yDhLqM/wDQX0P1+kmg9Osyu9h+Huk0jA=="
 		},
 		"data-uri-to-buffer": {
 			"version": "4.0.0",

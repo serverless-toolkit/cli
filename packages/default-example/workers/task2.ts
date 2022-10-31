@@ -8,7 +8,7 @@ interface Taks2Result {
 	slug: string;
 }
 
-export async function task2(request: Request): Promise<Response & Taks2Result> {
+export async function GET(request: Request): Promise<Response & Taks2Result> {
 	console.log('Task2: Hello World!');
 
 	return {
