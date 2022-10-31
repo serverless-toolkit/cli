@@ -79,7 +79,7 @@ module.exports.handler = async function (
 	if (
 		request.headers &&
 		request.headers['content-type'] === 'application/x-www-form-urlencoded' &&
-		request.requestContext?.http?.method?.toLowerCase() === 'post' &&
+		request.requestContext?.http?.method?.toUpperCase() === 'POST' &&
 		request.body
 	) {
 		if (request.isBase64Encoded) {
@@ -92,7 +92,7 @@ module.exports.handler = async function (
 	if (
 		request.headers &&
 		request.headers['content-type']?.includes('multipart/form-data') &&
-		request.requestContext?.http?.method?.toLowerCase() === 'post' &&
+		request.requestContext?.http?.method?.toUpperCase() === 'POST' &&
 		request.body
 	) {
 		request.body = (await multipartFormParser.parse(request as any)) as any;
@@ -126,7 +126,7 @@ module.exports.handler = async function (
 		const svelteComponent = vm.run(svxContent);
 		const response: Response = { statusCode: 200, cookies: [], headers: {} };
 		const componentFunctionNameToInvoke =
-			svelteComponent[request.requestContext?.http?.method?.toLowerCase()] || svelteComponent.load;
+			svelteComponent[request.requestContext?.http?.method?.toUpperCase()] || svelteComponent.load;
 
 		const data =
 			componentFunctionNameToInvoke &&

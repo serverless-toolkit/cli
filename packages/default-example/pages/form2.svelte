@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { Request } from '@serverless-toolkit/sdk';
 
-	export async function post({ body }: Request) {
+	export async function POST({ body }: Request) {
 		const [uploaded] = body?.files || [];
 
 		const contentType = uploaded?.contentType || '';
