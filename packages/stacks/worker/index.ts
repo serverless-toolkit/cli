@@ -66,7 +66,7 @@ export async function handler(request: APIGatewayProxyEventV2 & { fileContent: s
 
 		const workerResult = await vm.run(`${s3Content}
 return ${
-			event.requestContext?.http?.method?.toLowerCase() || codeFileName?.split('/').slice(-1).join()
+			event.requestContext?.http?.method?.toUpperCase() || codeFileName?.split('/').slice(-1).join()
 		}(event, response); 
 		`);
 
