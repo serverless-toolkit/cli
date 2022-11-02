@@ -218,6 +218,7 @@ export class ApiGateway extends Construct {
 				responseLength: '$context.responseLength',
 				domainName: '$context.domainName',
 				routeKey: '$context.routeKey',
+				errorMessage: '$context.integrationErrorMessage',
 			}),
 		};
 
