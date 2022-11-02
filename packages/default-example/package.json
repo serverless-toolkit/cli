@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "@serverless-toolkit/default-example",
-	"version": "3.0.68",
+	"version": "3.0.69",
 	"scripts": {
 		"sync": "stk sync",
 		"bootstrap": "stk bootstrap",
@@ -16,9 +16,9 @@
 	"devDependencies": {
 		"@picocss/pico": "1.5.6",
 		"@playwright/test": "1.27.1",
-		"@serverless-toolkit/cli": "^3.0.68",
+		"@serverless-toolkit/cli": "^3.0.69",
 		"@serverless-toolkit/sdk": "^3.0.66",
-		"@serverless-toolkit/stacks": "^3.0.68",
+		"@serverless-toolkit/stacks": "^3.0.69",
 		"aws-cdk": "2.49.0",
 		"node-sass": "7.0.3",
 		"odottaa": "1.1.9",
