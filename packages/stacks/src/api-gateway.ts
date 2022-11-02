@@ -24,7 +24,9 @@ import {
 	WebSocketStage,
 	IHttpApi,
 	IWebSocketApi,
+	IHttpRouteAuthorizer,
 } from '@aws-cdk/aws-apigatewayv2-alpha';
+
 import {
 	HttpLambdaIntegration,
 	WebSocketLambdaIntegration,
@@ -40,6 +42,7 @@ interface ApiGatewayProps {
 	domainName: string;
 	httpRecordName: string;
 	wsRecordName: string;
+	authorizer?: IHttpRouteAuthorizer;
 }
 
 export class ApiGateway extends Construct {
@@ -52,6 +55,8 @@ export class ApiGateway extends Construct {
 
 	constructor(scope: Construct, id: string, props: ApiGatewayProps) {
 		super(scope, id);
+
+		const { authorizer } = props;
 
 		this.httpApiUrl = `${props.httpRecordName}.${props.domainName}`;
 		this.wsApiUrl = `${props.wsRecordName}.${props.domainName}`;
@@ -84,54 +89,63 @@ export class ApiGateway extends Construct {
 			path: '/workers/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/api/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.workerHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/pages/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/pages',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-pages-integration', props.pageHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/sagas/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/object/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
+			authorizer,
 		});
 
 		(this.httpApi as HttpApi).addRoutes({
 			path: '/objects/{proxy+}',
 			methods: [HttpMethod.ANY],
 			integration: new HttpLambdaIntegration('http-api-worker-integration', props.sagaHandler),
+			authorizer,
 		});
 
 		new aws_route53.ARecord(this, 'http-api-alias-record', {
