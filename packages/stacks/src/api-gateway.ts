@@ -8,6 +8,11 @@ import {
 	aws_lambda,
 	aws_certificatemanager,
 	aws_dynamodb,
+	aws_apigateway,
+	aws_logs,
+	aws_iam,
+	RemovalPolicy,
+	CfnOutput,
 } from 'aws-cdk-lib';
 import {
 	CorsHttpMethod,
@@ -191,6 +196,53 @@ export class ApiGateway extends Construct {
 		(props.sagaHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
 		(props.pageHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
 		(props.pageHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
+
+		const accessLogs = new aws_logs.LogGroup(this, 'api-gateway-access-logs', {
+			retention: aws_logs.RetentionDays.ONE_YEAR,
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+		const defaultStage = (this.httpApi as HttpApi).defaultStage.node
+			.defaultChild as aws_apigateway.CfnStage;
+		defaultStage.accessLogSetting = {
+			destinationArn: accessLogs.logGroupArn,
+			format: JSON.stringify({
+				requestId: '$context.requestId',
+				userAgent: '$context.identity.userAgent',
+				sourceIp: '$context.identity.sourceIp',
+				requestTime: '$context.requestTime',
+				requestTimeEpoch: '$context.requestTimeEpoch',
+				httpMethod: '$context.httpMethod',
+				path: '$context.path',
+				status: '$context.status',
+				protocol: '$context.protocol',
+				responseLength: '$context.responseLength',
+				domainName: '$context.domainName',
+				routeKey: '$context.routeKey',
+			}),
+		};
+
+		const role = new aws_iam.Role(this, 'api-gateway-log-writer-role', {
+			assumedBy: new aws_iam.ServicePrincipal('apigateway.amazonaws.com'),
+		});
+
+		role.addToPolicy(
+			new aws_iam.PolicyStatement({
+				actions: [
+					'logs:CreateLogGroup',
+					'logs:CreateLogStream',
+					'logs:DescribeLogGroups',
+					'logs:DescribeLogStreams',
+					'logs:PutLogEvents',
+					'logs:GetLogEvents',
+					'logs:FilterLogEvents',
+				],
+				resources: ['*'],
+			})
+		);
+		accessLogs.grantWrite(role);
+		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
+			value: accessLogs.logGroupName,
+		});
 	}
 }
 
