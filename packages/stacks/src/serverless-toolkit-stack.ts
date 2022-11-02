@@ -11,7 +11,7 @@ import { S3Bucket } from './s3-bucket';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
-import { IHttpApi, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { IHttpApi, IHttpRouteAuthorizer, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 
@@ -21,6 +21,7 @@ export interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
 	domainName: string;
 	environment?: { [key: string]: string };
+	authorizer?: IHttpRouteAuthorizer;
 }
 
 export class ServerlessToolkitStack extends Stack {
@@ -36,7 +37,7 @@ export class ServerlessToolkitStack extends Stack {
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { environment, projectName, domainName } = props;
+		const { environment, projectName, domainName, authorizer } = props;
 
 		const { table } = new Dynamo(this, `dynamodb-stack`);
 		this.table = table;
@@ -88,6 +89,7 @@ export class ServerlessToolkitStack extends Stack {
 				sagaHandler,
 				workerHandler,
 				pageHandler,
+				authorizer,
 			}
 		);
 		this.httpApi = httpApi;
