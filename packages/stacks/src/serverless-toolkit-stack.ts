@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { join } from 'path';
-import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps, aws_lambda } from 'aws-cdk-lib';
 import { Dynamo } from './dynamodb';
 import { ApiGateway } from './api-gateway';
 import { SagaLambda } from './saga-lambda';
@@ -11,7 +11,7 @@ import { S3Bucket } from './s3-bucket';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
-import { IHttpApi, IHttpRouteAuthorizer, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { IHttpApi, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 
@@ -21,6 +21,7 @@ export interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
 	domainName: string;
 	environment?: { [key: string]: string };
+	authorizerHandler?: aws_lambda.IFunction;
 }
 
 export class ServerlessToolkitStack extends Stack {
@@ -32,11 +33,10 @@ export class ServerlessToolkitStack extends Stack {
 	public readonly httpApi: IHttpApi;
 	public readonly websocketApi: IWebSocketApi;
 	public readonly zone: IHostedZone;
-	protected authorizer?: IHttpRouteAuthorizer;
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { environment, projectName, domainName } = props;
+		const { environment, projectName, domainName, authorizerHandler } = props;
 
 		const { table } = new Dynamo(this, `dynamodb-stack`);
 		this.table = table;
@@ -88,7 +88,7 @@ export class ServerlessToolkitStack extends Stack {
 				sagaHandler,
 				workerHandler,
 				pageHandler,
-				authorizer: this.authorizer,
+				authorizerHandler,
 			}
 		);
 
