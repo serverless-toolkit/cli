@@ -7,6 +7,9 @@ export interface Request {
 	requestContext?: {
 		domainName?: string;
 		domainPrefix?: string;
+		authorizer?: {
+			lambda?: unknown;
+		};
 		http?: {
 			method?: string;
 			path?: string;

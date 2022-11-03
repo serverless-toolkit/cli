@@ -61,23 +61,20 @@ export class ServerlessToolkitStack extends Stack {
 		this.httpApiUrl = httpApiUrl;
 		this.wsApiUrl = wsApiUrl;
 
-		new CfnOutput(this, 'HTTPAPIURL', {
-			value: this.httpApiUrl,
-		});
-		new CfnOutput(this, 'WSAPIURL', {
-			value: this.wsApiUrl,
-		});
-		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
-			value: this.accessLogs.logGroupName,
-		});
-		new CfnOutput(this, 'HTTPAPIURL', {
-			value: this.httpApiUrl,
-		});
 		new CfnOutput(this, 'DBTABLE', {
 			value: this.table.tableName,
 		});
 		new CfnOutput(this, 'CODEBUCKET', {
 			value: this.codeBucket.bucketName,
+		});
+		new CfnOutput(this, 'HTTPAPIURL', {
+			value: this.httpApiUrl,
+		});
+		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
+			value: this.accessLogs.logGroupName,
+		});
+		new CfnOutput(this, 'WSAPIURL', {
+			value: this.wsApiUrl,
 		});
 	}
 }
