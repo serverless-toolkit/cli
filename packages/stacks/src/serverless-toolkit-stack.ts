@@ -88,7 +88,6 @@ export class ServerlessToolkitStack extends Stack {
 				sagaHandler,
 				workerHandler,
 				pageHandler,
-				authorizer,
 			}
 		);
 
