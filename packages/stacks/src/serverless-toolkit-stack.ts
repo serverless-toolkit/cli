@@ -1,19 +1,14 @@
 import { config } from 'dotenv';
 import { join } from 'path';
 import { CfnOutput, Stack, StackProps, aws_lambda } from 'aws-cdk-lib';
-import { Dynamo } from './dynamodb';
-import { ApiGateway } from './api-gateway';
-import { SagaLambda } from './saga-lambda';
-import { WorkerLambda } from './worker-lambda';
-import { SchedulerLambda } from './scheduler-lambda';
-import { PageLambda } from './page-lambda';
-import { S3Bucket } from './s3-bucket';
+import { ServerlessToolkit } from './serverless-toolkit';
 import { Construct } from 'constructs';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { IHttpApi, IWebSocketApi } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
+import { ILogGroup } from 'aws-cdk-lib/aws-logs';
 
 export const env = config({ path: join(process.cwd(), '.env') }).parsed;
 
@@ -33,76 +28,56 @@ export class ServerlessToolkitStack extends Stack {
 	public readonly httpApi: IHttpApi;
 	public readonly websocketApi: IWebSocketApi;
 	public readonly zone: IHostedZone;
+	public readonly accessLogs: ILogGroup;
+	public readonly wsApiUrl: string;
+	public readonly httpApiUrl: string;
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { environment, projectName, domainName, authorizerHandler } = props;
 
-		const { table } = new Dynamo(this, `dynamodb-stack`);
+		const {
+			codeBucket,
+			table,
+			httpApi,
+			websocketApi,
+			pageHandler,
+			workerHandler,
+			sagaHandler,
+			zone,
+			accessLogs,
+			httpApiUrl,
+			wsApiUrl,
+		} = new ServerlessToolkit(this, 'serverless-toolkit', props);
+
+		this.codeBucket = codeBucket;
 		this.table = table;
+		this.httpApi = httpApi;
+		this.websocketApi = websocketApi;
+		this.pageHandler = pageHandler;
+		this.workerHandler = workerHandler;
+		this.sagaHandler = sagaHandler;
+		this.zone = zone;
+		this.accessLogs = accessLogs;
+		this.httpApiUrl = httpApiUrl;
+		this.wsApiUrl = wsApiUrl;
+
+		new CfnOutput(this, 'HTTPAPIURL', {
+			value: this.httpApiUrl,
+		});
+		new CfnOutput(this, 'WSAPIURL', {
+			value: this.wsApiUrl,
+		});
+		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
+			value: this.accessLogs.logGroupName,
+		});
+		new CfnOutput(this, 'HTTPAPIURL', {
+			value: this.httpApiUrl,
+		});
 		new CfnOutput(this, 'DBTABLE', {
 			value: this.table.tableName,
 		});
-
-		const { codeBucket } = new S3Bucket(this, `s3bucket-stack`);
-		this.codeBucket = codeBucket;
 		new CfnOutput(this, 'CODEBUCKET', {
 			value: this.codeBucket.bucketName,
-		});
-
-		const { sagaHandler } = new SagaLambda(this, `saga-stack`, {
-			table,
-			codeBucket,
-			environment: { ...env, ...environment },
-		});
-		this.sagaHandler = sagaHandler;
-
-		new SchedulerLambda(this, `scheduler-stack`, {
-			table,
-			codeBucket,
-			sagaHandler,
-		});
-
-		const { pageHandler } = new PageLambda(this, `page-stack`, {
-			table,
-			codeBucket,
-			environment: { ...env, ...environment },
-		});
-		this.pageHandler = pageHandler;
-
-		const { workerHandler } = new WorkerLambda(this, `worker-stack`, {
-			table,
-			codeBucket,
-			environment: { ...env, ...environment },
-		});
-		this.workerHandler = workerHandler;
-
-		const { httpApi, websocketApi, zone, httpApiUrl, wsApiUrl, accessLogs } = new ApiGateway(
-			this,
-			`apigateway-stack`,
-			{
-				domainName,
-				httpRecordName: projectName,
-				wsRecordName: `${projectName}-logs`,
-				table,
-				sagaHandler,
-				workerHandler,
-				pageHandler,
-				authorizerHandler,
-			}
-		);
-
-		this.httpApi = httpApi;
-		this.websocketApi = websocketApi;
-		this.zone = zone;
-		new CfnOutput(this, 'HTTPAPIURL', {
-			value: httpApiUrl,
-		});
-		new CfnOutput(this, 'WSAPIURL', {
-			value: wsApiUrl,
-		});
-		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
-			value: accessLogs.logGroupName,
 		});
 	}
 }
