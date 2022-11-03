@@ -52,6 +52,7 @@ export class ApiGateway extends Construct {
 	httpApiUrl: string;
 	wsApiUrl: string;
 	zone: aws_route53.IHostedZone;
+	accessLogs: aws_logs.ILogGroup;
 
 	constructor(scope: Construct, id: string, props: ApiGatewayProps) {
 		super(scope, id);
@@ -211,14 +212,14 @@ export class ApiGateway extends Construct {
 		(props.pageHandler as NodejsFunction).addEnvironment('HTTP_API_URL', this.httpApiUrl);
 		(props.pageHandler as NodejsFunction).addEnvironment('WS_API_URL', this.wsApiUrl);
 
-		const accessLogs = new aws_logs.LogGroup(this, 'api-gateway-access-logs', {
+		this.accessLogs = new aws_logs.LogGroup(this, 'api-gateway-access-logs', {
 			retention: aws_logs.RetentionDays.ONE_YEAR,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 		const defaultStage = (this.httpApi as HttpApi).defaultStage.node
 			.defaultChild as aws_apigateway.CfnStage;
 		defaultStage.accessLogSetting = {
-			destinationArn: accessLogs.logGroupArn,
+			destinationArn: this.accessLogs.logGroupArn,
 			format: JSON.stringify({
 				requestId: '$context.requestId',
 				userAgent: '$context.identity.userAgent',
@@ -254,10 +255,7 @@ export class ApiGateway extends Construct {
 				resources: ['*'],
 			})
 		);
-		accessLogs.grantWrite(role);
-		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
-			value: accessLogs.logGroupName,
-		});
+		this.accessLogs.grantWrite(role);
 	}
 }
 

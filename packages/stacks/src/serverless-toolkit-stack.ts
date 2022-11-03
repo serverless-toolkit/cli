@@ -78,7 +78,7 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		this.workerHandler = workerHandler;
 
-		const { httpApi, websocketApi, zone, httpApiUrl, wsApiUrl } = new ApiGateway(
+		const { httpApi, websocketApi, zone, httpApiUrl, wsApiUrl, accessLogs } = new ApiGateway(
 			this,
 			`apigateway-stack`,
 			{
@@ -92,6 +92,7 @@ export class ServerlessToolkitStack extends Stack {
 				authorizer,
 			}
 		);
+
 		this.httpApi = httpApi;
 		this.websocketApi = websocketApi;
 		this.zone = zone;
@@ -100,6 +101,9 @@ export class ServerlessToolkitStack extends Stack {
 		});
 		new CfnOutput(this, 'WSAPIURL', {
 			value: wsApiUrl,
+		});
+		new CfnOutput(this, 'HTTPAPILOGGROUPNAME', {
+			value: accessLogs.logGroupName,
 		});
 	}
 }
