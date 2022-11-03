@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/stacks",
-	"version": "3.0.74",
+	"version": "3.0.75",
 	"description": "Serverless-Toolkit AWS-CDK Stacks",
 	"main": ".build/index.js",
 	"types": ".build/index.d.ts",
