@@ -1,6 +1,6 @@
 {
 	"name": "@serverless-toolkit/cli",
-	"version": "3.0.79",
+	"version": "3.0.80",
 	"description": "Serverless application development runtime that deploys to your AWS account using the AWS-CDK.",
 	"repository": {
 		"type": "git",
@@ -35,7 +35,7 @@
 		"@types/yargs": "17.0.13"
 	},
 	"dependencies": {
-		"@serverless-toolkit/stacks": "^3.0.79",
+		"@serverless-toolkit/stacks": "^3.0.80",
 		"aws-cdk": "2.50.0",
 		"aws-cdk-lib": "2.50.0",
 		"aws-sdk": "2.1246.0",
