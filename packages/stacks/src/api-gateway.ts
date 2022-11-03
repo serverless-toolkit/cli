@@ -12,7 +12,6 @@ import {
 	aws_logs,
 	aws_iam,
 	RemovalPolicy,
-	CfnOutput,
 } from 'aws-cdk-lib';
 import {
 	CorsHttpMethod,
@@ -26,7 +25,6 @@ import {
 	IWebSocketApi,
 	IHttpRouteAuthorizer,
 } from '@aws-cdk/aws-apigatewayv2-alpha';
-
 import {
 	HttpLambdaIntegration,
 	WebSocketLambdaIntegration,
