@@ -21,12 +21,10 @@ export interface ServerlessToolkitStackProps extends StackProps {
 	projectName: string;
 	domainName: string;
 	environment?: { [key: string]: string };
-	authorizer?: IHttpRouteAuthorizer;
 }
 
 export class ServerlessToolkitStack extends Stack {
 	public readonly table: ITable;
-
 	public readonly codeBucket: IBucket;
 	public readonly sagaHandler: IFunction;
 	public readonly pageHandler: IFunction;
@@ -34,10 +32,11 @@ export class ServerlessToolkitStack extends Stack {
 	public readonly httpApi: IHttpApi;
 	public readonly websocketApi: IWebSocketApi;
 	public readonly zone: IHostedZone;
+	public authorizer: IHttpRouteAuthorizer;
 
 	constructor(scope: Construct, id: string, props: ServerlessToolkitStackProps) {
 		super(scope, id, props);
-		const { environment, projectName, domainName, authorizer } = props;
+		const { environment, projectName, domainName } = props;
 
 		const { table } = new Dynamo(this, `dynamodb-stack`);
 		this.table = table;
