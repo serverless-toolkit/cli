@@ -9,7 +9,7 @@
 	},
 	"keywords": [],
 	"dependencies": {
-		"aws-sdk": "2.1245.0"
+		"aws-sdk": "2.1246.0"
 	},
 	"devDependencies": {
 		"@types/node": "18.11.9",
